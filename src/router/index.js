@@ -22,11 +22,6 @@ export default new Router({
             children: [
                 ...home,
             ]
-        },
-        {
-            path: '/login',
-            component: () => import('../components/page/Login/Login.vue'),
-            meta: { title: '登录' }
         }
     ],
     scrollBehavior (to, from, savedPosition) {

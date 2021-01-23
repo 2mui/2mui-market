@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="main_content">
-                <div v-for="(item,index) in dataList" :key="index" class="card">
+                <div v-for="(item,index) in dataList" :key="index" @click="handleDetails()" class="card">
                     <img class="img" :src="item.images" alt="">
                     <div class="mould">
                         <div class="mould_warp">
@@ -55,7 +55,7 @@
             </div>
         </div>
         <Footer :colorConfirm="colorConfirm" />
-        <Exhibition />
+        <Exhibition v-if="isDetails"  />
         <el-dialog
             class="collection-dialog"
             :visible.sync="dialogEdit"
@@ -101,6 +101,7 @@ export default {
         return {
             dialogEdit: false,
             dialogVisible: false,
+            isDetails: false,
             colorConfirm: '#F5F5F5',
             title: '',
             dataList:[
@@ -177,6 +178,9 @@ export default {
             this.dialogEdit = false;
             this.dialogVisible = false;
         },
+        handleDetails() {
+            this.isDetails = true;
+        }
     },
     created() {
     }
