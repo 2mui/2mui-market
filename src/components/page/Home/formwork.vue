@@ -26,7 +26,7 @@
             </div>
             <div class="main_content">
                 <div v-for="(item,index) in dataList" :key="index" class="card">
-                    <img :src="item.images" alt="">
+                    <img class="img" :src="item.images" alt="">
                     <div class="card_footer">
                         <li class="card_footer_left"><span>{{ item.title }}</span><span>{{ item.label }}</span></li>
                         <div class="card_footer_right">

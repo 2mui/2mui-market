@@ -13,7 +13,7 @@
             </div>
             <div class="main_content">
                 <div v-for="(item,index) in dataList" :key="index" class="card">
-                    <img :src="item.images" alt="">
+                    <img class="img" :src="item.images" alt="">
                     <div class="card_footer">
                         <li class="card_footer_left"><span>{{ item.title }}</span><span>{{ item.label }}</span></li>
                         <div class="card_footer_right">
@@ -52,7 +52,7 @@
                 <div class="partners_content">
                     <div class="card" v-for="(item,index) in partnerList" :key="index">
                         <div class="card_list">
-                            <img :src="item.images" alt="">
+                            <img class="img" :src="item.images" alt="">
                         </div>
                     </div>
                 </div>

@@ -28,5 +28,8 @@ export default new Router({
             component: () => import('../components/page/Login/Login.vue'),
             meta: { title: '登录' }
         }
-    ]
+    ],
+    scrollBehavior (to, from, savedPosition) {
+        return { x: 0, y: 0 }
+    }
 });

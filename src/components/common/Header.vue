@@ -32,7 +32,7 @@
                     <img :src="require('@/assets/img/girl.jpg')" alt="">
                     <ul>
                         <li v-for="(item,index) in dataList" :key="index"
-                            @click="handleNav(item.path)">
+                            @click="handleNav(item.path,item.name)">
                             <img :src="item.url" alt="">
                             {{ item.name }}
                         </li>
@@ -97,22 +97,22 @@ export default {
                     name: '个人主页'
                 },
                 {
-                    path: '/homepage',
+                    path: '/personal',
                     url: require('@/assets/img/collection.png'),
                     name: '我的收藏'
                 },
                 {
-                    path: '/homepage',
+                    path: '/personal',
                     url: require('@/assets/img/browse.png'),
                     name: '浏览记录'
                 },
                 {
-                    path: '/homepage',
+                    path: '/personal',
                     url: require('@/assets/img/download.png'),
                     name: '下载记录'
                 },
                 {
-                    path: '/homepage',
+                    path: '/personal',
                     url: require('@/assets/img/download.png'),
                     name: '退出登录'
                 }
@@ -133,10 +133,20 @@ export default {
                 })
             }
         },
-        handleNav(path) {
-            this.$router.push({
-                path:path
-            })
+        handleNav(path,name) {
+            if (name == '个人主页') {
+                this.$router.push({
+                    path:path
+                })
+            } else if (name == '退出登录') {
+
+            }
+            else {
+                this.$router.push({
+                    path:path,
+                    query: {name:name}
+                })
+            }
         }
     }
 };

@@ -19,29 +19,14 @@
         <div class="main">
             <div class="main_title">
                 <ul>
-                    <li @click="handleNav(item.id)" v-for="(item,index) in navList" :class="className == item.id ? 'active' : ''" :key="index">
+                    <li @click="handleNav(item.title)" v-for="(item,index) in navList" :class="className == item.title ? 'active' : ''" :key="index">
                         {{ item.title }}
                     </li>
                 </ul>
             </div>
-            <div class="main_content">
-                <div v-for="(item,index) in dataList" :key="index" class="card">
-                    <img :src="item.images" alt="">
-                    <div class="card_footer">
-                        <li class="card_footer_left"><span>{{ item.title }}</span><span>{{ item.label }}</span></li>
-                        <div class="card_footer_right">
-                            <li>
-                                <img :src="require('@/assets/img/download.png')" alt="" srcset="">
-                                {{ item.download }}
-                            </li>
-                            <li>
-                                <img :src="require('@/assets/img/collection.png')" alt="" srcset="">
-                                {{ item.collection }}
-                            </li>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Collection v-if="className == '我的收藏'" />
+            <Record v-if="className == '浏览记录'" />
+            <Download v-if="className == '下载记录'" />
         </div>
         <Footer :colorConfirm="colorConfirm" />
     </div>
@@ -49,14 +34,20 @@
 
 <script>
 import Footer from '../../common/Footer';
+import Collection from './common/collection';
+import Record from './common/record';
+import Download from './common/download';
 export default {
     components: {
-        Footer
+        Footer,
+        Collection,
+        Record,
+        Download
     },
     data() {
         return {
+            className: '我的收藏',
             colorConfirm: '#F5F5F5',
-            className: 0,
             navList:[
                 {
                     id: 0,
@@ -131,12 +122,25 @@ export default {
             ],
         };
     },
+    watch: {
+        $route: {
+            handler() {
+                this.className = this.$route.query.name;
+            },
+            deep: true,
+        },
+    },
     methods: {
-        handleNav(id) {
-            this.className = id;
+        handleNav(name) {
+            this.$router.push({
+                path: '/personal',
+                query: {name:name}
+            })
+            this.className = name;
         }
     },
     created() {
+        this.className = this.$route.query.name;
     }
 };
 </script>
@@ -241,75 +245,6 @@ export default {
                     transform: translateX(-50%);
                 }
             }
-        }
-        .main_content{
-            width: 100%;
-            padding: 0 10px;
-            box-sizing: border-box;
-            .card{
-                cursor: pointer;
-                width: 25%;
-                padding: 0 10px;
-                margin-bottom: 50px;
-                box-sizing: border-box;
-                float: left;
-                img{
-                    width: 100%;
-                    height: 303px;
-                    border-radius: 14px;
-                    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-                    transition: all 0.2s;
-                }
-                .card_footer{
-                    height: 50px;
-                    font-size: 18px;
-                    color: #333333;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    .card_footer_left{
-                        span:last-child{
-                            background: #D3D3D3;
-                            font-size: 16px;
-                            color: white;
-                            padding: 4px 14px;
-                            box-sizing: border-box;
-                            border-radius: 20px;
-                        }
-                    }
-                    .card_footer_right{
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                        li{
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            font-size: 16px;
-                            color: #333333;
-                            margin-left: 10px;
-                            img{
-                                width: 18px;
-                                height: 14px;
-                            }
-                        }
-                        li:first-child{
-                            margin-left: 0;
-                        }
-                    }
-                }
-            }
-            .card:hover{
-                img{
-                    transition: all 1s;
-                    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
-                }
-            }
-        }
-        .main_content::after{
-            content: '';
-            display: block;
-            clear: both;
         }
     }
 }

@@ -15,8 +15,13 @@ const router = [
         meta: { title: '个人主页' }
     },
     {
-        path: '/personal-center',
+        path: '/personal',
         component: () => import('../../components/page/Home/personal.vue'),
+        meta: { title: '个人主页' }
+    },
+    {
+        path: '/collection_details',
+        component: () => import('../../components/page/Home/collectionDetails.vue'),
         meta: { title: '个人主页' }
     }
 ]

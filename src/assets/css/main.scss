@@ -26,7 +26,7 @@ a {
 @media screen and (max-width: 1400px){
     .main_content{
         .card{
-            >img{
+            >img,.img{
                 width: 100%;
                 height: 200px !important;
                 border-radius: 30px;
@@ -150,4 +150,7 @@ a {
             color: #333333;
         }
     }
+}
+.v-modal{
+    opacity: 0.8;
 }
