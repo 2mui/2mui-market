@@ -64,6 +64,26 @@
 
 <script>
 import Footer from '../../common/Footer';
+import gql from "graphql-tag";
+
+const Dataitems = gql`
+  {
+    items {
+        id
+        title
+        url
+        updated_at
+        industry
+        featured
+        detail
+        description
+        created_at
+        cover
+        category
+        author
+    }
+  }
+`;
 export default {
     name: 'home',
     components: {
@@ -183,6 +203,16 @@ export default {
     methods: {
         handleNav(id) {
             this.className = id;
+        }
+    },
+    apollo: {
+        items() {
+            return {
+                query: Dataitems,
+                update(data) {
+                    console.log(data)
+                }
+            };
         }
     }
 };
