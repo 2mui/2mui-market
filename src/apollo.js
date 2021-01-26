@@ -18,15 +18,15 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation);
 })
 
-// const apolloClient = new ApolloClient({
-//   // 你需要在这里使用绝对路径
-//   uri: 'https://graphql.2mui.cn/v1/graphql'
-// });
-
 const apolloClient = new ApolloClient({
-  link: concat(authMiddleware, apiLink),
-  cache: new InMemoryCache()
+  // 你需要在这里使用绝对路径
+  uri: 'https://graphql.2mui.cn/v1/graphql'
 });
+
+// const apolloClient = new ApolloClient({
+//   link: concat(authMiddleware, apiLink),
+//   cache: new InMemoryCache()
+// });
 
 const apolloProvider = new VueApollo({
   defaultClient: apolloClient,

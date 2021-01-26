@@ -9,9 +9,10 @@
             width="1180px">
             <span class="warp">
                 <div class="warp_top">
-                    <span>女神计划-社交APP</span>
+                    <span>{{ detailsData.title }}</span>
                 </div>
-                <img :src="require('@/assets/img/details.png')" alt="" srcset="">
+                <img :src="detailsData.detail" alt="" srcset="">
+                <!-- <img :src="require('@/assets/img/details.png')" alt="" srcset=""> -->
                 <div class="warp_footer">
                     <p>相关推荐</p>
                     <div class="main_content">
@@ -48,7 +49,7 @@
                         <p>235人收藏</p>
                     </div>
                     <div class="list">
-                        <div>
+                        <div @click="handleDowload(detailsData.url)">
                             <img :src="require('@/assets/img/download2.png')" alt="" srcset="">
                         </div>
                         <p>235人下载</p>
@@ -73,6 +74,14 @@
 
 <script>
 export default {
+    props:{
+        detailsData: {
+            type: Object,
+            default() {
+                return {};
+            },
+        },
+    },
     data() {
         return {
             dialogVisible: true,
@@ -125,6 +134,9 @@ export default {
     methods: {
         handleClose() {
             this.$parent.isDetails = false;
+        },
+        handleDowload(url) {
+            window.open(url)
         }
     },
     created() {
