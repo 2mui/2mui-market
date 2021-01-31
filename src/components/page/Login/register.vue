@@ -14,18 +14,15 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="用户名" prop="account_number">
-            <el-input
-              v-model="ruleForm.account_number"
-              placeholder="账号"
-            ></el-input>
+          <el-form-item label="用户名" prop="login">
+            <el-input v-model="ruleForm.login" placeholder="账号"></el-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="ruleForm.email" placeholder="邮箱"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password">
+          <el-form-item label="密码" prop="encrypted_password">
             <el-input
-              v-model="ruleForm.password"
+              v-model="ruleForm.encrypted_password"
               type="password"
               placeholder="密码"
             ></el-input>
@@ -42,24 +39,88 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
+var MutationRegisterGql = gql`
+  mutation($login: String!, $encrypted_password: String!, $email: String!, $created_at: String!, $updated_at: String!) {
+    insert_users(
+      login: $login
+      encrypted_password: $encrypted_password
+      email: $email
+      created_at: $created_at
+      updated_at: $updated_at
+    ) {
+      login
+    }
+  }
+`;
 export default {
   data() {
+    var checkEmail = (rule, value, callback) => {
+      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      if (!value) {
+        return callback(new Error("邮箱不能为空"));
+      }
+      setTimeout(() => {
+        if (mailReg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的邮箱格式"));
+        }
+      }, 100);
+    };
     return {
       labelPosition: "top",
       ruleForm: {
-        account_number: "",
-        password: "",
+        login: "",
+        encrypted_password: "",
         email: "",
+        created_at: "now",
+        updated_at: "now",
       },
       rules: {
-        account_number: [],
-        password: [],
-        email: [],
+        login: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        encrypted_password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ],
+        email: [
+          { required: true,validator: checkEmail, trigger: "blur" }
+        ],
       },
     };
   },
   methods: {
-    submitForm() {},
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$apollo
+            .mutate({
+              // 更新的语句
+              mutation: MutationRegisterGql,
+              // 实参列表
+              variables: {
+                login: this.ruleForm.login,
+                encrypted_password: this.ruleForm.encrypted_password,
+                email: this.ruleForm.email,
+                created_at: this.ruleForm.created_at,
+                updated_at: this.ruleForm.updated_at,
+              },
+            })
+            .then((response) => {
+              // 输出获取的数据集
+              console.log(response);
+            })
+            .catch((err) => {
+              // 捕获错误
+              console.log(err);
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
   },
   created() {},
 };

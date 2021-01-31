@@ -17,7 +17,12 @@
         </ul>
       </div>
       <div class="main_content">
-        <div v-for="(item, index) in dataList" :key="index" @click="handleDetails(item)" class="card">
+        <div
+          v-for="(item, index) in dataList"
+          :key="index"
+          @click="handleDetails(item)"
+          class="card"
+        >
           <img class="img" :src="item.cover" alt="" />
           <div class="card_footer">
             <li class="card_footer_left">
@@ -145,8 +150,8 @@ export default {
       this.className = id;
     },
     handleDetails(item) {
-        this.detailsData = item;
-        this.isDetails = true;
+      this.detailsData = item;
+      this.isDetails = true;
     },
     handleGetData() {
       this.$apollo

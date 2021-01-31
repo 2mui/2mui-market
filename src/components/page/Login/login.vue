@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="login" @click="handleHeid">
     <div class="login_left"></div>
     <div class="login_right">
       <div class="right_title">
@@ -7,15 +7,19 @@
       </div>
       <div class="icon_img">
         <div class="icon">
-          <router-link to="#" class="title_text"
-            ><img src="../../../assets/img/qq.png" alt="" /> QQ登录</router-link
-          >
+          <li class="title_text">
+            <img src="../../../assets/img/qq.png" alt="" /> QQ登录
+          </li>
         </div>
         <div class="icon">
-          <router-link to="#" class="title_text"
-            ><img src="../../../assets/img/weChat.png" alt="" />
-            微信登录</router-link
-          >
+          <li class="title_text">
+            <img
+              src="../../../assets/img/weChat.png"
+              alt=""
+              @click.stop="handleWXLogin"
+            />
+            微信登录
+          </li>
         </div>
       </div>
       <div class="right_title">
@@ -36,7 +40,7 @@
           <router-link to="#" class="forget_password">忘记密码?</router-link>
           <el-form-item label="密码" prop="password">
             <el-input
-              v-model="ruleForm.name"
+              v-model="ruleForm.password"
               type="password"
               placeholder="密码"
             ></el-input>
@@ -53,16 +57,19 @@
         </p>
       </div>
     </div>
+    <div id="weixin" v-show="showLogin"></div>
   </div>
 </template>
 
 <script>
+import gql from "graphql-tag";
 export default {
   data() {
     return {
+      showLogin: false,
       labelPosition: "top",
       ruleForm: {
-        account_number: "",
+        name: "",
         password: "",
       },
       rules: {
@@ -72,8 +79,46 @@ export default {
     };
   },
   methods: {
-    submitForm() {},
+    submitForm() {
+      console.log(this.ruleForm);
+      this.$apollo
+        .mutate({
+          mutation: gql`
+            {
+              users {
+                email
+                encrypted_password
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+          variables: {
+            email: this.ruleForm.name,
+            encrypted_password: this.ruleForm.password,
+        },
+        })
+        .then((data) => {
+          console.log(data);
+        });
+    },
+    handleHeid() {
+      this.showLogin = false;
+    },
+    handleWXLogin() {
+      this.showLogin = true;
+      var obj = new WxLogin({
+        self_redirect: false,
+        id: "weixin",
+        appid: "wx132ba6a4780db515",
+        scope: "snsapi_login",
+        redirect_uri: "http://localhost:8080/#/login",
+        state: "",
+        style: "",
+        href: "",
+      });
+    },
   },
+  mounted() {},
   created() {},
 };
 </script>
@@ -138,6 +183,7 @@ export default {
         width: 90px;
         height: 90px;
         img {
+          cursor: pointer;
           width: 100%;
         }
         a {
@@ -181,6 +227,14 @@ export default {
       color: #000000;
       text-decoration: underline;
     }
+  }
+  #weixin {
+    background: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
 }
 </style>
