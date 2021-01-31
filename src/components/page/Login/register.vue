@@ -113,10 +113,17 @@ export default {
             .then((response) => {
               // 输出获取的数据集
               console.log(response);
+              this.$message({
+                message: '恭喜你，注册成功！',
+                type: 'success'
+              });
             })
             .catch((err) => {
               // 捕获错误
-              console.log(err);
+              this.$message({
+                message: '错了哦！邮箱已存在',
+                type: 'error'
+              });
             });
         } else {
           console.log("error submit!!");

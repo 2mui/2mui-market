@@ -34,13 +34,13 @@
           label-width="100px"
           class="demo-ruleForm"
         >
-          <el-form-item label="账号" prop="account_number">
-            <el-input v-model="ruleForm.name" placeholder="账号"></el-input>
+          <el-form-item label="账号" prop="login">
+            <el-input v-model="ruleForm.login" placeholder="账号"></el-input>
           </el-form-item>
           <router-link to="#" class="forget_password">忘记密码?</router-link>
-          <el-form-item label="密码" prop="password">
+          <el-form-item label="密码" prop="encrypted_password">
             <el-input
-              v-model="ruleForm.password"
+              v-model="ruleForm.encrypted_password"
               type="password"
               placeholder="密码"
             ></el-input>
@@ -69,37 +69,54 @@ export default {
       showLogin: false,
       labelPosition: "top",
       ruleForm: {
-        name: "",
-        password: "",
+        login: "",
+        encrypted_password: "",
       },
       rules: {
-        account_number: [],
-        password: [],
+        login: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        encrypted_password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+        ],
       },
     };
   },
   methods: {
-    submitForm() {
-      console.log(this.ruleForm);
-      this.$apollo
-        .mutate({
-          mutation: gql`
-            {
-              users {
-                email
-                encrypted_password
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$apollo
+            .query({
+              query: gql`
+                {
+                  users {
+                    email
+                    login
+                    encrypted_password
+                  }
+                }
+              `,
+              fetchPolicy: "no-cache",
+            })
+            .then((data) => {
+              var userList = data.data.users;
+              for (var i in userList) {
+                if (
+                  this.ruleForm.login == userList[i].login &&
+                  this.ruleForm.encrypted_password ==
+                    userList[i].encrypted_password
+                ) {
+                  console.log(userList[i]);
+                  console.log("成功");
+                } else {
+                  console.log("失败");
+                }
               }
-            }
-          `,
-          fetchPolicy: "no-cache",
-          variables: {
-            email: this.ruleForm.name,
-            encrypted_password: this.ruleForm.password,
-        },
-        })
-        .then((data) => {
-          console.log(data);
-        });
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     handleHeid() {
       this.showLogin = false;
