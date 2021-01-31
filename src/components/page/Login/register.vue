@@ -41,15 +41,18 @@
 <script>
 import gql from "graphql-tag";
 var MutationRegisterGql = gql`
-  mutation($login: String!, $encrypted_password: String!, $email: String!, $created_at: String!, $updated_at: String!) {
-    insert_users(
-      login: $login
-      encrypted_password: $encrypted_password
-      email: $email
-      created_at: $created_at
+  mutation register($login: String!, $encrypted_password: String!, $email: String!, $created_at: timestamp!, $updated_at: timestamp!) {
+    insert_users(objects: {
+      login: $login,
+      encrypted_password: $encrypted_password,
+      email: $email,
+      created_at: $created_at,
       updated_at: $updated_at
-    ) {
-      login
+    }) {
+      returning {
+        id
+        login
+      }
     }
   }
 `;
