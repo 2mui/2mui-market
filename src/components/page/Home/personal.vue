@@ -1,17 +1,19 @@
 <template>
     <div class="personal">
         <div class="banner">
-            <div class="banner_avatar">
-                <img :src="require('@/assets/img/girl.jpg')" alt="">
-                <ul>
-                    <li>王晓喵</li>
-                    <li>ID  625789000</li>
-                </ul>
-                <div class="banner_button">
-                    <div>个人资料</div>
-                    <div>
-                        更多
-                        <img :src="require('@/assets/img/more.png')" alt="" srcset="">
+            <div class="banner_mask">
+                <div class="banner_avatar">
+                    <img :src="require('@/assets/img/girl.jpg')" alt="">
+                    <ul>
+                        <li>王晓喵</li>
+                        <li>ID  625789000</li>
+                    </ul>
+                    <div class="banner_button">
+                        <div>个人资料</div>
+                        <div>
+                            更多
+                            <img :src="require('@/assets/img/more.png')" alt="" srcset="">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -152,55 +154,61 @@ export default {
         height: 404px;
         background: url("../../../assets/img/backdrop.png") no-repeat center;
         background-size: cover;
-        position: relative;
-        .banner_avatar{
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-            text-align: center;
-            >img{
-                width: 130px;
-                height: 130px;
-                border-radius: 50%;
-                border: 4px solid #ffffff;
-            }
-            ul{
-                li:first-child{
-                    font-size: 28px;
-                    font-family: Source Han Sans CN;
-                    font-weight: bold;
-                    color: #333333;
-                    opacity: 1;
-                    margin-top: 20px;
-                    margin-bottom: 13px;
+        .banner_mask{
+            width: 100%;
+            height: 100%;
+            background: url("../../../assets/img/mask.png") no-repeat center;
+            background-size: cover;
+            position: relative;
+            .banner_avatar{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                text-align: center;
+                >img{
+                    width: 130px;
+                    height: 130px;
+                    border-radius: 50%;
+                    border: 4px solid #ffffff;
                 }
-                li:last-child{
-                    font-size: 16px;
-                    font-family: Source Han Sans CN;
-                    font-weight: 400;
-                    color: #666666;
-                    opacity: 1;
+                ul{
+                    li:first-child{
+                        font-size: 28px;
+                        font-family: Source Han Sans CN;
+                        font-weight: bold;
+                        color: #333333;
+                        opacity: 1;
+                        margin-top: 20px;
+                        margin-bottom: 13px;
+                    }
+                    li:last-child{
+                        font-size: 16px;
+                        font-family: Source Han Sans CN;
+                        font-weight: 400;
+                        color: #666666;
+                        opacity: 1;
+                    }
                 }
-            }
-            .banner_button{
-                display: flex;
-                div{
-                    cursor: pointer;
-                    width: 144px;
-                    height: 50px;
-                    border: 1px solid #000000;
-                    opacity: 1;
-                    border-radius: 114px;
-                    margin-top: 24px;
-                    text-align: center;
-                    line-height: 50px;
-                    font-size: 18px;
-                }
-                div:first-child{
-                    margin-right: 48px;
-                    background: #000000;
-                    color: white;
+                .banner_button{
+                    display: flex;
+                    div{
+                        cursor: pointer;
+                        width: 144px;
+                        height: 50px;
+                        border: 1px solid #000000;
+                        opacity: 1;
+                        border-radius: 114px;
+                        margin-top: 24px;
+                        text-align: center;
+                        line-height: 50px;
+                        font-size: 18px;
+                    }
+                    div:first-child{
+                        margin-right: 48px;
+                        background: #000000;
+                        color: white;
+                    }
                 }
             }
         }

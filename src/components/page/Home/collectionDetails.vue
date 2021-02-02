@@ -1,12 +1,14 @@
 <template>
     <div class="collectionDetails">
         <div class="banner">
-            <div class="banner_avatar">
-                <img :src="require('@/assets/img/girl.jpg')" alt="">
-                <ul>
-                    <li>王晓喵</li>
-                    <li>ID  625789000</li>
-                </ul>
+            <div class="banner_mask">
+                <div class="banner_avatar">
+                    <img :src="require('@/assets/img/girl.jpg')" alt="">
+                    <ul>
+                        <li>王晓喵</li>
+                        <li>ID  625789000</li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="main">
@@ -195,38 +197,44 @@ export default {
         background: url("../../../assets/img/backdrop.png") no-repeat center;
         background-size: cover;
         margin-bottom: 72px;
-        position: relative;
-        .banner_avatar{
-            width: 264px;
-            height: 134px;
-            position: absolute;
-            top: 70px;
-            left: 94px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            img{
-                width: 130px;
-                height: 130px;
-                border-radius: 50%;
-                border: 4px solid #ffffff;
-                margin-right: 18px;
-            }
-            ul{
-                li:first-child{
-                    font-size: 28px;
-                    font-family: Source Han Sans CN;
-                    font-weight: bold;
-                    color: #333333;
-                    opacity: 1;
-                    margin-bottom: 24px;
+        .banner_mask{
+            width: 100%;
+            height: 100%;
+            background: url("../../../assets/img/mask.png") no-repeat center;
+            background-size: cover;
+            position: relative;
+            .banner_avatar{
+                width: 264px;
+                height: 134px;
+                position: absolute;
+                top: 70px;
+                left: 94px;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                img{
+                    width: 130px;
+                    height: 130px;
+                    border-radius: 50%;
+                    border: 4px solid #ffffff;
+                    margin-right: 18px;
                 }
-                li:last-child{
-                    font-size: 16px;
-                    font-family: Source Han Sans CN;
-                    font-weight: 400;
-                    color: #666666;
-                    opacity: 1;
+                ul{
+                    li:first-child{
+                        font-size: 28px;
+                        font-family: Source Han Sans CN;
+                        font-weight: bold;
+                        color: #333333;
+                        opacity: 1;
+                        margin-bottom: 24px;
+                    }
+                    li:last-child{
+                        font-size: 16px;
+                        font-family: Source Han Sans CN;
+                        font-weight: 400;
+                        color: #666666;
+                        opacity: 1;
+                    }
                 }
             }
         }

@@ -54,7 +54,14 @@
         <div class="main_footer_warp">
           <el-button>首页</el-button>
           <el-button>上一页</el-button>
-          <el-pagination background layout="pager" :page-size="10" :total="50">
+          <el-pagination
+            background
+            layout="pager"
+            @current-change="handleCurrentChange"
+            :current-page="page"
+            :page-size="limit"
+            :total="total"
+          >
           </el-pagination>
           <el-button>下一页</el-button>
           <el-button>尾页</el-button>
@@ -97,6 +104,11 @@ export default {
       detailsData: {},
       colorConfirm: "#ffffff",
       className: 0,
+      limit: 4,
+      page: 1,
+      offset: 0,
+      total: null,
+      order: '{ likes_count: desc }',
       navList: [
         {
           id: 0,
@@ -148,17 +160,39 @@ export default {
   methods: {
     handleNav(id) {
       this.className = id;
+      if(id) {
+        this.order = '{ created_at: desc }';
+      } else {
+        this.order = '{ likes_count: desc }';
+      }
+      this.page = 1;
+      this.offset = 0;
+      this.handleGetData(this.limit, this.offset ,this.order);
     },
     handleDetails(item) {
       this.detailsData = item;
       this.isDetails = true;
     },
-    handleGetData() {
+    handleCurrentChange(val) {
+      this.page = val;
+      this.offset = this.limit * (val - 1);
+      this.handleGetData(this.limit, this.offset ,this.order);
+    },
+    handleGetData(limit, offset, order) {
       this.$apollo
         .query({
           query: gql`
             {
-              items {
+              items_aggregate {
+                aggregate {
+                  count
+                }
+              }
+              items(
+                limit: ${limit}, 
+                offset: ${offset}, 
+                order_by: ${order}
+              ) {
                 id
                 title
                 url
@@ -177,12 +211,13 @@ export default {
           fetchPolicy: "no-cache",
         })
         .then((data) => {
+          this.total = data.data.items_aggregate.aggregate.count;
           this.dataList = data.data.items;
         });
     },
   },
   created() {
-    this.handleGetData();
+    this.handleGetData(this.limit, this.offset ,this.order);
   },
 };
 </script>
