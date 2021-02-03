@@ -1,17 +1,17 @@
 <template>
-  <div class="formwork">
-    <div class="banner">
+  <div class="search">
+    <!-- <div class="banner">
       <img :src="require('@/assets/img/banner.jpg')" alt="" />
-    </div>
+    </div> -->
     <div class="main">
-      <div class="main_search">
+      <!-- <div class="main_search">
         <div class="search_list">
           <label class="label">{{ radioList1.label }}</label>
           <el-radio-group @change="industryChange" v-model="radio1">
             <el-radio-button
               v-for="(item, index) in radioList1.arr"
               :key="index"
-              :label="item.name"
+              :label="item"
             ></el-radio-button>
           </el-radio-group>
         </div>
@@ -35,39 +35,14 @@
             ></el-radio-button>
           </el-radio-group>
         </div>
-      </div>
+      </div> -->
       <div class="main_content">
-        <div
-          v-for="(item, index) in dataList"
-          :key="index"
-          @click="handleDetails(item)"
-          class="card"
-        >
-          <img class="img" :src="item.cover" alt="" />
-          <div class="mould">
-            <div class="mould_warp">
-              <div class="edit">
-                <img
-                  @click.stop="handleCollection"
-                  :src="require('@/assets/img/collection.png')"
-                  alt=""
-                  srcset=""
-                />
-                <img
-                  @click.stop="optCollection"
-                  :src="require('@/assets/img/dropdown_bottom.png')"
-                  alt=""
-                />
-              </div>
-              <div class="folder" @click.stop="addCollection">
-                <i class="el-icon-folder-add"></i>
-              </div>
-            </div>
-          </div>
+        <div v-for="(item, index) in dataList" :key="index" class="card">
+          <img class="img" :src="item.images" alt="" />
           <div class="card_footer">
             <li class="card_footer_left">
               <span>{{ item.title }}</span
-              ><span>{{ "APP" }}</span>
+              ><span>{{ item.label }}</span>
             </li>
             <div class="card_footer_right">
               <li>
@@ -76,7 +51,7 @@
                   alt=""
                   srcset=""
                 />
-                {{ 99 }}
+                {{ item.download }}
               </li>
               <li>
                 <img
@@ -84,7 +59,7 @@
                   alt=""
                   srcset=""
                 />
-                {{ 99 }}
+                {{ item.collection }}
               </li>
             </div>
           </div>
@@ -92,44 +67,25 @@
       </div>
       <div class="main_footer">
         <div class="main_footer_warp">
-          <el-button @click="homePage">首页</el-button>
-          <el-button @click="previousPage">上一页</el-button>
-          <el-pagination
-            background
-            layout="pager"
-            @current-change="handleCurrentChange"
-            :current-page="page"
-            :page-size="limit"
-            :total="total"
-          >
+          <el-button>首页</el-button>
+          <el-button>上一页</el-button>
+          <el-pagination background layout="pager" :page-size="10" :total="50">
           </el-pagination>
-          <el-button @click="nextPage">下一页</el-button>
-          <el-button @click="lastPage">尾页</el-button>
+          <el-button>下一页</el-button>
+          <el-button>尾页</el-button>
         </div>
       </div>
     </div>
     <Footer :colorConfirm="colorConfirm" />
-    <!-- 详情 -->
-    <Exhibition :detailsData="detailsData" v-if="isDetails" />
-    <!-- 新增文件夹 -->
-    <AddFolder :dialogCollection="dialogCollection" />
-    <!-- 收藏到文件夹 -->
-    <OptCollection :dialogOptCollection="dialogOptCollection" />
   </div>
 </template>
 
 <script>
 import Footer from "../../common/Footer";
-import Exhibition from "../../common/Exhibition";
-import AddFolder from "./mould/AddFolder";
-import OptCollection from "./mould/OptCollection";
 import gql from "graphql-tag";
 export default {
   components: {
     Footer,
-    Exhibition,
-    AddFolder,
-    OptCollection,
   },
   metaInfo() {
     return {
@@ -143,17 +99,13 @@ export default {
   },
   data() {
     return {
-      dialogCollection: false,
-      dialogOptCollection: false,
-      isDetails: false,
-      detailsData: {},
       colorConfirm: "#F5F5F5",
       radio1: "全部",
       radio2: "PSD",
       radio3: "全部",
       radioList1: {
         label: "行业",
-        arr: [{ id: 0, name: "全部" }],
+        arr: ["全部", "电商", "社交", "影音", "医疗"],
       },
       radioList2: {
         label: "格式",
@@ -163,20 +115,67 @@ export default {
         label: "排序",
         arr: ["全部", "推荐", "最新", "最热", "下载量"],
       },
-      //分页
-      limit: 20,
-      offset: 0,
-      page: 1,
-      total: null,
-      totalPage: null,
-
-      dataList: [],
+      dataList: [
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+        {
+          images: require("@/assets/img/index.jpg"),
+          label: "APP",
+          title: "智能家居设计",
+          download: "223",
+          collection: "223",
+        },
+      ],
       // 排序搜索条件
       sortWhere: "",
       sortOrder: "",
-
-      // 行业
-      industryWhere: "",
     };
   },
   watch: {
@@ -185,47 +184,19 @@ export default {
         this.id = this.$route.query.id;
         this.sortWhere = "";
         this.sortOrder = "";
-        this.getDataList(
-          this.limit,
-          this.offset,
-          this.id,
-          this.sortWhere,
-          this.industryWhere,
-          this.sortOrder
-        );
+        this.getDataList(this.id, this.sortWhere, this.sortOrder);
       },
       deep: true,
     },
   },
   methods: {
-    handleCollection() {},
-    optCollection() {
-      this.dialogOptCollection = true;
-    },
-    addCollection() {
-      this.dialogCollection = true;
-    },
     industryChange(val) {
       this.radio1 = val;
-      if (this.radio1 == "全部") {
-        this.industryWhere = "";
-      } else {
-        let id = this.radioList1.arr.filter((item) => {
-          return item.name == this.radio1;
-        })[0].id;
-        this.industryWhere = "industry_id: {_eq: " + id + "}";
-      }
-      this.getDataList(
-        this.limit,
-        this.offset,
-        this.id,
-        this.sortWhere,
-        this.industryWhere,
-        this.sortOrder
-      );
+      console.log(val);
     },
     formatChange(val) {
       this.radio2 = val;
+      console.log(val);
     },
     sortChange(val) {
       this.radio3 = val;
@@ -241,137 +212,17 @@ export default {
         this.sortOrder = "downloads_count: desc";
       }
       console.log(val);
-      this.getDataList(
-        this.limit,
-        this.offset,
-        this.id,
-        this.sortWhere,
-        this.industryWhere,
-        this.sortOrder
-      );
+      this.getDataList(this.id, this.sortWhere, this.sortOrder);
     },
-    // 详情
-    handleDetails(item) {
-      this.detailsData = item;
-      this.isDetails = true;
-    },
-    // 点击页码分页
-    handleCurrentChange(val) {
-      this.page = val;
-      this.offset = this.limit * (val - 1);
-      this.handleGetData(
-        this.limit,
-        this.offset,
-        this.id,
-        this.sortWhere,
-        this.industryWhere,
-        this.sortOrder
-      );
-    },
-    // 首页
-    homePage() {
-      this.page = 1;
-      this.offset = 0;
-      this.handleGetData(
-        this.limit,
-        this.offset,
-        this.id,
-        this.sortWhere,
-        this.industryWhere,
-        this.sortOrder
-      );
-    },
-    // 尾页
-    lastPage() {
-      this.page = this.totalPage;
-      this.offset = this.limit * (this.page - 1);
-      this.handleGetData(
-        this.limit,
-        this.offset,
-        this.id,
-        this.sortWhere,
-        this.industryWhere,
-        this.sortOrder
-      );
-    },
-    // 上一页
-    previousPage() {
-      if (this.page > 1) {
-        this.page--;
-        this.offset = this.limit * (this.page - 1);
-        this.handleGetData(
-          this.limit,
-          this.offset,
-          this.id,
-          this.sortWhere,
-          this.industryWhere,
-          this.sortOrder
-        );
-      }
-    },
-    // 下一页
-    nextPage() {
-      if (this.page < this.totalPage) {
-        this.page++;
-        this.offset = this.limit * (this.page - 1);
-        this.handleGetData(
-          this.limit,
-          this.offset,
-          this.id,
-          this.sortWhere,
-          this.industryWhere,
-          this.sortOrder
-        );
-      }
-    },
-    // 页面数据
-    getDataList(limit, offset, id, sortWhere, industryWhere, sortOrder) {
+    getDataList(id, sortWhere, sortOrder) {
       this.$apollo
         .query({
           query: gql`
             {
-              items_aggregate {
-                aggregate {
-                  count
-                }
-              }
-              items( limit: ${limit}, offset: ${offset}, where: { category_id: { _eq: ${id} },${sortWhere},${industryWhere} }, order_by: {${sortOrder}}) {
-                cover
+              items(where: { category_id: { _eq: ${id} },${sortWhere} }, order_by: {${sortOrder}}) {
                 category_id
-                browses_count
-                created_at
-                description
-                detail
-                downloads_count
-                draft
-                featured
-                filesize
                 id
-                industry_id
-                likes_count
                 title
-                updated_at
-                url
-              }
-            }
-          `,
-          fetchPolicy: "no-cache",
-        })
-        .then((data) => {
-          this.total = data.data.items_aggregate.aggregate.count;
-          this.totalPage = Math.ceil(this.total / this.limit);
-          this.dataList = data.data.items;
-        });
-    },
-    // 行业接口
-    getIndustries() {
-      this.$apollo
-        .query({
-          query: gql`
-            {
-              industries {
-                id
-                name
               }
             }
           `,
@@ -379,37 +230,24 @@ export default {
         })
         .then((data) => {
           console.log(data);
-          for (let i in data.data.industries) {
-            this.radioList1.arr.push({
-              id: data.data.industries[i].id,
-              name: data.data.industries[i].name,
-            });
-          }
         });
     },
   },
   created() {
     this.id = this.$route.query.id;
-    this.getIndustries();
-    this.getDataList(
-      this.limit,
-      this.offset,
-      this.id,
-      this.sortWhere,
-      this.industryWhere,
-      this.sortOrder
-    );
+    this.getDataList(this.id, this.sortWhere, this.sortOrder);
   },
 };
 </script>
 <style lang="scss" scoped>
-.formwork {
+.search {
   width: 100%;
   img {
     width: 100%;
   }
   .main {
     margin: 0 auto;
+    margin-top: 50px;
     max-width: 1740px;
     min-width: 1200px;
     .main_search {
@@ -468,68 +306,12 @@ export default {
         margin-bottom: 50px;
         box-sizing: border-box;
         float: left;
-        position: relative;
         img {
           width: 100%;
           height: 303px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
-        }
-        .mould {
-          display: none;
-          width: 100%;
-          height: 97px;
-          padding: 0 10px;
-          box-sizing: border-box;
-          position: absolute;
-          left: 0;
-          top: 0;
-          .mould_warp {
-            width: 100%;
-            height: 97px;
-            background: linear-gradient(
-              180deg,
-              rgba(0, 0, 0, 0.7) 0%,
-              rgba(128, 128, 128, 0) 100%
-            );
-            opacity: 1;
-            border-radius: 14px;
-            padding: 20px 0 0 20px;
-            box-sizing: border-box;
-            display: flex;
-            div {
-              width: 40px;
-              height: 40px;
-              background: white;
-              border-radius: 50%;
-              text-align: center;
-              line-height: 40px;
-              margin-right: 20px;
-            }
-            div:last-child {
-              margin-right: 0;
-            }
-            div:first-child {
-              width: 80px;
-              height: 40px;
-              padding: 0 15px;
-              box-sizing: border-box;
-              border-radius: 40px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              img:nth-child(1) {
-                width: 18px;
-                height: 14px;
-              }
-              img:nth-child(2) {
-                width: 12px;
-                height: 8px;
-                padding: 5px;
-              }
-            }
-          }
         }
         .card_footer {
           height: 50px;
@@ -574,9 +356,6 @@ export default {
         img {
           transition: all 1s;
           box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
-        }
-        .mould {
-          display: block;
         }
       }
     }

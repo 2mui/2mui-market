@@ -23,6 +23,11 @@ const router = [
         path: '/collection_details',
         component: () => import('../../components/page/Home/collectionDetails.vue'),
         meta: { title: '个人主页' }
+    },
+    {
+        path: '/search',
+        component: () => import('../../components/page/Home/search.vue'),
+        meta: { title: '搜索结果页' }
     }
 ]
 export default router;

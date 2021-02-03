@@ -1,0 +1,174 @@
+<template>
+  <div class="optCollection">
+    <el-dialog
+      class="indexMould"
+      :visible.sync="dialogOptCollection"
+      :show-close="false"
+      width="540px"
+    >
+      <span slot="title">收藏到文件夹</span>
+      <div class="addwarp">
+        <ul class="add">
+          <li>默认收藏夹</li>
+          <li>APP</li>
+          <li>APP</li>
+          <li>APP</li>
+          <li>APP</li>
+        </ul>
+        <div class="addFolder" @click="addCollection">
+          <i class="el-icon-plus"></i><span>新建文件夹</span>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <div>确定</div>
+        <div @click="handleOptCollection">取消</div>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      title: "",
+    };
+  },
+  props: {
+    dialogOptCollection: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  methods: {
+    addCollection() {
+      this.$parent.dialogCollection = true;
+    },
+    handleOptCollection() {
+      this.$parent.dialogOptCollection = false;
+    },
+  },
+  created() {},
+};
+</script>
+<style lang="scss" scoped>
+.optCollection {
+  /deep/ {
+    .indexMould {
+      border-radius: 14px;
+      .el-dialog__header {
+        text-align: center;
+        padding: 20px 20px 20px;
+        position: relative;
+        span {
+          font-size: 24px;
+          font-weight: 400;
+          color: #333333;
+          position: relative;
+          z-index: 1;
+        }
+        span::after {
+          content: "";
+          width: 100%;
+          height: 25px;
+          background: #fff94b;
+          position: absolute;
+          left: 50%;
+          bottom: -9px;
+          z-index: -1;
+          transform: translateX(-50%);
+        }
+      }
+      .el-dialog__header::after {
+        content: "";
+        width: 80%;
+        height: 1px;
+        background: #d3d3d3;
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+      }
+      .el-dialog__body {
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        span {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          img {
+            margin-right: 20px;
+          }
+        }
+        .edit {
+          width: 400px;
+          label {
+            width: 50px;
+            font-size: 18px;
+            color: #999999;
+          }
+          .el-input.is-active .el-input__inner,
+          .el-input__inner:focus {
+            border-color: #dbdbdb;
+          }
+        }
+        .add {
+          width: 440px;
+          border-radius: 5px;
+          border: 1px solid #dbdbdb;
+          li {
+            cursor: pointer;
+            line-height: 40px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #dbdbdb;
+          }
+          li:last-child {
+            border-bottom: none;
+          }
+        }
+        .addFolder {
+          cursor: pointer;
+          width: 440px;
+          height: 40px;
+          margin-top: 20px;
+          border-radius: 40px;
+          background: #fff94b;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 18px;
+          color: #000000;
+          i {
+            font-weight: bold;
+          }
+        }
+      }
+      .el-dialog__footer {
+        text-align: center;
+        .dialog-footer {
+          div {
+            cursor: pointer;
+            width: 144px;
+            height: 50px;
+            line-height: 50px;
+            display: inline-block;
+            background: #000000;
+            border: 1px solid #000000;
+            border-radius: 114px;
+            margin-right: 20px;
+            color: white;
+            font-size: 18px;
+          }
+          div:last-child {
+            background: white;
+            color: #000000;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
+

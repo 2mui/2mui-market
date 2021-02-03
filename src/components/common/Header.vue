@@ -11,19 +11,23 @@
         </div>
         <div class="header_right">
             <div class="search">
-                <el-dropdown>
+                <el-dropdown @command="handleCommand">
                     <span class="el-dropdown-link">
-                        全部
+                        {{ dropdown }}
                         <img :src="require('@/assets/img/dropdown_bottom.png')" alt="">
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>网页设计</el-dropdown-item>
-                        <el-dropdown-item>APP设计</el-dropdown-item>
-                        <el-dropdown-item>插画</el-dropdown-item>
+                        <el-dropdown-item command="1">网页设计</el-dropdown-item>
+                        <el-dropdown-item command="2">APP设计</el-dropdown-item>
+                        <el-dropdown-item command="3">Banner</el-dropdown-item>
+                        <el-dropdown-item command="4">插画</el-dropdown-item>
+                        <el-dropdown-item command="5">图标设计</el-dropdown-item>
+                        <el-dropdown-item command="6">动画</el-dropdown-item>
+                        <el-dropdown-item command="7">3D</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
                 <input type="text" placeholder="输入想要搜索的内容">
-                <div class="search_buttom">
+                <div class="search_buttom" @click="handleSearch(1)">
                     <img :src="require('@/assets/img/search.png')" alt="">
                 </div>
             </div>
@@ -48,6 +52,7 @@ export default {
     data() {
         return {
             className: 0,
+            dropdown: '全部',
             nav:[
                 {
                     id: 0,
@@ -153,7 +158,19 @@ export default {
                     query: {name:name}
                 })
             }
+        },
+        handleCommand(command) {
+            this.dropdown = this.nav.filter((item)=>{ return item.id == command})[0].name;
+        },
+        handleSearch(id) {
+            this.$router.push({
+                path: '/search',
+                query: {id:id}
+            })
         }
+    },
+    created() {
+        
     }
 };
 </script>
@@ -234,6 +251,9 @@ export default {
                     box-sizing: border-box;
                     display: flex;
                     justify-content: center;
+                    // overflow:hidden; //超出的文本隐藏
+                    // text-overflow:ellipsis; //溢出用省略号显示
+                    // white-space:nowrap; //溢出不换行
                     .el-dropdown-link{
                         font-size: 18px;
                         font-weight: 400;

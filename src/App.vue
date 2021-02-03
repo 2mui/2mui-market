@@ -15,7 +15,7 @@ export default {
       if (to.fullPath == "/index") {
         this.navActive = 0;
       } else {
-        if (to.query.id == undefined) {
+        if (to.query.id == undefined || to.path == "/search") {
           this.navActive = -1;
         } else {
           this.navActive = Number(to.query.id);

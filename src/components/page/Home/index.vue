@@ -24,6 +24,26 @@
           class="card"
         >
           <img class="img" :src="item.cover" alt="" />
+          <div class="mould">
+            <div class="mould_warp">
+              <div class="edit">
+                <img
+                  @click.stop="handleCollection"
+                  :src="require('@/assets/img/collection.png')"
+                  alt=""
+                  srcset=""
+                />
+                <img
+                  @click.stop="optCollection"
+                  :src="require('@/assets/img/dropdown_bottom.png')"
+                  alt=""
+                />
+              </div>
+              <div class="folder" @click.stop="addCollection">
+                <i class="el-icon-folder-add"></i>
+              </div>
+            </div>
+          </div>
           <div class="card_footer">
             <li class="card_footer_left">
               <span>{{ item.title }}</span
@@ -83,13 +103,20 @@
       </div>
     </div>
     <Footer :colorConfirm="colorConfirm" />
+    <!-- 详情 -->
     <Exhibition :detailsData="detailsData" v-if="isDetails" />
+    <!-- 新增文件夹 -->
+    <AddFolder :dialogCollection="dialogCollection" />
+    <!-- 收藏到文件夹 -->
+    <OptCollection :dialogOptCollection="dialogOptCollection" />
   </div>
 </template>
 
 <script>
 import Footer from "../../common/Footer";
 import Exhibition from "../../common/Exhibition";
+import AddFolder from "./mould/AddFolder";
+import OptCollection from "./mould/OptCollection";
 import gql from "graphql-tag";
 
 export default {
@@ -97,9 +124,13 @@ export default {
   components: {
     Footer,
     Exhibition,
+    AddFolder,
+    OptCollection,
   },
   data() {
     return {
+      dialogCollection: false,
+      dialogOptCollection: false,
       isDetails: false,
       detailsData: {},
       colorConfirm: "#ffffff",
@@ -161,6 +192,13 @@ export default {
   },
   computed: {},
   methods: {
+    handleCollection() {},
+    optCollection() {
+      this.dialogOptCollection = true;
+    },
+    addCollection() {
+      this.dialogCollection = true;
+    },
     // tab切换
     handleNav(id) {
       this.className = id;
@@ -206,7 +244,7 @@ export default {
     },
     // 下一页
     nextPage() {
-      if(this.page < this.totalPage) {
+      if (this.page < this.totalPage) {
         this.page++;
         this.offset = this.limit * (this.page - 1);
         this.handleGetData(this.limit, this.offset, this.order);
@@ -228,18 +266,22 @@ export default {
                 offset: ${offset}, 
                 order_by: ${order}
               ) {
-                id
-                title
-                url
-                updated_at
-                industry
-                featured
-                detail
-                description
-                created_at
                 cover
-                category
-                author
+                category_id
+                browses_count
+                created_at
+                description
+                detail
+                downloads_count
+                draft
+                featured
+                filesize
+                id
+                industry_id
+                likes_count
+                title
+                updated_at
+                url
               }
             }
           `,
@@ -317,12 +359,68 @@ export default {
         margin-bottom: 50px;
         box-sizing: border-box;
         float: left;
+        position: relative;
         > img {
           width: 100%;
           height: 303px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
+        }
+        .mould {
+          display: none;
+          width: 100%;
+          height: 97px;
+          padding: 0 10px;
+          box-sizing: border-box;
+          position: absolute;
+          left: 0;
+          top: 0;
+          .mould_warp {
+            width: 100%;
+            height: 97px;
+            background: linear-gradient(
+              180deg,
+              rgba(0, 0, 0, 0.7) 0%,
+              rgba(128, 128, 128, 0) 100%
+            );
+            opacity: 1;
+            border-radius: 14px;
+            padding: 20px 0 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            div {
+              width: 40px;
+              height: 40px;
+              background: white;
+              border-radius: 50%;
+              text-align: center;
+              line-height: 40px;
+              margin-right: 20px;
+            }
+            div:last-child {
+              margin-right: 0;
+            }
+            div:first-child {
+              width: 80px;
+              height: 40px;
+              padding: 0 15px;
+              box-sizing: border-box;
+              border-radius: 40px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              img:nth-child(1) {
+                width: 18px;
+                height: 14px;
+              }
+              img:nth-child(2) {
+                width: 12px;
+                height: 8px;
+                padding: 5px;
+              }
+            }
+          }
         }
         .card_footer {
           height: 50px;
@@ -367,6 +465,9 @@ export default {
         > img {
           transition: all 1s;
           box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+        }
+        .mould {
+          display: block;
         }
       }
     }
