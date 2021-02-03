@@ -52,8 +52,8 @@
       </div>
       <div class="main_footer">
         <div class="main_footer_warp">
-          <el-button>首页</el-button>
-          <el-button>上一页</el-button>
+          <el-button @click="homePage">首页</el-button>
+          <el-button @click="previousPage">上一页</el-button>
           <el-pagination
             background
             layout="pager"
@@ -63,8 +63,8 @@
             :total="total"
           >
           </el-pagination>
-          <el-button>下一页</el-button>
-          <el-button>尾页</el-button>
+          <el-button @click="nextPage">下一页</el-button>
+          <el-button @click="lastPage">尾页</el-button>
         </div>
       </div>
     </div>
@@ -104,11 +104,14 @@ export default {
       detailsData: {},
       colorConfirm: "#ffffff",
       className: 0,
-      limit: 4,
-      page: 1,
+      //分页
+      limit: 20,
       offset: 0,
+      page: 1,
       total: null,
-      order: '{ likes_count: desc }',
+      totalPage: null,
+
+      order: "{ likes_count: desc }",
       navList: [
         {
           id: 0,
@@ -158,26 +161,58 @@ export default {
   },
   computed: {},
   methods: {
+    // tab切换
     handleNav(id) {
       this.className = id;
-      if(id) {
-        this.order = '{ created_at: desc }';
+      if (id) {
+        this.order = "{ created_at: desc }";
       } else {
-        this.order = '{ likes_count: desc }';
+        this.order = "{ likes_count: desc }";
       }
       this.page = 1;
       this.offset = 0;
-      this.handleGetData(this.limit, this.offset ,this.order);
+      this.handleGetData(this.limit, this.offset, this.order);
     },
+    // 详情
     handleDetails(item) {
       this.detailsData = item;
       this.isDetails = true;
     },
+    // 点击页码分页
     handleCurrentChange(val) {
       this.page = val;
       this.offset = this.limit * (val - 1);
-      this.handleGetData(this.limit, this.offset ,this.order);
+      this.handleGetData(this.limit, this.offset, this.order);
     },
+    // 首页
+    homePage() {
+      this.page = 1;
+      this.offset = 0;
+      this.handleGetData(this.limit, this.offset, this.order);
+    },
+    // 尾页
+    lastPage() {
+      this.page = this.totalPage;
+      this.offset = this.limit * (this.page - 1);
+      this.handleGetData(this.limit, this.offset, this.order);
+    },
+    // 上一页
+    previousPage() {
+      if (this.page > 1) {
+        this.page--;
+        this.offset = this.limit * (this.page - 1);
+        this.handleGetData(this.limit, this.offset, this.order);
+      }
+    },
+    // 下一页
+    nextPage() {
+      if(this.page < this.totalPage) {
+        this.page++;
+        this.offset = this.limit * (this.page - 1);
+        this.handleGetData(this.limit, this.offset, this.order);
+      }
+    },
+    // 页面数据
     handleGetData(limit, offset, order) {
       this.$apollo
         .query({
@@ -212,12 +247,13 @@ export default {
         })
         .then((data) => {
           this.total = data.data.items_aggregate.aggregate.count;
+          this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.items;
         });
     },
   },
   created() {
-    this.handleGetData(this.limit, this.offset ,this.order);
+    this.handleGetData(this.limit, this.offset, this.order);
   },
 };
 </script>

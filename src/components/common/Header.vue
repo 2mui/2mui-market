@@ -7,7 +7,7 @@
             </div>
         </div>
         <div class="header_nav">
-            <li @click="handleChange(item.id,item.path,item.name)" :class="item.id == className ? 'active' : ''" v-for="(item,index) in nav" :key="index">{{ item.name }}</li>
+            <li @click="handleChange(item.id,item.path,item.name)" :class="item.id == navActive ? 'active' : ''" v-for="(item,index) in nav" :key="index">{{ item.name }}</li>
         </div>
         <div class="header_right">
             <div class="search">
@@ -119,6 +119,11 @@ export default {
             ]
         };
     },
+    computed: {
+        navActive() {
+            return window.$store.state.navActive;
+        },
+    },
     methods: {
         handleChange(id,path,name){
             this.className = id;
@@ -132,6 +137,7 @@ export default {
                     query: {id:id}
                 })
             }
+            window.$store.commit("setNavActive", id);
         },
         handleNav(path,name) {
             if (name == '个人主页') {

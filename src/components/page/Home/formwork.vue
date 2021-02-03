@@ -7,7 +7,7 @@
       <div class="main_search">
         <div class="search_list">
           <label class="label">{{ radioList1.label }}</label>
-          <el-radio-group v-model="radio1">
+          <el-radio-group @change="industryChange" v-model="radio1">
             <el-radio-button
               v-for="(item, index) in radioList1.arr"
               :key="index"
@@ -17,7 +17,7 @@
         </div>
         <div class="search_list">
           <label class="label">{{ radioList2.label }}</label>
-          <el-radio-group v-model="radio2">
+          <el-radio-group @change="formatChange" v-model="radio2">
             <el-radio-button
               v-for="(item, index) in radioList2.arr"
               :key="index"
@@ -27,7 +27,7 @@
         </div>
         <div class="search_list">
           <label class="label">{{ radioList3.label }}</label>
-          <el-radio-group v-model="radio3">
+          <el-radio-group @change="sortChange" v-model="radio3">
             <el-radio-button
               v-for="(item, index) in radioList3.arr"
               :key="index"
@@ -173,24 +173,53 @@ export default {
           collection: "223",
         },
       ],
+      // 排序搜索条件
+      sortWhere: "",
+      sortOrder: "",
     };
   },
   watch: {
     $route: {
       handler() {
         this.id = this.$route.query.id;
-        this.getDataList(this.id);
+        this.sortWhere = "";
+        this.sortOrder = "";
+        this.getDataList(this.id, this.sortWhere, this.sortOrder);
       },
       deep: true,
     },
   },
   methods: {
-    getDataList(id) {
+    industryChange(val) {
+      this.radio1 = val;
+      console.log(val);
+    },
+    formatChange(val) {
+      this.radio2 = val;
+      console.log(val);
+    },
+    sortChange(val) {
+      this.radio3 = val;
+      this.sortWhere = "";
+      this.sortOrder = "";
+      if (this.radio3 == "推荐") {
+        this.sortWhere = "featured: {_eq: true}";
+      } else if (this.radio3 == "最新") {
+        this.sortOrder = "created_at: desc";
+      } else if (this.radio3 == "最热") {
+        this.sortOrder = "likes_count: desc";
+      } else if (this.radio3 == "下载量") {
+        this.sortOrder = "downloads_count: desc";
+      }
+      console.log(val);
+      this.getDataList(this.id, this.sortWhere, this.sortOrder);
+    },
+    getDataList(id, sortWhere, sortOrder) {
       this.$apollo
         .query({
           query: gql`
             {
-              items(where: { category_id: { _eq: ${id} },industry_id: { _eq:1 } }) {
+              items(where: { category_id: { _eq: ${id} },${sortWhere} }, order_by: {${sortOrder}}) {
                 category_id
                 id
                 title
@@ -206,7 +235,7 @@ export default {
   },
   created() {
     this.id = this.$route.query.id;
-    this.getDataList(this.id);
+    this.getDataList(this.id, this.sortWhere, this.sortOrder);
   },
 };
 </script>

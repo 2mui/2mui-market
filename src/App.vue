@@ -6,11 +6,22 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      navActive: 0,
+    };
   },
   watch: {
     $route(to, from) {
-      console.log(to, from, "app");
+      if (to.fullPath == "/index") {
+        this.navActive = 0;
+      } else {
+        if (to.query.id == undefined) {
+          this.navActive = -1;
+        } else {
+          this.navActive = Number(to.query.id);
+        }
+      }
+      window.$store.commit("setNavActive", this.navActive);
     },
   },
 };
