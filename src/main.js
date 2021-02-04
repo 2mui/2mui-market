@@ -6,6 +6,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 // import './assets/css/theme-green/index.css'; // 浅绿色主题
 import './assets/css/icon.css';
+import './assets/css/icon/iconfont.css';
 import './assets/css/main.scss';
 import 'babel-polyfill';
 import Meta from 'vue-meta'

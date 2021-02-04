@@ -43,7 +43,9 @@
           @click="handleDetails(item)"
           class="card"
         >
-          <img class="img" :src="item.cover" alt="" />
+          <div class="img">
+            <img :src="item.cover" alt="" />
+          </div>
           <div class="mould">
             <div class="mould_warp">
               <div class="edit">
@@ -76,7 +78,7 @@
                   alt=""
                   srcset=""
                 />
-                {{ 99 }}
+                {{ item.downloads_count }}
               </li>
               <li>
                 <img
@@ -84,7 +86,7 @@
                   alt=""
                   srcset=""
                 />
-                {{ 99 }}
+                {{ item.likes_count }}
               </li>
             </div>
           </div>
@@ -147,6 +149,7 @@ export default {
       dialogOptCollection: false,
       isDetails: false,
       detailsData: {},
+
       colorConfirm: "#F5F5F5",
       radio1: "全部",
       radio2: "PSD",
@@ -335,7 +338,7 @@ export default {
                   count
                 }
               }
-              items( limit: ${limit}, offset: ${offset}, where: { category_id: { _eq: ${id} },${sortWhere},${industryWhere} }, order_by: {${sortOrder}}) {
+              items( limit: ${limit}, offset: ${offset}, where: { draft: {_eq: false}, category_id: { _eq: ${id} },${sortWhere},${industryWhere} }, order_by: {${sortOrder}}) {
                 cover
                 category_id
                 browses_count
@@ -469,12 +472,18 @@ export default {
         box-sizing: border-box;
         float: left;
         position: relative;
-        img {
+        >.img {
           width: 100%;
           height: 303px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
+          img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+          }
         }
         .mould {
           display: none;
@@ -571,7 +580,7 @@ export default {
         }
       }
       .card:hover {
-        img {
+        > img {
           transition: all 1s;
           box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
         }

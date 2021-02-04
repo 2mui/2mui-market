@@ -23,16 +23,16 @@ export default new Router({
                 ...home,
             ]
         },
-        {
-            path: '/login',
-            component: () => import('../components/page/Login/login.vue'),
-            meta: { title: '登录' }
-        },
-        {
-            path: '/register',
-            component: () => import('../components/page/Login/register.vue'),
-            meta: { title: '注册' }
-        }
+        // {
+        //     path: '/login',
+        //     component: () => import('../components/page/Login/login.vue'),
+        //     meta: { title: '登录' }
+        // },
+        // {
+        //     path: '/register',
+        //     component: () => import('../components/page/Login/register.vue'),
+        //     meta: { title: '注册' }
+        // }
 
     ],
     scrollBehavior (to, from, savedPosition) {

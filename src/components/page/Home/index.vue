@@ -23,7 +23,9 @@
           @click="handleDetails(item)"
           class="card"
         >
-          <img class="img" :src="item.cover" alt="" />
+          <div class="img">
+            <img :src="item.cover" alt="" />
+          </div>
           <div class="mould">
             <div class="mould_warp">
               <div class="edit">
@@ -105,6 +107,8 @@
     <Footer :colorConfirm="colorConfirm" />
     <!-- 详情 -->
     <Exhibition :detailsData="detailsData" v-if="isDetails" />
+    <!-- <Login /> -->
+    <!-- <Register /> -->
     <!-- 新增文件夹 -->
     <AddFolder :dialogCollection="dialogCollection" />
     <!-- 收藏到文件夹 -->
@@ -115,6 +119,8 @@
 <script>
 import Footer from "../../common/Footer";
 import Exhibition from "../../common/Exhibition";
+import Login from "../../common/Login";
+import Register from "../../common/Register";
 import AddFolder from "./mould/AddFolder";
 import OptCollection from "./mould/OptCollection";
 import gql from "graphql-tag";
@@ -124,6 +130,8 @@ export default {
   components: {
     Footer,
     Exhibition,
+    Login,
+    Register,
     AddFolder,
     OptCollection,
   },
@@ -264,7 +272,8 @@ export default {
               items(
                 limit: ${limit}, 
                 offset: ${offset}, 
-                order_by: ${order}
+                order_by: ${order},
+                where: {draft: {_eq: false}}
               ) {
                 cover
                 category_id
@@ -360,12 +369,18 @@ export default {
         box-sizing: border-box;
         float: left;
         position: relative;
-        > img {
+        >.img {
           width: 100%;
           height: 303px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
+          img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+          }
         }
         .mould {
           display: none;

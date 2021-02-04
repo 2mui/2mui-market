@@ -1,0 +1,128 @@
+{
+  "id": "2366160",
+  "name": "二木su'cai",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "19844619",
+      "name": "画板 1 副本 7",
+      "font_class": "huaban1fuben71",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "19844620",
+      "name": "画板 – 4",
+      "font_class": "huaban41",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "19844621",
+      "name": "画板 1 副本",
+      "font_class": "huaban1fuben1",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "19844622",
+      "name": "画板 1 副本 2",
+      "font_class": "huaban1fuben21",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "19844623",
+      "name": "画板 1 副本 6",
+      "font_class": "huaban1fuben61",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "19844624",
+      "name": "画板 1",
+      "font_class": "huaban13",
+      "unicode": "e64f",
+      "unicode_decimal": 58959
+    },
+    {
+      "icon_id": "19844937",
+      "name": "111",
+      "font_class": "111",
+      "unicode": "e650",
+      "unicode_decimal": 58960
+    },
+    {
+      "icon_id": "19844609",
+      "name": "画板 – 3",
+      "font_class": "huaban31",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "19844610",
+      "name": "画板 – 2",
+      "font_class": "huaban21",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "19844611",
+      "name": "画板 – 17",
+      "font_class": "huaban171",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "19844612",
+      "name": "画板 – 1",
+      "font_class": "huaban12",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "19844613",
+      "name": "画板 1 副本 4",
+      "font_class": "huaban1fuben41",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "19844614",
+      "name": "画板 1 副本 5",
+      "font_class": "huaban1fuben51",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "19844615",
+      "name": "画板 – 5",
+      "font_class": "huaban51",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "19844616",
+      "name": "画板 – 16",
+      "font_class": "huaban161",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "19844617",
+      "name": "画板 1 副本 3",
+      "font_class": "huaban1fuben31",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "19844618",
+      "name": "画板 1 副本 8",
+      "font_class": "huaban1fuben81",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    }
+  ]
+}
