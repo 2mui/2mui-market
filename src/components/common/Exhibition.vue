@@ -158,6 +158,7 @@ export default {
           collection: "223",
         },
       ],
+      userInfo: {},
     };
   },
   methods: {
@@ -200,11 +201,17 @@ export default {
           fetchPolicy: "no-cache",
         })
         .then((data) => {
-          this.dataList = data.data.items.slice(0,6);
+          this.dataList = data.data.items.slice(0, 6);
         });
     },
   },
   created() {
+    this.userInfo = window.$store.state.userInfo;
+    if (Object.keys(this.userInfo.length)) {
+      console.log(111);
+    } else {
+      console.log(222);
+    }
     if (this.isShow) {
       this.getDataList(this.detailsData.category_id);
     }

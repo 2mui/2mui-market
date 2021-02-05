@@ -55,7 +55,7 @@
 <script>
 import gql from "graphql-tag";
 var DelGql = gql`
-  mutation deleteItem($item_id: String!, $user_id: ID!) {
+  mutation deleteItem($item_id: String!, $user_id: String!) {
     delete_browse_histories(where: { item_id: $item_id, user_id: $user_id }) {
       returning {
         author
