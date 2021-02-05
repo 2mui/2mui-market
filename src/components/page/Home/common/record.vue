@@ -55,15 +55,14 @@
 <script>
 import gql from "graphql-tag";
 var DelGql = gql`
-  mutation deleteItem($item_id: String!, $user_id: ID!) {
-    delete_browse_histories(where: { item_id: $item_id, user_id: $user_id }) {
-      returning {
-        author
-        category_id
-        cover
-      }
+  mutation deleteItem($item_id: bigint!, $user_id: bigint!) {
+  delete_browse_histories(where: {item_id: {_eq: $item_id}, user_id: {_eq: $user_id}}) {
+    affected_rows
+    returning {
+      id
     }
   }
+}
 `;
 export default {
   data() {
@@ -84,8 +83,8 @@ export default {
     },
     submitDel() {
         console.log(
-            this.item_id,
-            this.userInfo.id
+          this.item_id,
+          this.userInfo.id
         )
       this.$apollo
         .mutate({
@@ -101,7 +100,7 @@ export default {
           // 输出获取的数据集
           console.log(response);
           this.$message({
-            message: "删除册成功！",
+            message: "删除成功！",
             type: "success",
           });
         })
