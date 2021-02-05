@@ -108,7 +108,7 @@
     <!-- 详情 -->
     <Exhibition :detailsData="detailsData" v-if="isDetails" />
     <!-- <Login /> -->
-    <Register />
+    <!-- <Register /> -->
     <!-- 新增文件夹 -->
     <AddFolder :dialogCollection="dialogCollection" />
     <!-- 收藏到文件夹 -->
