@@ -58,7 +58,7 @@
                   alt=""
                   srcset=""
                 />
-                {{ 99 }}
+                {{ item.downloads_count }}
               </li>
               <li>
                 <img
@@ -66,7 +66,7 @@
                   alt=""
                   srcset=""
                 />
-                {{ 78 }}
+                {{ item.likes_count }}
               </li>
             </div>
           </div>
@@ -108,7 +108,7 @@
     <!-- 详情 -->
     <Exhibition :detailsData="detailsData" v-if="isDetails" />
     <!-- <Login /> -->
-    <!-- <Register /> -->
+    <Register />
     <!-- 新增文件夹 -->
     <AddFolder :dialogCollection="dialogCollection" />
     <!-- 收藏到文件夹 -->
@@ -369,13 +369,13 @@ export default {
         box-sizing: border-box;
         float: left;
         position: relative;
-        >.img {
+        > .img {
           width: 100%;
           height: 303px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
-          img{
+          img {
             width: 100%;
             height: 100%;
             object-fit: cover;
