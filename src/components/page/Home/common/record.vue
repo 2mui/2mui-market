@@ -55,12 +55,13 @@
 <script>
 import gql from "graphql-tag";
 var DelGql = gql`
-  mutation deleteItem($item_id: String!, $user_id: String!) {
-    delete_browse_histories(where: { item_id: $item_id, user_id: $user_id }) {
+  mutation deleteItem($item_id: bigint!, $user_id: bigint!) {
+    delete_browse_histories(
+      where: { item_id: { _eq: $item_id }, user_id: { _eq: $user_id } }
+    ) {
+      affected_rows
       returning {
-        author
-        category_id
-        cover
+        id
       }
     }
   }
@@ -83,10 +84,6 @@ export default {
       this.dialogVisible = true;
     },
     submitDel() {
-        console.log(
-            this.item_id,
-            this.userInfo.id
-        )
       this.$apollo
         .mutate({
           // 更新的语句
@@ -94,16 +91,17 @@ export default {
           // 实参列表
           variables: {
             item_id: this.item_id,
-            user_id: this.userInfo.id
+            user_id: this.userInfo.id,
           },
         })
         .then((response) => {
           // 输出获取的数据集
-          console.log(response);
           this.$message({
-            message: "删除册成功！",
+            message: "删除成功！",
             type: "success",
           });
+          this.dialogVisible = false;
+          this.handleGetData(this.userInfo.id);
         })
         .catch((err) => {
           // 捕获错误
@@ -112,24 +110,6 @@ export default {
             type: "error",
           });
         });
-      //   this.$apollo
-      //     .mutate({
-      //       mutation: gql`
-      //         delete_browse_histories(
-      //             where: {item_id: {_eq: "13"},user_id: {_eq: "${this.userInfo.id}"}}
-      //         ) {
-      //             item{
-      //                 author
-      //                 category_id
-      //                 cover
-      //             }
-      //         }
-      //       `,
-      //       fetchPolicy: "no-cache",
-      //     })
-      //     .then((data) => {
-      //       console.log(data);
-      //     });
     },
     handleCancel() {
       this.dialogVisible = false;

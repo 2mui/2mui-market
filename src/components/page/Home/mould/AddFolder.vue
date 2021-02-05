@@ -15,7 +15,7 @@
         ></el-input>
       </span>
       <span slot="footer" class="dialog-footer">
-        <div>确定</div>
+        <div @click="addSubmit">确定</div>
         <div @click="handleCancel">取消</div>
       </span>
     </el-dialog>
@@ -23,24 +23,76 @@
 </template>
 
 <script>
+import Bus from '../../../common/bus';
+import gql from "graphql-tag";
+var insertFoldersGql = gql`
+  mutation insertFolders(
+    $name: String!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_folders(
+      objects: { name: $name, user_id: $user_id, updated_at: $updated_at, created_at: $created_at, }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 export default {
   data() {
     return {
       title: "",
+      userInfo: {},
     };
   },
   props: {
     dialogCollection: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   methods: {
     handleCancel() {
-        this.$parent.dialogCollection = false;
+      this.$parent.dialogCollection = false;
     },
+    addSubmit() {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: insertFoldersGql,
+          // 实参列表
+          variables: {
+            user_id: this.userInfo.id,
+            name: this.title,
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+          this.$message({
+            message: "添加成功！",
+            type: "success",
+          });
+          this.handleCancel();
+          Bus.$emit('setFolder', true);
+        })
+        .catch((err) => {
+          // 捕获错误
+          this.$message({
+            message: "错了哦！添加失败",
+            type: "error",
+          });
+        });
+    }
   },
-  created() {},
+  created() {
+    this.userInfo = window.$store.state.userInfo;
+  },
 };
 </script>
 <style lang="scss" scoped>

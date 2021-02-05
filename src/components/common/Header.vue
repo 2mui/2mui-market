@@ -3,7 +3,7 @@
     <div class="header_logo">
       <div class="logo_warp">
         <img :src="require('@/assets/img/header_logo.png')" alt="" />
-        <span><i class="iconfont iconhuaban1fuben71"></i> 二木UI</span>
+        <span>二木UI</span>
       </div>
     </div>
     <div class="header_nav">

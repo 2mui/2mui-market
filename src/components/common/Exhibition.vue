@@ -96,6 +96,50 @@
 
 <script>
 import gql from "graphql-tag";
+var insertBrowseHistoriesGql = gql`
+  mutation insert_browse_histories(
+    $item_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_browse_histories(
+      objects: {
+        user_id: $user_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
+var insertDownloadHistoriesGql = gql`
+  mutation insert_download_histories(
+    $item_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_download_histories(
+      objects: {
+        user_id: $user_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 export default {
   props: {
     detailsData: {
@@ -167,6 +211,24 @@ export default {
     },
     handleDowload(url) {
       window.open(url);
+      if (Object.keys(this.userInfo).length) {
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: insertDownloadHistoriesGql,
+            // 实参列表
+            variables: {
+              item_id: this.detailsData.id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            // 输出获取的数据集
+          })
+          .catch((err) => {});
+      }
     },
     // 推荐数据
     getDataList(id) {
@@ -204,13 +266,30 @@ export default {
           this.dataList = data.data.items.slice(0, 6);
         });
     },
+    // 登录用户默认添加浏览记录
+    getInsertBrowseHistories() {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: insertBrowseHistoriesGql,
+          // 实参列表
+          variables: {
+            item_id: this.detailsData.id,
+            user_id: this.userInfo.id,
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+        })
+        .catch((err) => {});
+    },
   },
   created() {
     this.userInfo = window.$store.state.userInfo;
-    if (Object.keys(this.userInfo.length)) {
-      console.log(111);
-    } else {
-      console.log(222);
+    if (Object.keys(this.userInfo).length) {
+      this.getInsertBrowseHistories();
     }
     if (this.isShow) {
       this.getDataList(this.detailsData.category_id);

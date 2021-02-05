@@ -9,11 +9,9 @@
       <span slot="title">收藏到文件夹</span>
       <div class="addwarp">
         <ul class="add">
-          <li>默认收藏夹</li>
-          <li>APP</li>
-          <li>APP</li>
-          <li>APP</li>
-          <li>APP</li>
+          <li v-for="(item, index) in dataList" :key="index">
+            {{ item.name }}
+          </li>
         </ul>
         <div class="addFolder" @click="addCollection">
           <i class="el-icon-plus"></i><span>新建文件夹</span>
@@ -28,16 +26,19 @@
 </template>
 
 <script>
+import Bus from "../../../common/bus";
+import gql from "graphql-tag";
 export default {
   data() {
     return {
       title: "",
+      dataList: [],
     };
   },
   props: {
     dialogOptCollection: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   methods: {
@@ -47,8 +48,37 @@ export default {
     handleOptCollection() {
       this.$parent.dialogOptCollection = false;
     },
+    handleGetData(id) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              folders(
+                where: {user_id: {_eq: "${id}"}}
+              ) {
+                name
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          //   this.total = data.data.items_aggregate.aggregate.count;
+          //   this.totalPage = Math.ceil(this.total / this.limit);
+          this.dataList = data.data.folders;
+        });
+    },
   },
-  created() {},
+  created() {
+    this.userInfo = window.$store.state.userInfo;
+    this.handleGetData(this.userInfo.id);
+    Bus.$on("setFolder", (val) => {
+      if (val) {
+        this.handleGetData(this.userInfo.id);
+      }
+    });
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -123,6 +153,9 @@ export default {
             padding: 0 20px;
             box-sizing: border-box;
             border-bottom: 1px solid #dbdbdb;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
           li:last-child {
             border-bottom: none;

@@ -24,8 +24,8 @@
     "vue-cropperjs": "^3.0.0",
     "vue-meta": "^2.4.0",
     "vue-router": "^3.0.3",
-    "vuex": "^3.4.0",
-    "vuedraggable": "^2.17.0"
+    "vuedraggable": "^2.17.0",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",

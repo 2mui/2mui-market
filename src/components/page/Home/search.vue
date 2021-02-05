@@ -79,9 +79,9 @@
     <!-- 详情 -->
     <Exhibition :detailsData="detailsData" v-if="isDetails" />
     <!-- 新增文件夹 -->
-    <AddFolder :dialogCollection="dialogCollection" />
+    <AddFolder v-if="dialogCollection" />
     <!-- 收藏到文件夹 -->
-    <OptCollection :dialogOptCollection="dialogOptCollection" />
+    <OptCollection v-if="dialogOptCollection" />
   </div>
 </template>
 

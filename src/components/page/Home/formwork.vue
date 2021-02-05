@@ -114,9 +114,9 @@
     <!-- 详情 -->
     <Exhibition :detailsData="detailsData" v-if="isDetails" />
     <!-- 新增文件夹 -->
-    <AddFolder :dialogCollection="dialogCollection" />
+    <AddFolder v-if="dialogCollection" />
     <!-- 收藏到文件夹 -->
-    <OptCollection :dialogOptCollection="dialogOptCollection" />
+    <OptCollection v-if="dialogOptCollection" />
   </div>
 </template>
 
@@ -381,7 +381,6 @@ export default {
           fetchPolicy: "no-cache",
         })
         .then((data) => {
-          console.log(data);
           for (let i in data.data.industries) {
             this.radioList1.arr.push({
               id: data.data.industries[i].id,
