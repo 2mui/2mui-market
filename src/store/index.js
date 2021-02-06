@@ -29,15 +29,29 @@ export default new Vuex.Store({
       "avatar": null,
       "admin": false
     },
-    categoriesId: JSON.parse(localStorage.getItem("CategoriesIdStore"))
+    categoriesId: JSON.parse(localStorage.getItem("CategoriesIdStore")),
+    folder: [
+      {
+        "name": "默认",
+        "id": 5
+      },
+      {
+        "name": "哒哒哒",
+        "id": 7
+      },
+      {
+        "name": "默认文件夹",
+        "id": 2
+      }
+    ]
   },
   getters: {
-    navActive: (state)=>{
+    navActive: (state) => {
       return state.navActive
     }
   },
   mutations: {
-    setNavActive(state,data){
+    setNavActive(state, data) {
       state.navActive = data;
     },
     setUserInfo(state, data) {
@@ -46,6 +60,11 @@ export default new Vuex.Store({
     setCategoriesId(state, data) {
       localStorage.setItem('CategoriesIdStore', JSON.stringify(data))
       state.categoriesId = data;
+    },
+    // 收藏夹
+    setFolder(state, data) {
+      localStorage.setItem('folderStore', JSON.stringify(data))
+      state.folder = data;
     },
   },
   actions: {

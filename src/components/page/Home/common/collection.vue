@@ -2,7 +2,7 @@
   <div class="collection">
     <div class="main_content">
       <div
-        @click="handleDetails()"
+        @click="handleDetails(item.id)"
         v-for="(item, index) in dataList"
         :key="index"
         class="card"
@@ -163,9 +163,10 @@ export default {
       this.dialogEdit = false;
       this.dialogVisible = false;
     },
-    handleDetails() {
+    handleDetails(id) {
       this.$router.push({
         path: "/collection_details",
+        query: { id: id },
       });
     },
     handleGetData(id) {

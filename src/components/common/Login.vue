@@ -103,6 +103,7 @@ export default {
     };
   },
   methods: {
+    // 登录
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

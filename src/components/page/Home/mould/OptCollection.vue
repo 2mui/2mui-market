@@ -9,7 +9,12 @@
       <span slot="title">收藏到文件夹</span>
       <div class="addwarp">
         <ul class="add">
-          <li v-for="(item, index) in dataList" :key="index">
+          <li
+            :class="index == activeName ? 'active' : ''"
+            @click="handleAdd(item.id, index)"
+            v-for="(item, index) in dataList"
+            :key="index"
+          >
             {{ item.name }}
           </li>
         </ul>
@@ -18,7 +23,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <div>确定</div>
+        <div @click="handleInsertLikes">确定</div>
         <div @click="handleOptCollection">取消</div>
       </span>
     </el-dialog>
@@ -28,17 +33,48 @@
 <script>
 import Bus from "../../../common/bus";
 import gql from "graphql-tag";
+// 收藏到文件夹
+var getLikeGql = gql`
+  mutation insert_like(
+    $item_id: bigint!
+    $folder_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_likes(
+      objects: {
+        user_id: $user_id
+        folder_id: $folder_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 export default {
   data() {
     return {
       title: "",
       dataList: [],
+      activeName: 0,
+      userInfo: {},
     };
   },
   props: {
     dialogOptCollection: {
       type: Boolean,
       default: true,
+    },
+    itemId: {
+      type: Number,
+      default: null,
     },
   },
   methods: {
@@ -47,6 +83,39 @@ export default {
     },
     handleOptCollection() {
       this.$parent.dialogOptCollection = false;
+    },
+    handleAdd(id, index) {
+      this.activeName = index;
+      this.folderId = id;
+    },
+    handleInsertLikes() {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: getLikeGql,
+          // 实参列表
+          variables: {
+            folder_id: this.folderId,
+            item_id: this.itemId,
+            user_id: this.userInfo.id,
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+          this.$message({
+            message: "收藏成功！",
+            type: "success",
+          });
+          this.$parent.dialogOptCollection = false;
+        })
+        .catch((err) => {
+          this.$message({
+            message: "错了哦！收藏失败",
+            type: "error",
+          });
+        });
     },
     handleGetData(id) {
       this.$apollo
@@ -156,6 +225,9 @@ export default {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+          }
+          .active {
+            background: #f0f0f0;
           }
           li:last-child {
             border-bottom: none;

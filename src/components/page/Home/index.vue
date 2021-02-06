@@ -30,13 +30,13 @@
             <div class="mould_warp">
               <div class="edit">
                 <img
-                  @click.stop="handleCollection"
+                  @click.stop="handleCollection(item.id)"
                   :src="require('@/assets/img/collection.png')"
                   alt=""
                   srcset=""
                 />
                 <img
-                  @click.stop="optCollection"
+                  @click.stop="optCollection(item.id)"
                   :src="require('@/assets/img/dropdown_bottom.png')"
                   alt=""
                 />
@@ -111,31 +111,49 @@
     <Footer :colorConfirm="colorConfirm" />
     <!-- 详情 -->
     <Exhibition :detailsData="detailsData" v-if="isDetails" />
-    <!-- <Login /> -->
-    <!-- <Register /> -->
     <!-- 新增文件夹 -->
     <AddFolder v-if="dialogCollection" />
     <!-- 收藏到文件夹 -->
-    <OptCollection v-if="dialogOptCollection" />
+    <OptCollection :itemId="itemId" v-if="dialogOptCollection" />
   </div>
 </template>
 
 <script>
 import Footer from "../../common/Footer";
 import Exhibition from "../../common/Exhibition";
-import Login from "../../common/Login";
-import Register from "../../common/Register";
 import AddFolder from "./mould/AddFolder";
 import OptCollection from "./mould/OptCollection";
 import gql from "graphql-tag";
+var getLikeGql = gql`
+  mutation insert_like(
+    $item_id: bigint!
+    $folder_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_likes(
+      objects: {
+        user_id: $user_id
+        folder_id: $folder_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 
 export default {
   name: "home",
   components: {
     Footer,
     Exhibition,
-    Login,
-    Register,
     AddFolder,
     OptCollection,
   },
@@ -154,6 +172,7 @@ export default {
       total: null,
       totalPage: null,
 
+      itemId: null,
       order: "{ likes_count: desc }",
       navList: [
         {
@@ -202,14 +221,48 @@ export default {
           cover: require("@/assets/img/partner.png"),
         },
       ],
+      userInfo: window.$store.state.userInfo,
+      folder: window.$store.state.folder,
     };
   },
   computed: {},
   methods: {
     // 收藏到默认第一个
-    handleCollection() {},
+    handleCollection(id) {
+      if (Object.keys(this.userInfo).length) {
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: getLikeGql,
+            // 实参列表
+            variables: {
+              item_id: id,
+              folder_id: this.folder[0].id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            this.$message({
+              message: "收藏成功！",
+              type: "success",
+            });
+            // 输出获取的数据集
+          })
+          .catch((err) => {
+            this.$message({
+              message: "错了哦！收藏失败",
+              type: "error",
+            });
+          });
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
     // 收藏选择文件夹
-    optCollection() {
+    optCollection(id) {
+      this.itemId = id;
       this.dialogOptCollection = true;
     },
     // 新增收藏
