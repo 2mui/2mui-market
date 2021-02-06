@@ -68,8 +68,8 @@
               </el-form>
               <p class="text">
                 没有账号?
-                <router-link to="./register" class="register"
-                  >立即注册</router-link
+                <a @click="handleRegister" class="register"
+                  >立即注册</a
                 >
               </p>
             </div>
@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import gql from "graphql-tag";
 export default {
   data() {
     return {
@@ -147,16 +148,20 @@ export default {
       var obj = new WxLogin({
         self_redirect: false,
         id: "weixin",
-        appid: "wx132ba6a4780db515",
+        appid: "wxf545493f1fe9745c",
         scope: "snsapi_login",
-        redirect_uri: "http://localhost:8080/#/login",
+        redirect_uri: "https://www.2mui.cn/",
         state: "",
         style: "",
         href: "",
       });
     },
+    handleRegister() {
+      this.$root.$children[0].showRegister(true);
+      this.$root.$children[0].showLogin(false);
+    },
     handleClose() {
-      this.dialogCollection = false;
+      this.$root.$children[0].showLogin(false);
     },
   },
   created() {},

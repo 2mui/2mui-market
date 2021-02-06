@@ -44,7 +44,7 @@
           class="card"
         >
           <div class="img">
-            <img :src="item.cover" alt="" />
+            <img :src="item.cover ? item.cover : images" alt="" />
           </div>
           <div class="mould">
             <div class="mould_warp">
@@ -69,7 +69,7 @@
           <div class="card_footer">
             <li class="card_footer_left">
               <span>{{ item.title }}</span
-              ><span>{{ "APP" }}</span>
+              ><span>{{ categoriesId.filter((item) => { return item.id == 2 })[0].name }}</span>
             </li>
             <div class="card_footer_right">
               <li>
@@ -145,6 +145,8 @@ export default {
   },
   data() {
     return {
+      categoriesId: window.$store.state.categoriesId,
+      images: require("@/assets/img/default.jpg"),
       dialogCollection: false,
       dialogOptCollection: false,
       isDetails: false,
@@ -471,13 +473,13 @@ export default {
         box-sizing: border-box;
         float: left;
         position: relative;
-        >.img {
+        > .img {
           width: 100%;
           height: 303px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
-          img{
+          img {
             width: 100%;
             height: 100%;
             object-fit: cover;

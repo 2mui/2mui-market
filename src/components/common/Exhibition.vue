@@ -19,7 +19,7 @@
           <div class="main_content">
             <div v-for="(item, index) in dataList" :key="index" class="card">
               <div class="img">
-                <img :src="item.cover" alt="" />
+                <img :src="item.cover ? item.cover : images" alt="" />
               </div>
               <div class="card_footer">
                 <li class="card_footer_left">
@@ -96,6 +96,7 @@
 
 <script>
 import gql from "graphql-tag";
+// 新增浏览记录
 var insertBrowseHistoriesGql = gql`
   mutation insert_browse_histories(
     $item_id: bigint!
@@ -118,6 +119,7 @@ var insertBrowseHistoriesGql = gql`
     }
   }
 `;
+// 新增下载记录
 var insertDownloadHistoriesGql = gql`
   mutation insert_download_histories(
     $item_id: bigint!
@@ -140,6 +142,14 @@ var insertDownloadHistoriesGql = gql`
     }
   }
 `;
+// 下载次数
+var AddCoundGql = gql`
+  mutation increase_downloads_count($id: bigint!) {
+    update_items_by_pk(_inc: { downloads_count: 1 }, pk_columns: { id: $id }) {
+      downloads_count
+    }
+  }
+`;
 export default {
   props: {
     detailsData: {
@@ -158,60 +168,21 @@ export default {
   data() {
     return {
       dialogVisible: true,
-      dataList: [
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-      ],
+      dataList: [],
       userInfo: {},
+      images: require("@/assets/img/default.jpg"),
     };
   },
   methods: {
     handleClose() {
       this.$parent.isDetails = false;
     },
+    // 下载
     handleDowload(url) {
       window.open(url);
+      // 判断是否登录的操作
       if (Object.keys(this.userInfo).length) {
+        this.handleAddCound();
         this.$apollo
           .mutate({
             // 更新的语句
@@ -229,6 +200,22 @@ export default {
           })
           .catch((err) => {});
       }
+    },
+    // 下载次数加一
+    handleAddCound() {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: AddCoundGql,
+          // 实参列表
+          variables: {
+            id: this.detailsData.id,
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+        })
+        .catch((err) => {});
     },
     // 推荐数据
     getDataList(id) {
@@ -288,6 +275,7 @@ export default {
   },
   created() {
     this.userInfo = window.$store.state.userInfo;
+    // 登录之后添加浏览记录
     if (Object.keys(this.userInfo).length) {
       this.getInsertBrowseHistories();
     }
@@ -342,12 +330,20 @@ export default {
                   margin-bottom: 50px;
                   box-sizing: border-box;
                   float: left;
-                  img {
+                  > .img {
                     width: 100%;
                     height: 200px;
                     border-radius: 14px;
                     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
                     transition: all 0.2s;
+                    img {
+                      width: 100%;
+                      height: 100%;
+                      object-fit: cover;
+                      border-radius: 14px;
+                      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+                      transition: all 0.2s;
+                    }
                   }
                   .card_footer {
                     height: 50px;
@@ -357,6 +353,7 @@ export default {
                     align-items: center;
                     justify-content: space-between;
                     .card_footer_left {
+                      width: 70%;
                       span:last-child {
                         background: #d3d3d3;
                         font-size: 12px;
@@ -367,6 +364,7 @@ export default {
                       }
                     }
                     .card_footer_right {
+                      width: 30%;
                       display: flex;
                       align-items: center;
                       justify-content: space-between;

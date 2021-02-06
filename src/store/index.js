@@ -28,7 +28,8 @@ export default new Vuex.Store({
       "cid": null,
       "avatar": null,
       "admin": false
-    }
+    },
+    categoriesId: JSON.parse(localStorage.getItem("CategoriesIdStore"))
   },
   getters: {
     navActive: (state)=>{
@@ -41,6 +42,10 @@ export default new Vuex.Store({
     },
     setUserInfo(state, data) {
       state.userInfo = data;
+    },
+    setCategoriesId(state, data) {
+      localStorage.setItem('CategoriesIdStore', JSON.stringify(data))
+      state.categoriesId = data;
     },
   },
   actions: {

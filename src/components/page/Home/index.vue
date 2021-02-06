@@ -24,7 +24,7 @@
           class="card"
         >
           <div class="img">
-            <img :src="item.cover" alt="" />
+            <img :src="item.cover ? item.cover : images" alt="" />
           </div>
           <div class="mould">
             <div class="mould_warp">
@@ -49,7 +49,11 @@
           <div class="card_footer">
             <li class="card_footer_left">
               <span>{{ item.title }}</span
-              ><span>{{ "APP" }}</span>
+              ><span>{{
+                categoriesId.filter((item) => {
+                  return item.id == 2;
+                })[0].name
+              }}</span>
             </li>
             <div class="card_footer_right">
               <li>
@@ -162,6 +166,8 @@ export default {
         },
       ],
       dataList: [],
+      images: require("@/assets/img/default.jpg"),
+      categoriesId: window.$store.state.categoriesId,
       partnerList: [
         {
           id: 0,
@@ -357,135 +363,6 @@ export default {
           top: 70px;
           left: 50%;
           transform: translateX(-50%);
-        }
-      }
-    }
-    .main_content {
-      width: 100%;
-      padding: 0 10px;
-      box-sizing: border-box;
-      .card {
-        cursor: pointer;
-        width: 25%;
-        padding: 0 10px;
-        margin-bottom: 50px;
-        box-sizing: border-box;
-        float: left;
-        position: relative;
-        > .img {
-          width: 100%;
-          height: 303px;
-          border-radius: 14px;
-          box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-          transition: all 0.2s;
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 14px;
-          }
-        }
-        .mould {
-          display: none;
-          width: 100%;
-          height: 97px;
-          padding: 0 10px;
-          box-sizing: border-box;
-          position: absolute;
-          left: 0;
-          top: 0;
-          .mould_warp {
-            width: 100%;
-            height: 97px;
-            background: linear-gradient(
-              180deg,
-              rgba(0, 0, 0, 0.7) 0%,
-              rgba(128, 128, 128, 0) 100%
-            );
-            opacity: 1;
-            border-radius: 14px;
-            padding: 20px 0 0 20px;
-            box-sizing: border-box;
-            display: flex;
-            div {
-              width: 40px;
-              height: 40px;
-              background: white;
-              border-radius: 50%;
-              text-align: center;
-              line-height: 40px;
-              margin-right: 20px;
-            }
-            div:last-child {
-              margin-right: 0;
-            }
-            div:first-child {
-              width: 80px;
-              height: 40px;
-              padding: 0 15px;
-              box-sizing: border-box;
-              border-radius: 40px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              img:nth-child(1) {
-                width: 18px;
-                height: 14px;
-              }
-              img:nth-child(2) {
-                width: 12px;
-                height: 8px;
-                padding: 5px;
-              }
-            }
-          }
-        }
-        .card_footer {
-          height: 50px;
-          font-size: 18px;
-          color: #333333;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          .card_footer_left {
-            span:last-child {
-              background: #d3d3d3;
-              font-size: 16px;
-              color: white;
-              padding: 4px 14px;
-              box-sizing: border-box;
-              border-radius: 20px;
-            }
-          }
-          .card_footer_right {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            li {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              font-size: 16px;
-              color: #333333;
-              margin-left: 10px;
-              img {
-                width: 18px;
-                height: 14px;
-              }
-            }
-            li:first-child {
-              margin-left: 0;
-            }
-          }
-        }
-      }
-      .card:hover {
-        > img {
-          transition: all 1s;
-          box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
-        }
-        .mould {
-          display: block;
         }
       }
     }

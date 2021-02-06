@@ -3,7 +3,7 @@
     <div class="main_content">
       <div v-for="(item, index) in dataList" :key="index" class="card">
         <div class="img">
-          <img :src="item.item.cover" alt="" />
+          <img :src="item.cover ? item.cover : images" alt="" />
         </div>
         <div class="mould">
           <div class="mould_warp">
@@ -15,7 +15,7 @@
         <div class="card_footer">
           <li class="card_footer_left">
             <span>{{ item.item.title }}</span
-            ><span>{{ "APP" }}</span>
+            ><span>{{ categoriesId.filter((item) => { return item.id == 2 })[0].name }}</span>
           </li>
           <div class="card_footer_right">
             <li>
@@ -37,6 +37,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="record_footer" v-if="dataList.length">
+      <div class="empty" @click="handleEmpty">清空浏览记录</div>
     </div>
     <el-dialog :visible.sync="dialogVisible" :show-close="false" width="600px">
       <span slot="title">删除</span>
@@ -73,6 +76,8 @@ export default {
       dataList: [],
       item_id: "",
       userInfo: {},
+      categoriesId: window.$store.state.categoriesId,
+      images: require("@/assets/img/default.jpg"),
     };
   },
   methods: {
@@ -154,6 +159,41 @@ export default {
           //   this.total = data.data.items_aggregate.aggregate.count;
           //   this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.browse_histories;
+        });
+    },
+    // 清空
+    handleEmpty() {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: gql`
+            mutation {
+              delete_browse_histories(where: {}) {
+                affected_rows
+                returning {
+                  id
+                }
+              }
+            }
+          `,
+          // 实参列表
+          variables: {},
+        })
+        .then((response) => {
+          // 输出获取的数据集
+          this.$message({
+            message: "清除成功！",
+            type: "success",
+          });
+          this.dialogVisible = false;
+          this.handleGetData(this.userInfo.id);
+        })
+        .catch((err) => {
+          // 捕获错误
+          this.$message({
+            message: "错了哦！清除失败",
+            type: "error",
+          });
         });
     },
   },
@@ -276,6 +316,24 @@ export default {
     content: "";
     display: block;
     clear: both;
+  }
+  .record_footer {
+    margin-bottom: 90px;
+    .empty {
+      margin: 0 auto;
+      cursor: pointer;
+      width: 190px;
+      height: 50px;
+      border: 1px solid #000000;
+      opacity: 1;
+      border-radius: 114px;
+      font-size: 18px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+      line-height: 50px;
+      text-align: center;
+      color: #000000;
+    }
   }
   /deep/ {
     .el-dialog {

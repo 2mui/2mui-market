@@ -9,7 +9,7 @@
           class="card"
         >
           <div class="img">
-            <img :src="item.cover" alt="" />
+            <img :src="item.cover ? item.cover : images" alt="" />
           </div>
           <div class="mould">
             <div class="mould_warp">
@@ -34,7 +34,7 @@
           <div class="card_footer">
             <li class="card_footer_left">
               <span>{{ item.title }}</span
-              ><span>{{ "APP" }}</span>
+              ><span>{{ categoriesId.filter((item) => { return item.id == 2 })[0].name }}</span>
             </li>
             <div class="card_footer_right">
               <li>
@@ -115,6 +115,7 @@ export default {
       isDetails: false,
       detailsData: {},
 
+      categoriesId: window.$store.state.categoriesId,
       colorConfirm: "#F5F5F5",
       //分页
       limit: 20,
@@ -127,6 +128,7 @@ export default {
       searchTitle: "",
 
       dataList: [],
+      images: require("@/assets/img/default.jpg"),
     };
   },
   watch: {

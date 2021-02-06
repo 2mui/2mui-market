@@ -1,13 +1,23 @@
 <template>
   <div id="app">
+    <Login v-if="loginShow" />
+    <Register v-if="registerShow" />
     <router-view></router-view>
   </div>
 </template>
 <script>
+import Login from "./components/common/Login";
+import Register from "./components/common/Register";
 export default {
+  components: {
+    Login,
+    Register,
+  },
   data() {
     return {
       navActive: 0,
+      loginShow: false,
+      registerShow: false
     };
   },
   watch: {
@@ -22,6 +32,14 @@ export default {
         }
       }
       window.$store.commit("setNavActive", this.navActive);
+    },
+  },
+  methods: {
+    showLogin(show) {
+      this.loginShow = show;
+    },
+    showRegister(show) {
+      this.registerShow = show;
     },
   },
 };

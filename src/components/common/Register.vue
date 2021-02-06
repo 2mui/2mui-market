@@ -156,7 +156,7 @@ export default {
       });
     },
     handleClose() {
-      this.dialogCollection = false;
+      this.$root.$children[0].showRegister(false);
     },
   },
   created() {},

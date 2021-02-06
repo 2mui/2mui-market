@@ -2,11 +2,11 @@
   <div class="download">
     <div class="main_content">
       <div v-for="(item, index) in dataList" :key="index" class="card">
-        <img class="img" :src="item.images" alt="" />
+        <img :src="item.cover ? item.cover : images" alt="" />
         <div class="card_footer">
           <li class="card_footer_left">
             <span>{{ item.item.title }}</span
-            ><span>{{ "APP" }}</span>
+            ><span>{{ categoriesId.filter((item) => { return item.id == 2 })[0].name }}</span>
           </li>
           <div class="card_footer_right">
             <li>
@@ -38,6 +38,8 @@ export default {
   data() {
     return {
       dataList: [],
+      categoriesId: window.$store.state.categoriesId,
+      images: require("@/assets/img/default.jpg"),
     };
   },
   methods: {

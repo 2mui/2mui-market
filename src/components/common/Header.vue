@@ -18,21 +18,16 @@
     </div>
     <div class="header_right">
       <div class="search">
-        <el-dropdown @command="handleCommand">
-          <span class="el-dropdown-link">
-            {{ dropdown }}
-            <img :src="require('@/assets/img/dropdown_bottom.png')" alt="" />
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="1">网页设计</el-dropdown-item>
-            <el-dropdown-item command="2">APP设计</el-dropdown-item>
-            <el-dropdown-item command="3">Banner</el-dropdown-item>
-            <el-dropdown-item command="4">插画</el-dropdown-item>
-            <el-dropdown-item command="5">图标设计</el-dropdown-item>
-            <el-dropdown-item command="6">动画</el-dropdown-item>
-            <el-dropdown-item command="7">3D</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <el-select v-model="value" @change="selectChange">
+          <el-option
+            v-for="item in searchNav"
+            :key="item.name"
+            :label="item.name"
+            :value="item.name"
+          >
+          </el-option>
+        </el-select>
+        <img :src="require('@/assets/img/dropdown_bottom.png')" alt="" />
         <input
           type="text"
           v-model="searchVal"
@@ -42,7 +37,7 @@
           <img :src="require('@/assets/img/search.png')" alt="" />
         </div>
       </div>
-      <div class="header_avatar">
+      <div class="header_avatar" v-if="Object.keys(this.userInfo).length">
         <div class="avatar_warp">
           <img :src="require('@/assets/img/girl.jpg')" alt="" />
           <ul>
@@ -57,15 +52,22 @@
           </ul>
         </div>
       </div>
+      <div v-else class="loginRegister">
+        <span @click="handleLogin">登录</span>/
+        <span @click="handleRegister">注册</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import gql from "graphql-tag";
 export default {
   data() {
     return {
+      userInfo: window.$store.state.userInfo,
       className: 0,
+      value: "全部",
       dropdown: "全部",
       dropdownId: 0,
       searchVal: "",
@@ -75,40 +77,11 @@ export default {
           path: "/index",
           name: "首页",
         },
+      ],
+      searchNav: [
         {
-          id: 1,
-          path: "/formwork",
-          name: "网页设计",
-        },
-        {
-          id: 2,
-          path: "/formwork",
-          name: "APP设计",
-        },
-        {
-          id: 3,
-          path: "/formwork",
-          name: "Banner",
-        },
-        {
-          id: 4,
-          path: "/formwork",
-          name: "插画",
-        },
-        {
-          id: 5,
-          path: "/formwork",
-          name: "图标设计",
-        },
-        {
-          id: 6,
-          path: "/formwork",
-          name: "动画",
-        },
-        {
-          id: 7,
-          path: "/formwork",
-          name: "3D",
+          id: 0,
+          name: "全部",
         },
       ],
       dataList: [
@@ -146,6 +119,13 @@ export default {
     },
   },
   methods: {
+    // 登录弹框
+    handleLogin() {
+      this.$root.$children[0].showLogin(true);
+    },
+    handleRegister() {
+      this.$root.$children[0].showRegister(true);
+    },
     handleChange(id, path, name) {
       this.className = id;
       if (path == "/index") {
@@ -173,11 +153,11 @@ export default {
         });
       }
     },
-    handleCommand(command) {
-      this.dropdownId = Number(command);
-      this.dropdown = this.nav.filter((item) => {
-        return item.id == command;
-      })[0].name;
+    selectChange(val) {
+      this.dropdown = val;
+      this.dropdownId = this.searchNav.filter((item) => {
+        return item.name == val;
+      })[0].id;
     },
     handleSearch() {
       this.$router.push({
@@ -185,8 +165,39 @@ export default {
         query: { id: this.dropdownId, searchVal: this.searchVal },
       });
     },
+    // 获取行业
+    handleGetCategories() {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              categories {
+                id
+                name
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          for (let i in data.data.categories) {
+            this.nav.push({
+              id: data.data.categories[i].id,
+              path: "/formwork",
+              name: data.data.categories[i].name,
+            });
+            this.searchNav.push({
+              id: data.data.categories[i].id,
+              name: data.data.categories[i].name,
+            });
+          }
+          window.$store.commit("setCategoriesId", data.data.categories);
+        });
+    },
   },
-  created() {},
+  created() {
+    this.handleGetCategories();
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -258,29 +269,41 @@ export default {
       margin-right: 30px;
       display: flex;
       align-items: center;
+      position: relative;
       /deep/ {
-        .el-dropdown {
+        .el-select {
           cursor: pointer;
-          width: 90px;
+          width: 115px;
           padding: 0 15px;
           box-sizing: border-box;
-          display: flex;
-          justify-content: center;
-          // overflow:hidden; //超出的文本隐藏
-          // text-overflow:ellipsis; //溢出用省略号显示
-          // white-space:nowrap; //溢出不换行
-          .el-dropdown-link {
+          .el-input__inner {
+            border: none;
+          }
+          .el-input {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          .el-input--small .el-input__inner {
+            border-radius: 56px;
             font-size: 18px;
             font-weight: 400;
             color: #333333;
-            opacity: 1;
+            padding: 0;
+          }
+          .el-input__suffix {
+            display: none;
           }
         }
+      }
+      > img {
+        position: absolute;
+        left: 90px;
       }
       > input {
         padding-right: 10px;
         box-sizing: border-box;
-        width: 200px;
+        width: 190px;
         height: 50px;
         border: none;
         outline: none;
@@ -350,14 +373,22 @@ export default {
         }
       }
     }
+    .loginRegister {
+      span {
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: 400;
+        color: #333333;
+      }
+    }
   }
 }
 </style>
 <style lang="scss">
-.el-dropdown-menu__item:focus,
-.el-dropdown-menu__item:not(.is-disabled):hover {
-  background-color: #fff94b;
+.el-select-dropdown__item.selected {
   color: #333333;
+  background: #fff94b;
+  font-weight: 700;
 }
 </style>
 
