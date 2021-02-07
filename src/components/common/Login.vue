@@ -150,7 +150,7 @@ export default {
                   this.$root.$children[0].showLogin(false);
                   this.handleGetFolder(userList[i].id);
                 } else {
-                  console.log("失败");
+                  // console.log("失败");
                 }
               }
             });

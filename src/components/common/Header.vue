@@ -150,7 +150,9 @@ export default {
         });
       } else if (name == "退出登录") {
         localStorage.removeItem("userInfoStore");
+        localStorage.removeItem("folderStore");
         window.$store.commit("setUserInfo", {});
+        window.$store.commit("setFolder", []);
         this.$router.push({
           path: '/index',
         });
