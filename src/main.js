@@ -12,6 +12,9 @@ import 'babel-polyfill';
 import Meta from 'vue-meta'
 import apollo from './apollo'
 
+import md5 from 'js-md5';
+Vue.prototype.$md5 = md5;
+
 window.$store = store;
 Vue.config.productionTip = false;
 Vue.use(Meta)

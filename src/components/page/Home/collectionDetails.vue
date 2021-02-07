@@ -5,8 +5,8 @@
         <div class="banner_avatar">
           <img :src="require('@/assets/img/girl.jpg')" alt="" />
           <ul>
-            <li>王晓喵</li>
-            <li>ID 625789000</li>
+            <li>{{ userInfo.login }}</li>
+            <li>ID {{ userInfo.id }}</li>
           </ul>
         </div>
       </div>
@@ -14,7 +14,7 @@
     <div class="main">
       <div class="main_title">
         <div>
-          <span>APP界面</span>
+          <span>{{ folderList.name }}</span>
           <span>50个收藏</span>
         </div>
         <div>
@@ -30,7 +30,7 @@
         <div
           v-for="(item, index) in dataList"
           :key="index"
-          @click="handleDetails()"
+          @click="handleDetails(item.item, index)"
           class="card"
         >
           <div class="img">
@@ -60,17 +60,24 @@
       </div>
       <div class="main_footer">
         <div class="main_footer_warp">
-          <el-button>首页</el-button>
-          <el-button>上一页</el-button>
-          <el-pagination background layout="pager" :page-size="10" :total="50">
+          <el-button @click="homePage">首页</el-button>
+          <el-button @click="previousPage">上一页</el-button>
+          <el-pagination
+            background
+            layout="pager"
+            @current-change="handleCurrentChange"
+            :current-page="page"
+            :page-size="limit"
+            :total="total"
+          >
           </el-pagination>
-          <el-button>下一页</el-button>
-          <el-button>尾页</el-button>
+          <el-button @click="nextPage">下一页</el-button>
+          <el-button @click="lastPage">尾页</el-button>
         </div>
       </div>
     </div>
     <Footer :colorConfirm="colorConfirm" />
-    <Exhibition v-if="isDetails" />
+    <Exhibition :detailsData="detailsData" v-if="isDetails" />
     <el-dialog
       class="collection-dialog"
       :visible.sync="dialogEdit"
@@ -83,7 +90,7 @@
         <el-input v-model="title" clearable></el-input>
       </span>
       <span slot="footer" class="dialog-footer">
-        <div>确定</div>
+        <div @click="submitEdit">确定</div>
         <div @click="handleCancel">取消</div>
       </span>
     </el-dialog>
@@ -99,7 +106,7 @@
         确定删除此文件夹？
       </span>
       <span slot="footer" class="dialog-footer">
-        <div>确定</div>
+        <div @click="submitDel">确定</div>
         <div @click="handleCancel">取消</div>
       </span>
     </el-dialog>
@@ -110,6 +117,29 @@
 import Footer from "../../common/Footer";
 import Exhibition from "../../common/Exhibition";
 import gql from "graphql-tag";
+var DelGql = gql`
+  mutation deleteFolders($id: bigint!, $user_id: bigint!) {
+    delete_folders(where: { id: { _eq: $id }, user_id: { _eq: $user_id } }) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
+var EditGql = gql`
+  mutation editFolders($id: bigint!, $user_id: bigint!, $name: String!) {
+    update_folders(
+      where: { id: { _eq: $id }, user_id: { _eq: $user_id } }
+      _set: { name: $name }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 
 export default {
   components: {
@@ -124,28 +154,178 @@ export default {
       dialogEdit: false,
       dialogVisible: false,
       isDetails: false,
+      detailsData: {},
+      listIndex: null,
       colorConfirm: "#F5F5F5",
       title: "",
       id: "",
       dataList: [],
+      folderList: [],
+
+      //分页
+      limit: 20,
+      offset: 0,
+      page: 1,
+      total: null,
+      totalPage: null,
     };
   },
   methods: {
     handleCollection() {},
     handleEdit() {
       this.dialogEdit = true;
+      this.title = this.folderList.name;
+    },
+    submitEdit() {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: EditGql,
+          // 实参列表
+          variables: {
+            id: this.id,
+            user_id: this.userInfo.id,
+            name: this.title,
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+          this.$message({
+            message: "编辑成功！",
+            type: "success",
+          });
+          this.handleFolderdetails(this.id, this.userInfo.id);
+          this.dialogEdit = false;
+        })
+        .catch((err) => {
+          // 捕获错误
+          this.$message({
+            message: "错了哦！编辑失败",
+            type: "error",
+          });
+        });
     },
     handleDel() {
       this.dialogVisible = true;
+    },
+    submitDel() {
+      if (!this.dataList.length) {
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: DelGql,
+            // 实参列表
+            variables: {
+              id: this.id,
+              user_id: this.userInfo.id,
+            },
+          })
+          .then((response) => {
+            // 输出获取的数据集
+            this.$message({
+              message: "删除成功！",
+              type: "success",
+            });
+            this.$router.go(-1);
+            this.dialogVisible = false;
+          })
+          .catch((err) => {
+            // 捕获错误
+            this.$message({
+              message: "错了哦！删除失败",
+              type: "error",
+            });
+          });
+      } else {
+        this.$message({
+          message: "错了哦！有收藏不能删除",
+          type: "error",
+        });
+      }
     },
     handleCancel() {
       this.dialogEdit = false;
       this.dialogVisible = false;
     },
-    handleDetails() {
+    // 上一个
+    upper() {
+      this.listIndex--;
+      if (this.listIndex < 0) {
+        this.$message("没有更多了");
+        this.listIndex = 0;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex].item, this.listIndex);
+      }
+    },
+    // 下一个
+    lower() {
+      this.listIndex++;
+      if (this.listIndex >= this.dataList.length) {
+        this.$message("没有更多了");
+        this.listIndex = this.dataList.length - 1;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex].item, this.listIndex);
+      }
+    },
+    // 详情
+    handleDetails(item, index) {
+      (this.listIndex = index), (this.detailsData = item);
       this.isDetails = true;
     },
-    handleGetData(id, suerId) {
+    // 点击页码分页
+    handleCurrentChange(val) {
+      this.page = val;
+      this.offset = this.limit * (val - 1);
+      this.handleGetData(this.limit, this.offset, this.id, this.userInfo.id);
+    },
+    // 首页
+    homePage() {
+      this.page = 1;
+      this.offset = 0;
+      this.handleGetData(this.limit, this.offset, this.id, this.userInfo.id);
+    },
+    // 尾页
+    lastPage() {
+      this.page = this.totalPage;
+      this.offset = this.limit * (this.page - 1);
+      this.handleGetData(this.limit, this.offset, this.id, this.userInfo.id);
+    },
+    // 上一页
+    previousPage() {
+      if (this.page > 1) {
+        this.page--;
+        this.offset = this.limit * (this.page - 1);
+        this.handleGetData(this.limit, this.offset, this.id, this.userInfo.id);
+      }
+    },
+    // 下一页
+    nextPage() {
+      if (this.page < this.totalPage) {
+        this.page++;
+        this.offset = this.limit * (this.page - 1);
+        this.handleGetData(this.limit, this.offset, this.id, this.userInfo.id);
+      }
+    },
+    handleFolderdetails(id, userId) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              folders(
+                where: {id: {_eq: "${id}"}, user_id: {_eq: "${userId}"}}
+              ) {
+                id
+                name
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.folderList = data.data.folders[0];
+        });
+    },
+    handleGetData(limit, offset, id, userId) {
       this.$apollo
         .query({
           query: gql`
@@ -156,7 +336,9 @@ export default {
                 }
               }
               likes(
-                where: {folder_id: {_eq: "${id}"}, user_id: {_eq: "${suerId}"}}
+                limit: ${limit}, 
+                offset: ${offset}, 
+                where: {folder_id: {_eq: "${id}"}, user_id: {_eq: "${userId}"}}
               ) {
                   item{
                     cover
@@ -182,8 +364,8 @@ export default {
           fetchPolicy: "no-cache",
         })
         .then((data) => {
-          //   this.total = data.data.items_aggregate.aggregate.count;
-          //   this.totalPage = Math.ceil(this.total / this.limit);
+          this.total = data.data.likes_aggregate.aggregate.count;
+          this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.likes;
         });
     },
@@ -191,7 +373,8 @@ export default {
   created() {
     this.id = this.$route.query.id;
     this.userInfo = window.$store.state.userInfo;
-    this.handleGetData(this.id, this.userInfo.id);
+    this.handleFolderdetails(this.id, this.userInfo.id);
+    this.handleGetData(this.limit, this.offset, this.id, this.userInfo.id);
   },
 };
 </script>

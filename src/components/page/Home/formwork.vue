@@ -40,7 +40,7 @@
         <div
           v-for="(item, index) in dataList"
           :key="index"
-          @click="handleDetails(item)"
+          @click="handleDetails(item, index)"
           class="card"
         >
           <div class="img">
@@ -50,13 +50,13 @@
             <div class="mould_warp">
               <div class="edit">
                 <img
-                  @click.stop="handleCollection"
+                  @click.stop="handleCollection(item.id)"
                   :src="require('@/assets/img/collection.png')"
                   alt=""
                   srcset=""
                 />
                 <img
-                  @click.stop="optCollection"
+                  @click.stop="optCollection(item.id)"
                   :src="require('@/assets/img/dropdown_bottom.png')"
                   alt=""
                 />
@@ -69,7 +69,11 @@
           <div class="card_footer">
             <li class="card_footer_left">
               <span>{{ item.title }}</span
-              ><span>{{ categoriesId.filter((item) => { return item.id == 2 })[0].name }}</span>
+              ><span>{{
+                categoriesId.filter((item) => {
+                  return item.id == 2;
+                })[0].name
+              }}</span>
             </li>
             <div class="card_footer_right">
               <li>
@@ -126,6 +130,30 @@ import Exhibition from "../../common/Exhibition";
 import AddFolder from "./mould/AddFolder";
 import OptCollection from "./mould/OptCollection";
 import gql from "graphql-tag";
+var getLikeGql = gql`
+  mutation insert_like(
+    $item_id: bigint!
+    $folder_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_likes(
+      objects: {
+        user_id: $user_id
+        folder_id: $folder_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 export default {
   components: {
     Footer,
@@ -151,6 +179,8 @@ export default {
       dialogOptCollection: false,
       isDetails: false,
       detailsData: {},
+      listIndex: null,
+      itemId: null,
 
       colorConfirm: "#F5F5F5",
       radio1: "全部",
@@ -202,13 +232,64 @@ export default {
       deep: true,
     },
   },
-  methods: {
-    handleCollection() {},
-    optCollection() {
-      this.dialogOptCollection = true;
+  computed: {
+    userInfo() {
+      return window.$store.state.userInfo;
     },
+    folder() {
+      return window.$store.state.folder;
+    },
+  },
+  methods: {
+    // 收藏到默认第一个
+    handleCollection(id) {
+      if (Object.keys(this.userInfo).length) {
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: getLikeGql,
+            // 实参列表
+            variables: {
+              item_id: id,
+              folder_id: this.folder[0].id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            this.$message({
+              message: "收藏成功！",
+              type: "success",
+            });
+            // 输出获取的数据集
+          })
+          .catch((err) => {
+            this.$message({
+              message: "错了哦！收藏失败",
+              type: "error",
+            });
+          });
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
+    // 收藏选择文件夹
+    optCollection(id) {
+      if (Object.keys(this.userInfo).length) {
+        this.itemId = id;
+        this.dialogOptCollection = true;
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
+    // 新增收藏
     addCollection() {
-      this.dialogCollection = true;
+      if (Object.keys(this.userInfo).length) {
+        this.dialogCollection = true;
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
     },
     industryChange(val) {
       this.radio1 = val;
@@ -255,9 +336,29 @@ export default {
         this.sortOrder
       );
     },
+    // 上一个
+    upper() {
+      this.listIndex--;
+      if (this.listIndex < 0) {
+        this.$message("没有更多了");
+        this.listIndex = 0;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex], this.listIndex);
+      }
+    },
+    // 下一个
+    lower() {
+      this.listIndex++;
+      if (this.listIndex >= this.dataList.length) {
+        this.$message("没有更多了");
+        this.listIndex = this.dataList.length - 1;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex], this.listIndex);
+      }
+    },
     // 详情
-    handleDetails(item) {
-      this.detailsData = item;
+    handleDetails(item, index) {
+      (this.listIndex = index), (this.detailsData = item);
       this.isDetails = true;
     },
     // 点击页码分页

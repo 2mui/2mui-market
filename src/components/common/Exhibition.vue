@@ -57,14 +57,14 @@
             </div>
           </div>
           <div class="list">
-            <div>
+            <div @click.stop="handleCollection(detailsData.id)">
               <img
                 :src="require('@/assets/img/collection2.png')"
                 alt=""
                 srcset=""
               />
             </div>
-            <p>235人收藏</p>
+            <p>{{ detailsData.likes_count }}人收藏</p>
           </div>
           <div class="list">
             <div @click="handleDowload(detailsData.url)">
@@ -74,16 +74,16 @@
                 srcset=""
               />
             </div>
-            <p>235人下载</p>
+            <p>{{ detailsData.downloads_count }}人下载</p>
           </div>
           <div class="list">
-            <div>
+            <div @click="lower">
               <i class="el-icon-arrow-right"></i>
             </div>
             <p>下一个</p>
           </div>
           <div class="list">
-            <div>
+            <div @click="upper">
               <i class="el-icon-arrow-right"></i>
             </div>
             <p>上一个</p>
@@ -150,6 +150,31 @@ var AddCoundGql = gql`
     }
   }
 `;
+// 收藏
+var getLikeGql = gql`
+  mutation insert_like(
+    $item_id: bigint!
+    $folder_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_likes(
+      objects: {
+        user_id: $user_id
+        folder_id: $folder_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 export default {
   props: {
     detailsData: {
@@ -169,19 +194,61 @@ export default {
     return {
       dialogVisible: true,
       dataList: [],
+      folder: [],
       userInfo: {},
       images: require("@/assets/img/default.jpg"),
     };
   },
   methods: {
+    // 下一个
+    lower() {
+      this.$parent.lower();
+    },
+    // 上一个
+    upper() {
+      this.$parent.upper();
+    },
     handleClose() {
       this.$parent.isDetails = false;
     },
+    // 收藏
+    handleCollection(id) {
+      if (Object.keys(this.userInfo).length) {
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: getLikeGql,
+            // 实参列表
+            variables: {
+              item_id: id,
+              folder_id: this.folder[0].id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            this.$message({
+              message: "收藏成功！",
+              type: "success",
+            });
+            // 输出获取的数据集
+          })
+          .catch((err) => {
+            this.$message({
+              message: "错了哦！收藏失败",
+              type: "error",
+            });
+          });
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
     // 下载
     handleDowload(url) {
-      window.open(url);
       // 判断是否登录的操作
       if (Object.keys(this.userInfo).length) {
+        window.open(url);
         this.handleAddCound();
         this.$apollo
           .mutate({
@@ -199,6 +266,8 @@ export default {
             // 输出获取的数据集
           })
           .catch((err) => {});
+      } else {
+        this.$root.$children[0].showLogin(true);
       }
     },
     // 下载次数加一
@@ -274,6 +343,7 @@ export default {
     },
   },
   created() {
+    this.folder = window.$store.state.folder;
     this.userInfo = window.$store.state.userInfo;
     // 登录之后添加浏览记录
     if (Object.keys(this.userInfo).length) {

@@ -59,6 +59,23 @@
 
 <script>
 import gql from "graphql-tag";
+var insertFoldersGql = gql`
+  mutation insertFolders(
+    $name: String!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_folders(
+      objects: { name: $name, user_id: $user_id, updated_at: $updated_at, created_at: $created_at, }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 var MutationRegisterGql = gql`
   mutation register(
     $login: String!
@@ -77,8 +94,22 @@ var MutationRegisterGql = gql`
       }
     ) {
       returning {
+        admin
+        avatar
+        cid
+        city
+        created_at
+        email
+        encrypted_password
+        first_name
+        gender
         id
         login
+        mobile_phone
+        name
+        nickname
+        occupation
+        qq
       }
     }
   }
@@ -117,10 +148,17 @@ export default {
       },
     };
   },
+  computed: {
+    userInfo() {
+      return window.$store.state.userInfo;
+    },
+  },
   methods: {
+    // 注册提交
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          let password = this.$md5(this.ruleForm.encrypted_password);
           this.$apollo
             .mutate({
               // 更新的语句
@@ -128,7 +166,7 @@ export default {
               // 实参列表
               variables: {
                 login: this.ruleForm.login,
-                encrypted_password: this.ruleForm.encrypted_password,
+                encrypted_password: password,
                 email: this.ruleForm.email,
                 created_at: this.ruleForm.created_at,
                 updated_at: this.ruleForm.updated_at,
@@ -136,11 +174,16 @@ export default {
             })
             .then((response) => {
               // 输出获取的数据集
-              console.log(response);
               this.$message({
                 message: "恭喜你，注册成功！",
                 type: "success",
               });
+              window.$store.commit("setUserInfo", response.data.insert_users.returning[0]);
+              this.$root.$children[0].showRegister(false);
+              // 注册成功新建一个默认文件夹
+              this.handleAddfolder();
+              // 获取所有文件夹
+              this.handleGetFolder();
             })
             .catch((err) => {
               // 捕获错误
@@ -154,6 +197,45 @@ export default {
           return false;
         }
       });
+    },
+    // 注册成功新增文件夹
+    handleAddfolder() {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: insertFoldersGql,
+          // 实参列表
+          variables: {
+            user_id: this.userInfo.id,
+            name: "默认文件夹",
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+        })
+        .catch((err) => {
+        });
+    },
+    // 查询所有文件夹
+    handleGetFolder() {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              folders(
+                where: {user_id: {_eq: "${this.userInfo.id}"}}
+              ) {
+                name
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          window.$store.commit("setFolder", data.data.folders);
+        });
     },
     handleClose() {
       this.$root.$children[0].showRegister(false);

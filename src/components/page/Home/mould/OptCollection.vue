@@ -63,7 +63,7 @@ export default {
     return {
       title: "",
       dataList: [],
-      activeName: 0,
+      activeName: -1,
       userInfo: {},
     };
   },

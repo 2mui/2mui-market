@@ -20,7 +20,7 @@
         <div
           v-for="(item, index) in dataList"
           :key="index"
-          @click="handleDetails(item)"
+          @click="handleDetails(item, index)"
           class="card"
         >
           <div class="img">
@@ -163,6 +163,7 @@ export default {
       dialogOptCollection: false,
       isDetails: false,
       detailsData: {},
+      listIndex: null,
       colorConfirm: "#ffffff",
       className: 0,
       //分页
@@ -221,11 +222,16 @@ export default {
           cover: require("@/assets/img/partner.png"),
         },
       ],
-      userInfo: window.$store.state.userInfo,
-      folder: window.$store.state.folder,
     };
   },
-  computed: {},
+  computed: {
+    userInfo() {
+      return window.$store.state.userInfo;
+    },
+    folder() {
+      return window.$store.state.folder;
+    },
+  },
   methods: {
     // 收藏到默认第一个
     handleCollection(id) {
@@ -262,12 +268,20 @@ export default {
     },
     // 收藏选择文件夹
     optCollection(id) {
-      this.itemId = id;
-      this.dialogOptCollection = true;
+      if (Object.keys(this.userInfo).length) {
+        this.itemId = id;
+        this.dialogOptCollection = true;
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
     },
     // 新增收藏
     addCollection() {
-      this.dialogCollection = true;
+      if (Object.keys(this.userInfo).length) {
+        this.dialogCollection = true;
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
     },
     // tab切换
     handleNav(id) {
@@ -281,9 +295,29 @@ export default {
       this.offset = 0;
       this.handleGetData(this.limit, this.offset, this.order);
     },
+    // 上一个
+    upper() {
+      this.listIndex--;
+      if (this.listIndex < 0) {
+        this.$message("没有更多了");
+        this.listIndex = 0;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex],this.listIndex)
+      }
+    },
+    // 下一个
+    lower() {
+      this.listIndex++;
+      if (this.listIndex >= this.dataList.length) {
+        this.$message("没有更多了");
+        this.listIndex = this.dataList.length-1;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex],this.listIndex)
+      }
+    },
     // 详情
-    handleDetails(item) {
-      this.detailsData = item;
+    handleDetails(item, index) {
+      (this.listIndex = index), (this.detailsData = item);
       this.isDetails = true;
     },
     // 点击页码分页

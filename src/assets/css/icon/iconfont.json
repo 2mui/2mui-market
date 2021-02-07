@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "19877323",
+      "name": "画板 1 副本 9",
+      "font_class": "huaban1fuben9",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "19877324",
+      "name": "画板 1 副本 10",
+      "font_class": "huaban1fuben10",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
       "icon_id": "19844619",
       "name": "画板 1 副本 7",
       "font_class": "huaban1fuben71",
@@ -76,13 +90,6 @@
       "unicode_decimal": 58946
     },
     {
-      "icon_id": "19844612",
-      "name": "画板 – 1",
-      "font_class": "huaban12",
-      "unicode": "e643",
-      "unicode_decimal": 58947
-    },
-    {
       "icon_id": "19844613",
       "name": "画板 1 副本 4",
       "font_class": "huaban1fuben41",
@@ -95,13 +102,6 @@
       "font_class": "huaban1fuben51",
       "unicode": "e645",
       "unicode_decimal": 58949
-    },
-    {
-      "icon_id": "19844615",
-      "name": "画板 – 5",
-      "font_class": "huaban51",
-      "unicode": "e646",
-      "unicode_decimal": 58950
     },
     {
       "icon_id": "19844616",

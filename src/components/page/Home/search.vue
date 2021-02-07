@@ -5,7 +5,7 @@
         <div
           v-for="(item, index) in dataList"
           :key="index"
-          @click="handleDetails(item)"
+          @click="handleDetails(item, index)"
           class="card"
         >
           <div class="img">
@@ -15,13 +15,13 @@
             <div class="mould_warp">
               <div class="edit">
                 <img
-                  @click.stop="handleCollection"
+                  @click.stop="handleCollection(item.id)"
                   :src="require('@/assets/img/collection.png')"
                   alt=""
                   srcset=""
                 />
                 <img
-                  @click.stop="optCollection"
+                  @click.stop="optCollection(item.id)"
                   :src="require('@/assets/img/dropdown_bottom.png')"
                   alt=""
                 />
@@ -114,6 +114,7 @@ export default {
       dialogOptCollection: false,
       isDetails: false,
       detailsData: {},
+      listIndex: null,
 
       categoriesId: window.$store.state.categoriesId,
       colorConfirm: "#F5F5F5",
@@ -123,6 +124,7 @@ export default {
       page: 1,
       total: null,
       totalPage: null,
+      itemId: null,
       //搜索条件
       category: "",
       searchTitle: "",
@@ -130,6 +132,14 @@ export default {
       dataList: [],
       images: require("@/assets/img/default.jpg"),
     };
+  },
+  computed: {
+    userInfo() {
+      return window.$store.state.userInfo;
+    },
+    folder() {
+      return window.$store.state.folder;
+    }
   },
   watch: {
     $route: {
@@ -155,16 +165,79 @@ export default {
     },
   },
   methods: {
-    handleCollection() {},
-    optCollection() {
-      this.dialogOptCollection = true;
+    // 收藏到默认第一个
+    handleCollection(id) {
+      if (Object.keys(this.userInfo).length) {
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: getLikeGql,
+            // 实参列表
+            variables: {
+              item_id: id,
+              folder_id: this.folder[0].id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            this.$message({
+              message: "收藏成功！",
+              type: "success",
+            });
+            // 输出获取的数据集
+          })
+          .catch((err) => {
+            this.$message({
+              message: "错了哦！收藏失败",
+              type: "error",
+            });
+          });
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
     },
+    // 收藏选择文件夹
+    optCollection(id) {
+      if (Object.keys(this.userInfo).length) {
+        this.itemId = id;
+        this.dialogOptCollection = true;
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
+    // 新增收藏
     addCollection() {
-      this.dialogCollection = true;
+      if (Object.keys(this.userInfo).length) {
+        this.dialogCollection = true;
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
+    // 上一个
+    upper() {
+      this.listIndex--;
+      if (this.listIndex < 0) {
+        this.$message("没有更多了");
+        this.listIndex = 0;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex],this.listIndex)
+      }
+    },
+    // 下一个
+    lower() {
+      this.listIndex++;
+      if (this.listIndex >= this.dataList.length) {
+        this.$message("没有更多了");
+        this.listIndex = this.dataList.length-1;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex],this.listIndex)
+      }
     },
     // 详情
-    handleDetails(item) {
-      this.detailsData = item;
+    handleDetails(item, index) {
+      (this.listIndex = index), (this.detailsData = item);
       this.isDetails = true;
     },
     // 点击页码分页

@@ -68,9 +68,7 @@
               </el-form>
               <p class="text">
                 没有账号?
-                <a @click="handleRegister" class="register"
-                  >立即注册</a
-                >
+                <a @click="handleRegister" class="register">立即注册</a>
               </p>
             </div>
           </div>
@@ -107,14 +105,35 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          let password = this.$md5(this.ruleForm.encrypted_password);
           this.$apollo
             .query({
               query: gql`
                 {
                   users {
+                    admin
+                    avatar
+                    cid
+                    city
+                    created_at
                     email
-                    login
                     encrypted_password
+                    first_name
+                    gender
+                    id
+                    last_login_at
+                    last_login_location
+                    last_name
+                    login
+                    mobile_phone
+                    name
+                    nickname
+                    occupation
+                    qq
+                    remember_created_at
+                    reset_password_sent_at
+                    reset_password_token
+                    updated_at
                   }
                 }
               `,
@@ -125,11 +144,11 @@ export default {
               for (var i in userList) {
                 if (
                   this.ruleForm.login == userList[i].login &&
-                  this.ruleForm.encrypted_password ==
-                    userList[i].encrypted_password
+                  password == userList[i].encrypted_password
                 ) {
-                  console.log(userList[i]);
-                  console.log("成功");
+                  window.$store.commit("setUserInfo", userList[i]);
+                  this.$root.$children[0].showLogin(false);
+                  this.handleGetFolder(userList[i].id);
                 } else {
                   console.log("失败");
                 }
@@ -140,6 +159,26 @@ export default {
           return false;
         }
       });
+    },
+    // 查询所有文件夹
+    handleGetFolder(id) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              folders(
+                where: {user_id: {_eq: "${id}"}}
+              ) {
+                name
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          window.$store.commit("setFolder", data.data.folders);
+        });
     },
     handleHeid() {
       this.showLogin = false;
@@ -175,12 +214,13 @@ export default {
       border-radius: 14px;
       .el-dialog__header {
         padding: 0;
-        .el-dialog__headerbtn{
-            color: #333333;
-            z-index: 9;
+        .el-dialog__headerbtn {
+          color: #333333;
+          z-index: 9;
         }
-        .el-dialog__headerbtn:focus .el-dialog__close, .el-dialog__headerbtn:hover .el-dialog__close{
-            color: #333333;
+        .el-dialog__headerbtn:focus .el-dialog__close,
+        .el-dialog__headerbtn:hover .el-dialog__close {
+          color: #333333;
         }
       }
       .el-dialog__body {

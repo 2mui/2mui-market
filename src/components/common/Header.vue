@@ -65,7 +65,7 @@ import gql from "graphql-tag";
 export default {
   data() {
     return {
-      userInfo: window.$store.state.userInfo,
+      //   userInfo: window.$store.state.userInfo,
       className: 0,
       value: "全部",
       dropdown: "全部",
@@ -117,6 +117,9 @@ export default {
     navActive() {
       return window.$store.state.navActive;
     },
+    userInfo() {
+      return window.$store.state.userInfo;
+    },
   },
   methods: {
     // 登录弹框
@@ -146,6 +149,11 @@ export default {
           path: path,
         });
       } else if (name == "退出登录") {
+        localStorage.removeItem("userInfoStore");
+        window.$store.commit("setUserInfo", {});
+        this.$router.push({
+          path: '/index',
+        });
       } else {
         this.$router.push({
           path: path,
