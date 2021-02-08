@@ -37,17 +37,30 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="现居">
-            <el-select v-model="form.region" placeholder="请选择省份">
-              <el-option label="湖北" value="shanghai"></el-option>
-              <el-option label="武汉" value="beijing"></el-option>
+            <el-select
+              v-model="form.province"
+              @change="provinceChange"
+              placeholder="请选择省份"
+            >
+              <el-option
+                v-for="(item, index) in allList"
+                :key="index"
+                :label="item.provinceName"
+                :value="item.provinceName"
+              ></el-option>
             </el-select>
             <el-select
               class="mu_select"
-              v-model="form.region"
+              v-model="form.city"
+              @change="cityChange"
               placeholder="请选择市区"
             >
-              <el-option label="湖北" value="shanghai"></el-option>
-              <el-option label="武汉" value="beijing"></el-option>
+              <el-option
+                v-for="(item, index) in cityList"
+                :key="index"
+                :label="item.citysName"
+                :value="item.citysName"
+              ></el-option>
             </el-select>
           </el-form-item>
           <div id="information" name="information" class="right_title">
@@ -62,7 +75,7 @@
           <el-form-item label="行业">
             <el-select
               class="mu_industry"
-              v-model="form.region"
+              v-model="form.industry"
               placeholder="请选择行业"
             >
               <el-option label="IT" value="shanghai"></el-option>
@@ -93,12 +106,14 @@
 
 <script>
 import Footer from "../../common/Footer";
+import cityList from "../../../api/city.json";
 import gql from "graphql-tag";
 var EditUserGql = gql`
   mutation editUserGql(
     $id: bigint!
     $login: String!
     $gender: String!
+    $city: String!
     $mobile_phone: String!
     $qq: String!
     $occupation: String!
@@ -109,6 +124,7 @@ var EditUserGql = gql`
       _set: {
         login: $login
         gender: $gender
+        city: $city
         mobile_phone: $mobile_phone
         qq: $qq
         occupation: $occupation
@@ -168,6 +184,8 @@ export default {
       form: {
         login: "",
         gender: "",
+        province: "",
+        city: "",
         mobile_phone: "",
         qq: "",
         occupation: "",
@@ -175,13 +193,27 @@ export default {
         idCard: "",
       },
       userInfo: {},
+      allList: [],
+      cityList: [],
     };
   },
   methods: {
     handleLink(href) {
       document.querySelector(href).scrollIntoView(true);
     },
+    // 省级
+    provinceChange(val) {
+      this.form.province = val;
+      this.cityList = this.allList.filter((item) => {
+        return item.provinceName == val;
+      })[0].citys;
+    },
+    // 市级
+    cityChange(val) {
+      this.form.city = val;
+    },
     handleSubmit() {
+      let city = this.form.province + "," + this.form.city;
       this.$apollo
         .mutate({
           // 更新的语句
@@ -191,6 +223,7 @@ export default {
             id: this.userInfo.id,
             login: this.form.login,
             gender: this.form.gender,
+            city: city,
             mobile_phone: this.form.mobile_phone,
             qq: this.form.qq,
             occupation: this.form.occupation,
@@ -218,15 +251,22 @@ export default {
     },
   },
   created() {
+    this.allList = cityList.provinces;
     this.userInfo = window.$store.state.userInfo;
-    this.form = {
-      login: this.userInfo.login,
-      gender: this.userInfo.gender,
-      mobile_phone: this.userInfo.mobile_phone,
-      qq: this.userInfo.qq,
-      occupation: this.userInfo.occupation,
-      name: this.userInfo.name,
-    };
+    if (this.userInfo.city == "") {
+      this.form.province = "";
+      this.form.city = "";
+    } else {
+      this.form.province = this.userInfo.city.split(",")[0];
+      this.form.city = this.userInfo.city.split(",")[1];
+      this.provinceChange(this.form.province);
+    }
+    this.form.login = this.userInfo.login;
+    this.form.gender = this.userInfo.gender;
+    this.form.mobile_phone = this.userInfo.mobile_phone;
+    this.form.qq = this.userInfo.qq;
+    this.form.occupation = this.userInfo.occupation;
+    this.form.name = this.userInfo.name;
   },
 };
 </script>

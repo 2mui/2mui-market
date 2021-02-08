@@ -102,7 +102,9 @@
         <div class="partners_content">
           <div class="card" v-for="(item, index) in partnerList" :key="index">
             <div class="card_list">
-              <img class="img" :src="item.cover" alt="" />
+              <a :href="item.url" target="_blank" class="img">
+                <img class="img" :src="item.image" alt="" />
+              </a>
             </div>
           </div>
         </div>
@@ -188,40 +190,7 @@ export default {
       dataList: [],
       images: require("@/assets/img/default.jpg"),
       categoriesId: window.$store.state.categoriesId,
-      partnerList: [
-        {
-          id: 0,
-          cover: require("@/assets/img/partner.png"),
-        },
-        {
-          id: 1,
-          cover: require("@/assets/img/partner.png"),
-        },
-        {
-          id: 2,
-          cover: require("@/assets/img/partner.png"),
-        },
-        {
-          id: 3,
-          cover: require("@/assets/img/partner.png"),
-        },
-        {
-          id: 4,
-          cover: require("@/assets/img/partner.png"),
-        },
-        {
-          id: 5,
-          cover: require("@/assets/img/partner.png"),
-        },
-        {
-          id: 6,
-          cover: require("@/assets/img/partner.png"),
-        },
-        {
-          id: 7,
-          cover: require("@/assets/img/partner.png"),
-        },
-      ],
+      partnerList: [],
     };
   },
   computed: {
@@ -302,7 +271,7 @@ export default {
         this.$message("没有更多了");
         this.listIndex = 0;
       } else {
-        this.handleDetails(this.dataList[this.listIndex],this.listIndex)
+        this.handleDetails(this.dataList[this.listIndex], this.listIndex);
       }
     },
     // 下一个
@@ -310,9 +279,9 @@ export default {
       this.listIndex++;
       if (this.listIndex >= this.dataList.length) {
         this.$message("没有更多了");
-        this.listIndex = this.dataList.length-1;
+        this.listIndex = this.dataList.length - 1;
       } else {
-        this.handleDetails(this.dataList[this.listIndex],this.listIndex)
+        this.handleDetails(this.dataList[this.listIndex], this.listIndex);
       }
     },
     // 详情
@@ -398,9 +367,33 @@ export default {
           this.dataList = data.data.items;
         });
     },
+    // 合作伙伴
+    handlePartners() {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              partners {
+                url
+                updated_at
+                position
+                name
+                image
+                id
+                created_at
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.partnerList = data.data.partners;
+        });
+    },
   },
   created() {
     this.handleGetData(this.limit, this.offset, this.order);
+    this.handlePartners();
   },
 };
 </script>
@@ -550,11 +543,16 @@ export default {
             display: flex;
             align-items: center;
             justify-content: center;
-            img {
+            .img {
               width: 160px;
               height: 70px;
               box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
               transition: all 0.2s;
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
             }
           }
         }
