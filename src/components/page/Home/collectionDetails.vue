@@ -15,7 +15,7 @@
       <div class="main_title">
         <div>
           <span>{{ folderList.name }}</span>
-          <span>50个收藏</span>
+          <span>{{ count }}个收藏</span>
         </div>
         <div>
           <div class="edit" @click.stop="handleEdit()">
@@ -38,9 +38,12 @@
           </div>
           <div class="mould">
             <div class="mould_warp">
-              <div class="collection" @click.stop="handleCollection()">
+              <div
+                class="collection"
+                @click.stop="handleCollection(item.item.id)"
+              >
                 <img
-                  :src="require('@/assets/img/collection_active.png')"
+                  :src="require('@/assets/img/collection_active2.png')"
                   alt=""
                 />
               </div>
@@ -140,6 +143,16 @@ var EditGql = gql`
     }
   }
 `;
+// 取消收藏
+var deleteLikesGql = gql`
+  mutation delete_likes($item_id: bigint!, $user_id: bigint!) {
+    delete_likes(
+      where: { user_id: { _eq: $user_id }, item_id: { _eq: $item_id } }
+    ) {
+      affected_rows
+    }
+  }
+`;
 
 export default {
   components: {
@@ -161,6 +174,7 @@ export default {
       id: "",
       dataList: [],
       folderList: [],
+      count: null,
 
       //分页
       limit: 20,
@@ -171,7 +185,33 @@ export default {
     };
   },
   methods: {
-    handleCollection() {},
+    // 取消收藏
+    handleCollection(id) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: deleteLikesGql,
+          // 实参列表
+          variables: {
+            item_id: id,
+            user_id: this.userInfo.id,
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+          this.$message({
+            message: "取消收藏！",
+            type: "success",
+          });
+          this.handleGetData(
+            this.limit,
+            this.offset,
+            this.id,
+            this.userInfo.id
+          );
+        })
+        .catch((err) => {});
+    },
     handleEdit() {
       this.dialogEdit = true;
       this.title = this.folderList.name;
@@ -369,12 +409,34 @@ export default {
           this.dataList = data.data.likes;
         });
     },
+    // 文件夹文件数量
+    handleLikeCount(id) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              likes_aggregate(
+                where: {folder_id: {_eq: "${id}"}}
+              ) {
+                aggregate {
+                  count
+                }
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.count = data.data.likes_aggregate.aggregate.count;
+        });
+    },
   },
   created() {
     this.id = this.$route.query.id;
     this.userInfo = window.$store.state.userInfo;
     this.handleFolderdetails(this.id, this.userInfo.id);
     this.handleGetData(this.limit, this.offset, this.id, this.userInfo.id);
+    this.handleLikeCount(this.id);
   },
 };
 </script>

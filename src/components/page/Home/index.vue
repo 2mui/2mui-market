@@ -30,13 +30,15 @@
             <div class="mould_warp">
               <div class="edit">
                 <img
-                  @click.stop="handleCollection(item.id)"
+                  @click.stop="
+                    handleCollection(item.id, item.collection, index)
+                  "
                   :src="require('@/assets/img/collection.png')"
                   alt=""
                   srcset=""
                 />
                 <img
-                  @click.stop="optCollection(item.id)"
+                  @click.stop="optCollection(item.id, index)"
                   :src="require('@/assets/img/dropdown_bottom.png')"
                   alt=""
                 />
@@ -66,7 +68,11 @@
               </li>
               <li>
                 <img
-                  :src="require('@/assets/img/collection.png')"
+                  :src="
+                    item.collection
+                      ? require('@/assets/img/collection_active2.png')
+                      : require('@/assets/img/collection2.png')
+                  "
                   alt=""
                   srcset=""
                 />
@@ -116,11 +122,16 @@
     <!-- 新增文件夹 -->
     <AddFolder v-if="dialogCollection" />
     <!-- 收藏到文件夹 -->
-    <OptCollection :itemId="itemId" v-if="dialogOptCollection" />
+    <OptCollection
+      :itemId="itemId"
+      :likeIndex="likeIndex"
+      v-if="dialogOptCollection"
+    />
   </div>
 </template>
 
 <script>
+import Bus from "../../common/bus";
 import Footer from "../../common/Footer";
 import Exhibition from "../../common/Exhibition";
 import AddFolder from "./mould/AddFolder";
@@ -150,6 +161,16 @@ var getLikeGql = gql`
     }
   }
 `;
+// 取消收藏
+var deleteLikesGql = gql`
+  mutation delete_likes($item_id: bigint!, $user_id: bigint!) {
+    delete_likes(
+      where: { user_id: { _eq: $user_id }, item_id: { _eq: $item_id } }
+    ) {
+      affected_rows
+    }
+  }
+`;
 
 export default {
   name: "home",
@@ -176,6 +197,7 @@ export default {
       totalPage: null,
 
       itemId: null,
+      likeIndex: null,
       order: "{ likes_count: desc }",
       navList: [
         {
@@ -203,42 +225,66 @@ export default {
   },
   methods: {
     // 收藏到默认第一个
-    handleCollection(id) {
+    handleCollection(id, collection, index) {
       if (Object.keys(this.userInfo).length) {
-        this.$apollo
-          .mutate({
-            // 更新的语句
-            mutation: getLikeGql,
-            // 实参列表
-            variables: {
-              item_id: id,
-              folder_id: this.folder[0].id,
-              user_id: this.userInfo.id,
-              created_at: "now",
-              updated_at: "now",
-            },
-          })
-          .then((response) => {
-            this.$message({
-              message: "收藏成功！",
-              type: "success",
+        if (!collection) {
+          this.$apollo
+            .mutate({
+              // 更新的语句
+              mutation: getLikeGql,
+              // 实参列表
+              variables: {
+                item_id: id,
+                folder_id: this.folder[0].id,
+                user_id: this.userInfo.id,
+                created_at: "now",
+                updated_at: "now",
+              },
+            })
+            .then((response) => {
+              // 输出获取的数据集
+              this.$message({
+                message: "收藏成功！",
+                type: "success",
+              });
+              this.$set(this.dataList[index], "collection", true);
+            })
+            .catch((err) => {
+              // this.$message({
+              //   message: "错了哦！收藏失败",
+              //   type: "error",
+              // });
             });
-            // 输出获取的数据集
-          })
-          .catch((err) => {
-            this.$message({
-              message: "错了哦！收藏失败",
-              type: "error",
-            });
-          });
+        } else {
+          this.$apollo
+            .mutate({
+              // 更新的语句
+              mutation: deleteLikesGql,
+              // 实参列表
+              variables: {
+                item_id: id,
+                user_id: this.userInfo.id,
+              },
+            })
+            .then((response) => {
+              // 输出获取的数据集
+              this.$message({
+                message: "取消收藏！",
+                type: "success",
+              });
+              this.$set(this.dataList[index], "collection", false);
+            })
+            .catch((err) => {});
+        }
       } else {
         this.$root.$children[0].showLogin(true);
       }
     },
     // 收藏选择文件夹
-    optCollection(id) {
+    optCollection(id, index) {
       if (Object.keys(this.userInfo).length) {
         this.itemId = id;
+        this.likeIndex = index;
         this.dialogOptCollection = true;
       } else {
         this.$root.$children[0].showLogin(true);
@@ -365,6 +411,36 @@ export default {
           this.total = data.data.items_aggregate.aggregate.count;
           this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.items;
+
+          // 判断是否登录执行收藏查询
+          if (Object.keys(this.userInfo).length) {
+            for (let i in this.dataList) {
+              this.handleJudgeLike(this.dataList[i].id, this.userInfo.id, i);
+            }
+          }
+        });
+    },
+    // 收藏查询
+    handleJudgeLike(item_id, user_id, index) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              likes(
+                where: {item_id: {_eq: "${item_id}"},user_id: {_eq: "${user_id}"}}
+              ) {
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.$set(
+            this.dataList[index],
+            "collection",
+            data.data.likes.length ? true : false
+          );
         });
     },
     // 合作伙伴
@@ -394,6 +470,10 @@ export default {
   created() {
     this.handleGetData(this.limit, this.offset, this.order);
     this.handlePartners();
+    // 文件夹收藏操作
+    Bus.$on("collectionSuccess", (val) => {
+      this.$set(this.dataList[val], "collection", true);
+    });
   },
 };
 </script>

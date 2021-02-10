@@ -76,6 +76,10 @@ export default {
       type: Number,
       default: null,
     },
+    likeIndex: {
+      type: Number,
+      default: null,
+    },
   },
   methods: {
     addCollection() {
@@ -108,6 +112,7 @@ export default {
             message: "收藏成功！",
             type: "success",
           });
+          Bus.$emit('collectionSuccess', this.likeIndex);
           this.$parent.dialogOptCollection = false;
         })
         .catch((err) => {

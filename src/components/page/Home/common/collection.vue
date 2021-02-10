@@ -21,7 +21,7 @@
         <div class="card_footer">
           <li class="card_footer_left">
             <span>{{ item.name }}</span
-            ><span>{{ 10 }}</span>
+            ><span>{{ item.count }}</span>
           </li>
         </div>
       </div>
@@ -86,6 +86,7 @@ export default {
       dataList: [],
       id: "",
       userInfo: {},
+      likesCount: [],
     };
   },
   methods: {
@@ -169,6 +170,7 @@ export default {
         query: { id: id },
       });
     },
+    // 获取已有的文件夹
     handleGetData(id) {
       this.$apollo
         .query({
@@ -188,6 +190,35 @@ export default {
           //   this.total = data.data.items_aggregate.aggregate.count;
           //   this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.folders;
+          this.likesCount = [];
+          for (let i in this.dataList) {
+            this.handleLikeCount(this.dataList[i].id, i);
+          }
+        });
+    },
+    // 文件夹文件数量
+    handleLikeCount(id, i) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              likes_aggregate(
+                where: {folder_id: {_eq: "${id}"}}
+              ) {
+                aggregate {
+                  count
+                }
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.$set(
+            this.dataList[i],
+            "count",
+            data.data.likes_aggregate.aggregate.count
+          );
         });
     },
   },

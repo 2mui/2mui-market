@@ -57,9 +57,15 @@
             </div>
           </div>
           <div class="list">
-            <div @click.stop="handleCollection(detailsData.id)">
+            <div
+              @click.stop="handleCollection(detailsData.id, detailsData.collection)"
+            >
               <img
-                :src="require('@/assets/img/collection2.png')"
+                :src="
+                  detailsData.collection
+                    ? require('@/assets/img/collection_active2.png')
+                    : require('@/assets/img/collection2.png')
+                "
                 alt=""
                 srcset=""
               />
@@ -175,6 +181,16 @@ var getLikeGql = gql`
     }
   }
 `;
+// 取消收藏
+var deleteLikesGql = gql`
+  mutation delete_likes($item_id: bigint!, $user_id: bigint!) {
+    delete_likes(
+      where: { user_id: { _eq: $user_id }, item_id: { _eq: $item_id } }
+    ) {
+      affected_rows
+    }
+  }
+`;
 export default {
   props: {
     detailsData: {
@@ -212,34 +228,57 @@ export default {
       this.$parent.isDetails = false;
     },
     // 收藏
-    handleCollection(id) {
+    handleCollection(id, collection) {
       if (Object.keys(this.userInfo).length) {
-        this.$apollo
-          .mutate({
-            // 更新的语句
-            mutation: getLikeGql,
-            // 实参列表
-            variables: {
-              item_id: id,
-              folder_id: this.folder[0].id,
-              user_id: this.userInfo.id,
-              created_at: "now",
-              updated_at: "now",
-            },
-          })
-          .then((response) => {
-            this.$message({
-              message: "收藏成功！",
-              type: "success",
+        if (!collection) {
+          this.$apollo
+            .mutate({
+              // 更新的语句
+              mutation: getLikeGql,
+              // 实参列表
+              variables: {
+                item_id: id,
+                folder_id: this.folder[0].id,
+                user_id: this.userInfo.id,
+                created_at: "now",
+                updated_at: "now",
+              },
+            })
+            .then((response) => {
+              this.$message({
+                message: "收藏成功！",
+                type: "success",
+              });
+              // 输出获取的数据集
+              this.$set(this.detailsData, "collection", true);
+            })
+            .catch((err) => {
+              this.$message({
+                message: "错了哦！收藏失败",
+                type: "error",
+              });
             });
-            // 输出获取的数据集
-          })
-          .catch((err) => {
-            this.$message({
-              message: "错了哦！收藏失败",
-              type: "error",
-            });
-          });
+        } else {
+          this.$apollo
+            .mutate({
+              // 更新的语句
+              mutation: deleteLikesGql,
+              // 实参列表
+              variables: {
+                item_id: id,
+                user_id: this.userInfo.id,
+              },
+            })
+            .then((response) => {
+              // 输出获取的数据集
+              this.$message({
+                message: "取消收藏！",
+                type: "success",
+              });
+              this.$set(this.detailsData, "collection", false);
+            })
+            .catch((err) => {});
+        }
       } else {
         this.$root.$children[0].showLogin(true);
       }
