@@ -186,12 +186,12 @@ export default {
     handleWXLogin() {
       this.showLogin = true;
       var obj = new WxLogin({
-        self_redirect: false,
+        self_redirect: true,
         id: "weixin",
         appid: "wxf545493f1fe9745c",
         scope: "snsapi_login",
-        redirect_uri: "https://www.2mui.cn/",
-        state: "",
+        redirect_uri: "https%3A%2F%2Fwww.2mui.cn/callback",
+        state: "auth",
         style: "",
         href: "",
       });

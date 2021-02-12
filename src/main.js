@@ -32,7 +32,6 @@ router.beforeEach((to, from, next) => {
         if (code != null && "" != code && code != undefined) {
             console.log("开始执行微信登录")
             //向后台登录接口发送数据
-
         }
     }
     axios.get('https://api.weixin.qq.com/sns/oauth2/access_token', {
