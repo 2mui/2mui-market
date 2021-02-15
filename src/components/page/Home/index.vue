@@ -222,6 +222,9 @@ export default {
     folder() {
       return window.$store.state.folder;
     },
+    cookieUser() {
+      return this.$cookies.get("u");
+    },
   },
   methods: {
     // 收藏到默认第一个
@@ -466,6 +469,45 @@ export default {
           this.partnerList = data.data.partners;
         });
     },
+    // 用户id获取用户信息
+    handleUserInfo(id) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              users(where: {id: {_eq: "${id}"}}) {
+                id
+                admin
+                avatar
+                cid
+                city
+                created_at
+                email
+                encrypted_password
+                first_name
+                gender
+                last_login_at
+                last_login_location
+                last_name
+                login
+                mobile_phone
+                name
+                nickname
+                occupation
+                qq
+                remember_created_at
+                reset_password_sent_at
+                reset_password_token
+                updated_at
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          window.$store.commit("setUserInfo", data.data.users[0]);
+        });
+    },
   },
   created() {
     this.handleGetData(this.limit, this.offset, this.order);
@@ -474,6 +516,11 @@ export default {
     Bus.$on("collectionSuccess", (val) => {
       this.$set(this.dataList[val], "collection", true);
     });
+    
+    // 判断用户是否扫码登陆
+    if (this.cookieUser != null) {
+      this.handleUserInfo(this.cookieUser);
+    }
   },
 };
 </script>

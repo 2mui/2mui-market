@@ -2,11 +2,17 @@
   <div class="download">
     <div class="main_content">
       <div v-for="(item, index) in dataList" :key="index" class="card">
-        <img :src="item.cover ? item.cover : images" alt="" />
+        <div class="img">
+          <img :src="item.cover ? item.cover : images" alt="" />
+        </div>
         <div class="card_footer">
           <li class="card_footer_left">
             <span>{{ item.item.title }}</span
-            ><span>{{ categoriesId.filter((item) => { return item.id == 2 })[0].name }}</span>
+            ><span>{{
+              categoriesId.filter((item) => {
+                return item.id == 2;
+              })[0].name
+            }}</span>
           </li>
           <div class="card_footer_right">
             <li>

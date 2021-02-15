@@ -253,7 +253,8 @@ export default {
   created() {
     this.allList = cityList.provinces;
     this.userInfo = window.$store.state.userInfo;
-    if (this.userInfo.city == "") {
+    console.log(this.userInfo)
+    if (!this.userInfo.city) {
       this.form.province = "";
       this.form.city = "";
     } else {

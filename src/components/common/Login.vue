@@ -18,7 +18,12 @@
             <div class="icon_img">
               <div class="icon">
                 <li class="title_text">
-                  <img src="../../assets/img/qq.png" alt="" /> QQ登录
+                  <img
+                    src="../../assets/img/github.png"
+                    alt=""
+                    @click.stop="handleGithubLogin"
+                  />
+                  Github登录
                 </li>
               </div>
               <div class="icon">
@@ -80,6 +85,7 @@
 </template>
 
 <script>
+import Bus from "./bus";
 import gql from "graphql-tag";
 export default {
   data() {
@@ -184,17 +190,10 @@ export default {
       this.showLogin = false;
     },
     handleWXLogin() {
-      this.showLogin = true;
-      var obj = new WxLogin({
-        self_redirect: false,
-        id: "weixin",
-        appid: "wxf545493f1fe9745c",
-        scope: "snsapi_login",
-        redirect_uri: "https://www.2mui.cn/",
-        state: "",
-        style: "",
-        href: "",
-      });
+      window.open("https://auth.2mui.cn/auth/wechat", "_blank");
+    },
+    handleGithubLogin() {
+      window.open("https://auth.2mui.cn/auth/github", "_blank");
     },
     handleRegister() {
       this.$root.$children[0].showRegister(true);

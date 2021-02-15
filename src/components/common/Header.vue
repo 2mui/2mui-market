@@ -151,10 +151,11 @@ export default {
       } else if (name == "退出登录") {
         localStorage.removeItem("userInfoStore");
         localStorage.removeItem("folderStore");
+        this.$cookies.remove("u");
         window.$store.commit("setUserInfo", {});
         window.$store.commit("setFolder", []);
         this.$router.push({
-          path: '/index',
+          path: "/index",
         });
       } else {
         this.$router.push({
