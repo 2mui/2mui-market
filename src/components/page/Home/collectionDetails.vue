@@ -53,8 +53,8 @@
             <li class="card_footer_left">
               <span>{{ item.item.title }}</span
               ><span>{{
-                categoriesId.filter((item) => {
-                  return item.id == 2;
+                categoriesId.filter((e) => {
+                  return e.id == item.item.category_id;
                 })[0].name
               }}</span>
             </li>

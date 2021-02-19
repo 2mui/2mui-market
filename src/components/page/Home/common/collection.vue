@@ -383,6 +383,15 @@ export default {
           .el-input__inner:focus {
             border-color: #dbdbdb;
           }
+          .el-input__inner {
+            font-size: 16px;
+            color: #999999;
+          }
+          .el-input.is-active .el-input__inner,
+          .el-input__inner:focus {
+            border-color: #000000;
+            color: #333333;
+          }
         }
       }
       .el-dialog__footer {
@@ -404,6 +413,11 @@ export default {
           div:last-child {
             background: white;
             color: #000000;
+          }
+          div:hover {
+            background: #535353;
+            border-color: #535353;
+            color: white;
           }
         }
       }

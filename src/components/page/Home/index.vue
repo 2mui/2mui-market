@@ -29,14 +29,12 @@
           <div class="mould">
             <div class="mould_warp">
               <div class="edit">
-                <img
+                <i
                   @click.stop="
                     handleCollection(item.id, item.collection, index)
                   "
-                  :src="require('@/assets/img/collection.png')"
-                  alt=""
-                  srcset=""
-                />
+                  class="iconfont iconhuaban1fuben9"
+                ></i>
                 <img
                   @click.stop="optCollection(item.id, index)"
                   :src="require('@/assets/img/dropdown_bottom.png')"
@@ -44,7 +42,7 @@
                 />
               </div>
               <div class="folder" @click.stop="addCollection">
-                <i class="el-icon-folder-add"></i>
+                <i class="iconfont iconhuaban1fuben61"></i>
               </div>
             </div>
           </div>
@@ -52,30 +50,27 @@
             <li class="card_footer_left">
               <span>{{ item.title }}</span
               ><span>{{
-                categoriesId.filter((item) => {
-                  return item.id == 2;
+                categoriesId.filter((e) => {
+                  return e.id == item.category_id;
                 })[0].name
               }}</span>
             </li>
             <div class="card_footer_right">
               <li>
-                <img
+                <i class="iconfont iconhuaban1fuben11"></i>
+                <!-- <img
                   :src="require('@/assets/img/download.png')"
                   alt=""
                   srcset=""
-                />
+                /> -->
                 {{ item.downloads_count }}
               </li>
               <li>
-                <img
-                  :src="
-                    item.collection
-                      ? require('@/assets/img/collection_active2.png')
-                      : require('@/assets/img/collection2.png')
-                  "
-                  alt=""
-                  srcset=""
-                />
+                <i
+                  v-if="item.collection"
+                  class="iconfont iconhuaban1fuben10"
+                ></i>
+                <i v-else class="iconfont iconhuaban1fuben9"></i>
                 {{ item.likes_count }}
               </li>
             </div>
@@ -516,7 +511,7 @@ export default {
     Bus.$on("collectionSuccess", (val) => {
       this.$set(this.dataList[val], "collection", true);
     });
-    
+
     // 判断用户是否扫码登陆
     if (this.cookieUser != null) {
       this.handleUserInfo(this.cookieUser);
@@ -565,6 +560,7 @@ export default {
           content: "";
           width: 41px;
           height: 4px;
+          border-radius: 15px;
           background: #333333;
           position: absolute;
           top: 70px;
@@ -587,6 +583,12 @@ export default {
         justify-content: center;
         align-items: flex-end;
         /deep/ {
+          .el-button:nth-child(1) {
+            color: #999999;
+          }
+          .el-button:nth-child(2) {
+            color: #999999;
+          }
           .el-button:focus,
           .el-button:hover {
             background: #fff94b;

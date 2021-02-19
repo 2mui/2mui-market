@@ -9,26 +9,22 @@
           <li class="card_footer_left">
             <span>{{ item.item.title }}</span
             ><span>{{
-              categoriesId.filter((item) => {
-                return item.id == 2;
+              categoriesId.filter((e) => {
+                return e.id == item.item.category_id;
               })[0].name
             }}</span>
           </li>
           <div class="card_footer_right">
             <li>
-              <img
-                :src="require('@/assets/img/download.png')"
-                alt=""
-                srcset=""
-              />
+              <i class="iconfont iconhuaban1fuben11"></i>
               {{ item.item.downloads_count }}
             </li>
             <li>
-              <img
-                :src="require('@/assets/img/collection.png')"
-                alt=""
-                srcset=""
-              />
+              <i
+                v-if="item.item.collection"
+                class="iconfont iconhuaban1fuben10"
+              ></i>
+              <i v-else class="iconfont iconhuaban1fuben9"></i>
               {{ item.item.likes_count }}
             </li>
           </div>
@@ -145,7 +141,7 @@ export default {
           justify-content: space-between;
           li {
             display: flex;
-            align-items: center;
+            align-items: baseline;
             justify-content: space-between;
             font-size: 16px;
             color: #333333;

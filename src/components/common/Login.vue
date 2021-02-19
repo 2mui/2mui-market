@@ -99,7 +99,9 @@ export default {
         encrypted_password: "",
       },
       rules: {
-        login: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        login: [
+          { required: true, message: "请输入正确的账号", trigger: "blur" },
+        ],
         encrypted_password: [
           { required: true, message: "请输入密码", trigger: "blur" },
         ],
@@ -149,16 +151,17 @@ export default {
               var userList = data.data.users;
               for (var i in userList) {
                 if (
-                  this.ruleForm.login == userList[i].login &&
+                  this.ruleForm.login == userList[i].email &&
                   password == userList[i].encrypted_password
                 ) {
                   window.$store.commit("setUserInfo", userList[i]);
                   this.$root.$children[0].showLogin(false);
                   this.handleGetFolder(userList[i].id);
-                } else {
-                  // console.log("失败");
+
+                  return;
                 }
               }
+              this.$message.error("错了哦，请检查用户名和密码是否正确");
             });
         } else {
           console.log("error submit!!");
@@ -312,6 +315,18 @@ export default {
                   line-height: 36px;
                   color: #000000;
                 }
+                .submit:hover {
+                  background: #e9e327;
+                }
+              }
+              .el-input__inner {
+                font-size: 16px;
+                color: #999999;
+              }
+              .el-input.is-active .el-input__inner,
+              .el-input__inner:focus {
+                border-color: #000000;
+                color: #333333;
               }
               .text {
                 text-align: center;

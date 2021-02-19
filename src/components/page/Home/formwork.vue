@@ -72,30 +72,27 @@
             <li class="card_footer_left">
               <span>{{ item.title }}</span
               ><span>{{
-                categoriesId.filter((item) => {
-                  return item.id == 2;
+                categoriesId.filter((e) => {
+                  return e.id == item.category_id;
                 })[0].name
               }}</span>
             </li>
             <div class="card_footer_right">
               <li>
-                <img
+                <i class="iconfont iconhuaban1fuben11"></i>
+                <!-- <img
                   :src="require('@/assets/img/download.png')"
                   alt=""
                   srcset=""
-                />
+                /> -->
                 {{ item.downloads_count }}
               </li>
               <li>
-                <img
-                  :src="
-                    item.collection
-                      ? require('@/assets/img/collection_active2.png')
-                      : require('@/assets/img/collection2.png')
-                  "
-                  alt=""
-                  srcset=""
-                />
+                <i
+                  v-if="item.collection"
+                  class="iconfont iconhuaban1fuben10"
+                ></i>
+                <i v-else class="iconfont iconhuaban1fuben9"></i>
                 {{ item.likes_count }}
               </li>
             </div>
@@ -206,7 +203,7 @@ export default {
 
       colorConfirm: "#F5F5F5",
       radio1: "全部",
-      radio2: "PSD",
+      radio2: "不限",
       radio3: "全部",
       radioList1: {
         label: "行业",
@@ -214,7 +211,7 @@ export default {
       },
       radioList2: {
         label: "格式",
-        arr: ["PSD", "AI", "XD", "Sketch"],
+        arr: ["不限", "PSD", "AI", "XD", "Sketch"],
       },
       radioList3: {
         label: "排序",
@@ -232,6 +229,8 @@ export default {
       sortWhere: "",
       sortOrder: "",
 
+      // 格式
+      formatWhere: "",
       // 行业
       industryWhere: "",
     };
@@ -242,10 +241,12 @@ export default {
         this.id = this.$route.query.id;
         this.sortWhere = "";
         this.sortOrder = "";
+        this.formatWhere = "";
         this.getDataList(
           this.limit,
           this.offset,
           this.id,
+          this.formatWhere,
           this.sortWhere,
           this.industryWhere,
           this.sortOrder
@@ -351,6 +352,7 @@ export default {
         this.limit,
         this.offset,
         this.id,
+        this.formatWhere,
         this.sortWhere,
         this.industryWhere,
         this.sortOrder
@@ -358,6 +360,21 @@ export default {
     },
     formatChange(val) {
       this.radio2 = val;
+      if (this.radio2 == "不限") {
+        this.formatWhere = "";
+      } else {
+        this.formatWhere = val;
+      }
+      console.log(this.formatWhere);
+      this.getDataList(
+        this.limit,
+        this.offset,
+        this.id,
+        this.formatWhere,
+        this.sortWhere,
+        this.industryWhere,
+        this.sortOrder
+      );
     },
     sortChange(val) {
       this.radio3 = val;
@@ -377,6 +394,7 @@ export default {
         this.limit,
         this.offset,
         this.id,
+        this.formatWhere,
         this.sortWhere,
         this.industryWhere,
         this.sortOrder
@@ -411,10 +429,11 @@ export default {
     handleCurrentChange(val) {
       this.page = val;
       this.offset = this.limit * (val - 1);
-      this.handleGetData(
+      this.getDataList(
         this.limit,
         this.offset,
         this.id,
+        this.formatWhere,
         this.sortWhere,
         this.industryWhere,
         this.sortOrder
@@ -424,10 +443,11 @@ export default {
     homePage() {
       this.page = 1;
       this.offset = 0;
-      this.handleGetData(
+      this.getDataList(
         this.limit,
         this.offset,
         this.id,
+        this.formatWhere,
         this.sortWhere,
         this.industryWhere,
         this.sortOrder
@@ -437,10 +457,11 @@ export default {
     lastPage() {
       this.page = this.totalPage;
       this.offset = this.limit * (this.page - 1);
-      this.handleGetData(
+      this.getDataList(
         this.limit,
         this.offset,
         this.id,
+        this.formatWhere,
         this.sortWhere,
         this.industryWhere,
         this.sortOrder
@@ -451,10 +472,11 @@ export default {
       if (this.page > 1) {
         this.page--;
         this.offset = this.limit * (this.page - 1);
-        this.handleGetData(
+        this.getDataList(
           this.limit,
           this.offset,
           this.id,
+          this.formatWhere,
           this.sortWhere,
           this.industryWhere,
           this.sortOrder
@@ -466,10 +488,11 @@ export default {
       if (this.page < this.totalPage) {
         this.page++;
         this.offset = this.limit * (this.page - 1);
-        this.handleGetData(
+        this.getDataList(
           this.limit,
           this.offset,
           this.id,
+          this.formatWhere,
           this.sortWhere,
           this.industryWhere,
           this.sortOrder
@@ -477,17 +500,25 @@ export default {
       }
     },
     // 页面数据
-    getDataList(limit, offset, id, sortWhere, industryWhere, sortOrder) {
+    getDataList(
+      limit,
+      offset,
+      id,
+      formatWhere,
+      sortWhere,
+      industryWhere,
+      sortOrder
+    ) {
       this.$apollo
         .query({
           query: gql`
             {
-              items_aggregate {
+              items_aggregate(where: {category_id: {_eq: ${id}}})  {
                 aggregate {
                   count
                 }
               }
-              items( limit: ${limit}, offset: ${offset}, where: { draft: {_eq: false}, category_id: { _eq: ${id} },${sortWhere},${industryWhere} }, order_by: {${sortOrder}}) {
+              items( limit: ${limit}, offset: ${offset}, where: { draft: {_eq: false},filetype: {_contains: "${formatWhere}"}, category_id: { _eq: ${id} },${sortWhere},${industryWhere} }, order_by: {${sortOrder}}) {
                 cover
                 category_id
                 browses_count
@@ -576,6 +607,7 @@ export default {
       this.limit,
       this.offset,
       this.id,
+      this.formatWhere,
       this.sortWhere,
       this.industryWhere,
       this.sortOrder
@@ -745,7 +777,7 @@ export default {
             justify-content: space-between;
             li {
               display: flex;
-              align-items: center;
+              align-items: baseline;
               justify-content: space-between;
               font-size: 16px;
               color: #333333;

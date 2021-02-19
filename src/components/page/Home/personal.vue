@@ -9,7 +9,7 @@
             <li>ID {{ userInfo.id }}</li>
           </ul>
           <div class="banner_button">
-            <div>个人资料</div>
+            <div @click="handleMyInfo">个人资料</div>
             <div>
               更多
               <img :src="require('@/assets/img/more.png')" alt="" srcset="" />
@@ -69,64 +69,6 @@ export default {
           title: "下载记录",
         },
       ],
-      dataList: [
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-        {
-          images: require("@/assets/img/index.jpg"),
-          label: "APP",
-          title: "智能家居设计",
-          download: "223",
-          collection: "223",
-        },
-      ],
     };
   },
   watch: {
@@ -143,6 +85,11 @@ export default {
     },
   },
   methods: {
+    handleMyInfo() {
+      this.$router.push({
+        path: "/homepage"
+      });
+    },
     handleNav(name) {
       this.$router.push({
         path: "/personal",

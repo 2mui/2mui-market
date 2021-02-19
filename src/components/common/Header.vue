@@ -27,14 +27,15 @@
           >
           </el-option>
         </el-select>
-        <img :src="require('@/assets/img/dropdown_bottom.png')" alt="" />
+        <i class="iconfont iconhuaban1fuben15"></i>
+        <!-- <img :src="require('@/assets/img/dropdown_bottom.png')" alt="" /> -->
         <input
           type="text"
           v-model="searchVal"
           placeholder="输入想要搜索的内容"
         />
         <div class="search_buttom" @click="handleSearch()">
-          <img :src="require('@/assets/img/search.png')" alt="" />
+          <i class="iconfont iconhuaban1fuben71"></i>
         </div>
       </div>
       <div class="header_avatar" v-if="Object.keys(this.userInfo).length">
@@ -46,7 +47,8 @@
               :key="index"
               @click="handleNav(item.path, item.name)"
             >
-              <img :src="item.url" alt="" />
+              <i :class="item.icon"></i>
+              <!-- <img :src="item.url" alt="" /> -->
               {{ item.name }}
             </li>
           </ul>
@@ -87,27 +89,27 @@ export default {
       dataList: [
         {
           path: "/homepage",
-          url: require("@/assets/img/man.png"),
+          icon: "iconfont iconhuaban1fuben31",
           name: "个人主页",
         },
         {
           path: "/personal",
-          url: require("@/assets/img/collection.png"),
+          icon: "iconfont iconhuaban1fuben9",
           name: "我的收藏",
         },
         {
           path: "/personal",
-          url: require("@/assets/img/browse.png"),
+          icon: "iconfont iconhuaban1fuben12",
           name: "浏览记录",
         },
         {
           path: "/personal",
-          url: require("@/assets/img/download.png"),
+          icon: "iconfont iconhuaban1fuben11",
           name: "下载记录",
         },
         {
           path: "/personal",
-          url: require("@/assets/img/download.png"),
+          icon: "iconfont iconhuaban1fuben13",
           name: "退出登录",
         },
       ],
@@ -307,7 +309,7 @@ export default {
           }
         }
       }
-      > img {
+      > i {
         position: absolute;
         left: 90px;
       }
@@ -337,6 +339,10 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        i {
+          font-size: 20px;
+          font-weight: bold;
+        }
       }
     }
     .header_avatar {
@@ -365,7 +371,7 @@ export default {
             text-align: center;
             line-height: 40px;
             border-radius: 14px;
-            background: #fff94b;
+            // background: #fff94b;
             margin-bottom: 5px;
             font-size: 18px;
             font-family: Source Han Sans CN;
@@ -375,6 +381,9 @@ export default {
               width: 18px;
               height: 16px;
             }
+          }
+          li:hover {
+            background: #fff94b;
           }
         }
       }
@@ -398,8 +407,11 @@ export default {
 <style lang="scss">
 .el-select-dropdown__item.selected {
   color: #333333;
-  background: #fff94b;
   font-weight: 700;
+}
+.el-select-dropdown__item.hover,
+.el-select-dropdown__item:hover {
+  background: #fff94b;
 }
 </style>
 

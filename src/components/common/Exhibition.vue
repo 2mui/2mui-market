@@ -24,23 +24,23 @@
               <div class="card_footer">
                 <li class="card_footer_left">
                   <span>{{ item.title }}</span
-                  ><span>{{ "APP" }}</span>
+                  ><span>{{
+                    categoriesId.filter((e) => {
+                      return e.id == item.category_id;
+                    })[0].name
+                  }}</span>
                 </li>
                 <div class="card_footer_right">
                   <li>
-                    <img
-                      :src="require('@/assets/img/download.png')"
-                      alt=""
-                      srcset=""
-                    />
+                    <i class="iconfont iconhuaban1fuben11"></i>
                     {{ item.downloads_count }}
                   </li>
                   <li>
-                    <img
-                      :src="require('@/assets/img/collection.png')"
-                      alt=""
-                      srcset=""
-                    />
+                    <i
+                      v-if="item.collection"
+                      class="iconfont iconhuaban1fuben10"
+                    ></i>
+                    <i v-else class="iconfont iconhuaban1fuben9"></i>
                     {{ item.likes_count }}
                   </li>
                 </div>
@@ -58,39 +58,33 @@
           </div>
           <div class="list">
             <div
-              @click.stop="handleCollection(detailsData.id, detailsData.collection)"
+              @click.stop="
+                handleCollection(detailsData.id, detailsData.collection)
+              "
             >
-              <img
-                :src="
-                  detailsData.collection
-                    ? require('@/assets/img/collection_active2.png')
-                    : require('@/assets/img/collection2.png')
-                "
-                alt=""
-                srcset=""
-              />
+              <i
+                v-if="detailsData.collection"
+                class="iconfont iconhuaban1fuben10"
+              ></i>
+              <i v-else class="iconfont iconhuaban1fuben9"></i>
             </div>
             <p>{{ detailsData.likes_count }}人收藏</p>
           </div>
           <div class="list">
             <div @click="handleDowload(detailsData.url)">
-              <img
-                :src="require('@/assets/img/download2.png')"
-                alt=""
-                srcset=""
-              />
+              <i class="iconfont iconhuaban1fuben11"></i>
             </div>
             <p>{{ detailsData.downloads_count }}人下载</p>
           </div>
           <div class="list">
             <div @click="lower">
-              <i class="el-icon-arrow-right"></i>
+              <i class="iconfont iconhuaban1fuben41"></i>
             </div>
             <p>下一个</p>
           </div>
           <div class="list">
             <div @click="upper">
-              <i class="el-icon-arrow-right"></i>
+              <i class="iconfont iconhuaban1fuben51"></i>
             </div>
             <p>上一个</p>
           </div>
@@ -213,6 +207,7 @@ export default {
       folder: [],
       userInfo: {},
       images: require("@/assets/img/default.jpg"),
+      categoriesId: window.$store.state.categoriesId,
     };
   },
   methods: {
@@ -464,7 +459,7 @@ export default {
                     .card_footer_left {
                       width: 70%;
                       span:last-child {
-                        background: #d3d3d3;
+                        background: #707070;
                         font-size: 12px;
                         color: white;
                         padding: 4px 14px;
@@ -487,6 +482,7 @@ export default {
                         img {
                           width: 18px;
                           height: 14px;
+                          margin-right: 0;
                         }
                       }
                       li:first-child {
@@ -559,7 +555,9 @@ export default {
                   i {
                     color: #666666;
                     font-size: 30px;
-                    font-weight: bold;
+                  }
+                  .iconhuaban1fuben10 {
+                    color: red;
                   }
                 }
                 p {

@@ -67,7 +67,12 @@ var insertFoldersGql = gql`
     $created_at: timestamp!
   ) {
     insert_folders(
-      objects: { name: $name, user_id: $user_id, updated_at: $updated_at, created_at: $created_at, }
+      objects: {
+        name: $name
+        user_id: $user_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
     ) {
       affected_rows
       returning {
@@ -178,7 +183,10 @@ export default {
                 message: "恭喜你，注册成功！",
                 type: "success",
               });
-              window.$store.commit("setUserInfo", response.data.insert_users.returning[0]);
+              window.$store.commit(
+                "setUserInfo",
+                response.data.insert_users.returning[0]
+              );
               this.$root.$children[0].showRegister(false);
               // 注册成功新建一个默认文件夹
               this.handleAddfolder();
@@ -212,10 +220,8 @@ export default {
             updated_at: "now",
           },
         })
-        .then((response) => {
-        })
-        .catch((err) => {
-        });
+        .then((response) => {})
+        .catch((err) => {});
     },
     // 查询所有文件夹
     handleGetFolder() {
@@ -329,6 +335,18 @@ export default {
                 line-height: 36px;
                 color: #000000;
               }
+              .submit:hover {
+                background: #e9e327;
+              }
+            }
+            .el-input__inner {
+              font-size: 16px;
+              color: #999999;
+            }
+            .el-input.is-active .el-input__inner,
+            .el-input__inner:focus {
+              border-color: #000000;
+              color: #333333;
             }
           }
         }

@@ -26,6 +26,18 @@
       <div class="main_right">
         <el-form ref="form" :model="form" label-width="80px">
           <div id="data" name="data" class="right_title">基本资料</div>
+          <el-form-item label="头像" class="avatar_warp">
+            <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+              <i v-else class="el-icon-camera"></i>
+            </el-upload>
+          </el-form-item>
           <el-form-item label="昵称">
             <el-input v-model="form.login"></el-input>
           </el-form-item>
@@ -195,9 +207,25 @@ export default {
       userInfo: {},
       allList: [],
       cityList: [],
+      imageUrl: "",
     };
   },
   methods: {
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
     handleLink(href) {
       document.querySelector(href).scrollIntoView(true);
     },
@@ -253,7 +281,7 @@ export default {
   created() {
     this.allList = cityList.provinces;
     this.userInfo = window.$store.state.userInfo;
-    console.log(this.userInfo)
+    console.log(this.userInfo);
     if (!this.userInfo.city) {
       this.form.province = "";
       this.form.city = "";
@@ -329,7 +357,7 @@ export default {
     padding-bottom: 100px;
     box-sizing: border-box;
     .main_left {
-      width: 400px;
+      width: 250px;
       border-right: 1px solid #d3d3d3;
       display: flex;
       justify-content: flex-end;
@@ -358,6 +386,7 @@ export default {
         font-weight: 400;
         color: #333333;
         position: relative;
+        margin-top: 58px;
         margin-bottom: 46px;
       }
       .right_title::after {
@@ -369,6 +398,40 @@ export default {
         left: 100px;
         top: 18px;
         z-index: -1;
+      }
+      .avatar_warp {
+        /deep/ {
+          .el-form-item__label,
+          .el-form-item__content {
+            height: 134px !important;
+            line-height: 134px !important;
+            font-size: 18px;
+            color: #666666;
+          }
+          .el-upload--picture-card:hover,
+          .el-upload:focus {
+            color: black;
+          }
+          .avatar-uploader {
+            width: 134px;
+            height: 134px;
+            border: 1px solid #dbdbdb;
+            border-radius: 50%;
+            position: relative;
+            .el-upload {
+              cursor: pointer;
+              width: 40px;
+              height: 40px;
+              text-align: center;
+              line-height: 40px;
+              border-radius: 50%;
+              background: #fff94b;
+              position: absolute;
+              right: -10px;
+              bottom: 10px;
+            }
+          }
+        }
       }
       /deep/ {
         .el-form-item--mini.el-form-item,
@@ -402,6 +465,23 @@ export default {
         .el-radio__input.is-checked + .el-radio__label {
           color: #000000;
         }
+        .el-radio__input.is-checked .el-radio__inner::after {
+          content: "";
+          width: 10px;
+          height: 5px;
+          border: 1px solid black;
+          border-top: transparent;
+          border-right: transparent;
+          text-align: center;
+          display: block;
+          position: absolute;
+          top: 2px;
+          left: 2px;
+          vertical-align: middle;
+          transform: rotate(-45deg);
+          border-radius: 0px;
+          background: none;
+        }
         .el-select {
           width: 180px;
           margin-right: 20px;
@@ -432,6 +512,9 @@ export default {
           }
           .el-button--primary {
             border: none;
+          }
+          .el-button--primary:hover {
+            background: #535353;
           }
         }
       }
