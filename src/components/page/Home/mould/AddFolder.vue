@@ -178,6 +178,11 @@ export default {
             background: white;
             color: #000000;
           }
+          div:hover {
+            background: #535353;
+            border-color: #535353;
+            color: white;
+          }
         }
       }
     }
