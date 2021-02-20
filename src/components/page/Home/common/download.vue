@@ -3,7 +3,7 @@
     <div class="main_content">
       <div v-for="(item, index) in dataList" :key="index" class="card">
         <div class="img">
-          <img :src="item.cover ? item.cover : images" alt="" />
+          <img :src="item.item.cover ? item.item.cover : images" alt="" />
         </div>
         <div class="card_footer">
           <li class="card_footer_left">
@@ -88,6 +88,32 @@ export default {
           //   this.total = data.data.items_aggregate.aggregate.count;
           //   this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.download_histories;
+          for (let i in this.dataList) {
+            this.handleJudgeLike(this.dataList[i].item.id, this.userInfo.id, i);
+          }
+        });
+    },
+    // 收藏查询
+    handleJudgeLike(item_id, user_id, index) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              likes(
+                where: {item_id: {_eq: "${item_id}"},user_id: {_eq: "${user_id}"}}
+              ) {
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.$set(
+            this.dataList[index].item,
+            "collection",
+            data.data.likes.length ? true : false
+          );
         });
     },
   },
