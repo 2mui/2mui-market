@@ -189,9 +189,9 @@ export default {
               );
               this.$root.$children[0].showRegister(false);
               // 注册成功新建一个默认文件夹
-              this.handleAddfolder();
-              // 获取所有文件夹
-              this.handleGetFolder();
+              // this.handleAddfolder();
+              // // 获取所有文件夹
+              // this.handleGetFolder();
             })
             .catch((err) => {
               // 捕获错误
@@ -206,7 +206,7 @@ export default {
         }
       });
     },
-    // 注册成功新增文件夹
+    // 新增文件夹
     handleAddfolder() {
       this.$apollo
         .mutate({

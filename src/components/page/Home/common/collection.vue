@@ -190,6 +190,7 @@ export default {
           //   this.total = data.data.items_aggregate.aggregate.count;
           //   this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.folders;
+          window.$store.commit("setFolder", data.data.folders);
           this.likesCount = [];
           for (let i in this.dataList) {
             this.handleLikeCount(this.dataList[i].id, i);

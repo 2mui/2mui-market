@@ -17,7 +17,12 @@
         <div class="warp_footer" v-if="isShow">
           <p>相关推荐</p>
           <div class="main_content">
-            <div v-for="(item, index) in dataList" :key="index" class="card">
+            <div
+              v-for="(item, index) in dataList"
+              :key="index"
+              @click="handleDetails(item, index)"
+              class="card"
+            >
               <div class="img">
                 <img :src="item.cover ? item.cover : images" alt="" />
               </div>
@@ -185,6 +190,28 @@ var deleteLikesGql = gql`
     }
   }
 `;
+var insertFoldersGql = gql`
+  mutation insertFolders(
+    $name: String!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_folders(
+      objects: {
+        name: $name
+        user_id: $user_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 export default {
   props: {
     detailsData: {
@@ -204,11 +231,15 @@ export default {
     return {
       dialogVisible: true,
       dataList: [],
-      folder: [],
       userInfo: {},
       images: require("@/assets/img/default.jpg"),
       categoriesId: window.$store.state.categoriesId,
     };
+  },
+  computed: {
+    folder() {
+      return window.$store.state.folder;
+    }
   },
   methods: {
     // 下一个
@@ -222,37 +253,20 @@ export default {
     handleClose() {
       this.$parent.isDetails = false;
     },
+    // 推荐详情
+    handleDetails(item, index) {
+      this.$parent.detailsData = item;
+    },
     // 收藏
     handleCollection(id, collection) {
+      var index = this.$parent.listIndex;
       if (Object.keys(this.userInfo).length) {
         if (!collection) {
-          this.$apollo
-            .mutate({
-              // 更新的语句
-              mutation: getLikeGql,
-              // 实参列表
-              variables: {
-                item_id: id,
-                folder_id: this.folder[0].id,
-                user_id: this.userInfo.id,
-                created_at: "now",
-                updated_at: "now",
-              },
-            })
-            .then((response) => {
-              this.$message({
-                message: "收藏成功！",
-                type: "success",
-              });
-              // 输出获取的数据集
-              this.$set(this.detailsData, "collection", true);
-            })
-            .catch((err) => {
-              this.$message({
-                message: "错了哦！收藏失败",
-                type: "error",
-              });
-            });
+          // 收藏判断是否存在文件夹
+          if (this.folder.length) {
+            this.handleFristFolder(id, index);
+          }
+          this.handleAddfolder(id, index);
         } else {
           this.$apollo
             .mutate({
@@ -270,6 +284,7 @@ export default {
                 message: "取消收藏！",
                 type: "success",
               });
+              this.$set(this.$parent.dataList[index], "collection", false);
               this.$set(this.detailsData, "collection", false);
             })
             .catch((err) => {});
@@ -277,6 +292,77 @@ export default {
       } else {
         this.$root.$children[0].showLogin(true);
       }
+    },
+    // 收藏到第一个文件夹
+    handleFristFolder(id, index) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: getLikeGql,
+          // 实参列表
+          variables: {
+            item_id: id,
+            folder_id: this.folder[0].id,
+            user_id: this.userInfo.id,
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+          this.$message({
+            message: "收藏成功！",
+            type: "success",
+          });
+          this.$set(this.$parent.dataList[index], "collection", true);
+          this.$set(this.detailsData, "collection", true);
+        })
+        .catch((err) => {
+          // this.$message({
+          //   message: "错了哦！收藏失败",
+          //   type: "error",
+          // });
+        });
+    },
+    // 新增文件夹
+    handleAddfolder(id, index) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: insertFoldersGql,
+          // 实参列表
+          variables: {
+            user_id: this.userInfo.id,
+            name: "默认文件夹",
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+          this.handleGetFolder(id, index);
+        })
+        .catch((err) => {});
+    },
+    // 查询所有文件夹
+    handleGetFolder(id, index) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              folders(
+                where: {user_id: {_eq: "${this.userInfo.id}"}}
+              ) {
+                name
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          window.$store.commit("setFolder", data.data.folders);
+          this.handleFristFolder(id, index);
+        });
     },
     // 下载
     handleDowload(url) {
@@ -354,6 +440,32 @@ export default {
         })
         .then((data) => {
           this.dataList = data.data.items.slice(0, 6);
+          for (let i in this.dataList) {
+            this.handleJudgeLike(this.dataList[i].id, this.userInfo.id, i);
+          }
+        });
+    },
+    // 收藏查询
+    handleJudgeLike(item_id, user_id, index) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              likes(
+                where: {item_id: {_eq: "${item_id}"},user_id: {_eq: "${user_id}"}}
+              ) {
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.$set(
+            this.dataList[index],
+            "collection",
+            data.data.likes.length ? true : false
+          );
         });
     },
     // 登录用户默认添加浏览记录
@@ -377,7 +489,7 @@ export default {
     },
   },
   created() {
-    this.folder = window.$store.state.folder;
+    // this.folder = window.$store.state.folder;
     this.userInfo = window.$store.state.userInfo;
     // 登录之后添加浏览记录
     if (Object.keys(this.userInfo).length) {

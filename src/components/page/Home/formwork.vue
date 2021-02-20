@@ -49,22 +49,19 @@
           <div class="mould">
             <div class="mould_warp">
               <div class="edit">
-                <img
+                <i
                   @click.stop="
                     handleCollection(item.id, item.collection, index)
                   "
-                  :src="require('@/assets/img/collection.png')"
-                  alt=""
-                  srcset=""
-                />
-                <img
+                  class="iconfont iconhuaban1fuben9"
+                ></i>
+                <i
                   @click.stop="optCollection(item.id, index)"
-                  :src="require('@/assets/img/dropdown_bottom.png')"
-                  alt=""
-                />
+                  class="iconfont iconhuaban1fuben15"
+                ></i>
               </div>
               <div class="folder" @click.stop="addCollection">
-                <i class="el-icon-folder-add"></i>
+                <i class="iconfont iconhuaban1fuben61"></i>
               </div>
             </div>
           </div>
@@ -172,6 +169,28 @@ var deleteLikesGql = gql`
     }
   }
 `;
+var insertFoldersGql = gql`
+  mutation insertFolders(
+    $name: String!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_folders(
+      objects: {
+        name: $name
+        user_id: $user_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
 export default {
   components: {
     Footer,
@@ -268,33 +287,11 @@ export default {
     handleCollection(id, collection, index) {
       if (Object.keys(this.userInfo).length) {
         if (!collection) {
-          this.$apollo
-            .mutate({
-              // 更新的语句
-              mutation: getLikeGql,
-              // 实参列表
-              variables: {
-                item_id: id,
-                folder_id: this.folder[0].id,
-                user_id: this.userInfo.id,
-                created_at: "now",
-                updated_at: "now",
-              },
-            })
-            .then((response) => {
-              this.$message({
-                message: "收藏成功！",
-                type: "success",
-              });
-              this.$set(this.dataList[index], "collection", true);
-              // 输出获取的数据集
-            })
-            .catch((err) => {
-              this.$message({
-                message: "错了哦！收藏失败",
-                type: "error",
-              });
-            });
+          // 收藏判断是否存在文件夹
+          if (this.folder.length) {
+            this.handleFristFolder(id, index);
+          }
+          this.handleAddfolder(id,index);
         } else {
           this.$apollo
             .mutate({
@@ -319,6 +316,76 @@ export default {
       } else {
         this.$root.$children[0].showLogin(true);
       }
+    },
+    // 收藏到第一个文件夹
+    handleFristFolder(id, index) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: getLikeGql,
+          // 实参列表
+          variables: {
+            item_id: id,
+            folder_id: this.folder[0].id,
+            user_id: this.userInfo.id,
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+          this.$message({
+            message: "收藏成功！",
+            type: "success",
+          });
+          this.$set(this.dataList[index], "collection", true);
+        })
+        .catch((err) => {
+          // this.$message({
+          //   message: "错了哦！收藏失败",
+          //   type: "error",
+          // });
+        });
+    },
+    // 新增文件夹
+    handleAddfolder(id, index) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: insertFoldersGql,
+          // 实参列表
+          variables: {
+            user_id: this.userInfo.id,
+            name: "默认文件夹",
+            created_at: "now",
+            updated_at: "now",
+          },
+        })
+        .then((response) => {
+          this.handleGetFolder(id, index);
+        })
+        .catch((err) => {});
+    },
+    // 查询所有文件夹
+    handleGetFolder(id, index) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              folders(
+                where: {user_id: {_eq: "${this.userInfo.id}"}}
+              ) {
+                name
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          window.$store.commit("setFolder", data.data.folders);
+          this.handleFristFolder(id, index);
+        });
     },
     // 收藏选择文件夹
     optCollection(id, index) {
