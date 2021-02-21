@@ -1,7 +1,12 @@
 <template>
   <div class="record">
     <div class="main_content">
-      <div v-for="(item, index) in dataList" :key="index" class="card">
+      <div
+        v-for="(item, index) in dataList"
+        :key="index"
+        @click="handleDetails(item.item, index)"
+        class="card"
+      >
         <div class="img">
           <img :src="item.item.cover ? item.item.cover : images" alt="" />
         </div>
@@ -41,7 +46,12 @@
     <div class="record_footer" v-if="dataList.length">
       <div class="empty" @click="handleEmpty">清空浏览记录</div>
     </div>
-    <el-dialog :visible.sync="dialogVisible" :show-close="false" width="600px">
+    <el-dialog
+      class="del-dialog"
+      :visible.sync="dialogVisible"
+      :show-close="false"
+      width="600px"
+    >
       <span slot="title">删除</span>
       <span>
         <img :src="require('@/assets/img/question.png')" alt="" srcset="" />
@@ -52,10 +62,13 @@
         <div @click="handleCancel">取消</div>
       </span>
     </el-dialog>
+    <!-- 详情 -->
+    <Exhibition :detailsData="detailsData" v-if="isDetails" />
   </div>
 </template>
 
 <script>
+import Exhibition from "../../../common/Exhibition";
 import gql from "graphql-tag";
 var DelGql = gql`
   mutation deleteItem($item_id: bigint!, $user_id: bigint!) {
@@ -70,9 +83,15 @@ var DelGql = gql`
   }
 `;
 export default {
+  components: {
+    Exhibition,
+  },
   data() {
     return {
       dialogVisible: false,
+      isDetails: false,
+      detailsData: {},
+      listIndex: null,
       dataList: [],
       item_id: "",
       userInfo: {},
@@ -81,6 +100,31 @@ export default {
     };
   },
   methods: {
+    // 上一个
+    upper() {
+      this.listIndex--;
+      if (this.listIndex < 0) {
+        this.$message("没有更多了");
+        this.listIndex = 0;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex].item, this.listIndex);
+      }
+    },
+    // 下一个
+    lower() {
+      this.listIndex++;
+      if (this.listIndex >= this.dataList.length) {
+        this.$message("没有更多了");
+        this.listIndex = this.dataList.length - 1;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex].item, this.listIndex);
+      }
+    },
+    // 详情
+    handleDetails(item, index) {
+      (this.listIndex = index), (this.detailsData = item);
+      this.isDetails = true;
+    },
     handleNav(id) {
       this.className = id;
     },
@@ -133,22 +177,22 @@ export default {
                 where: {user_id: {_eq: "${id}"}}
               ) {
                 item{
-                    cover
-                    category_id
-                    browses_count
-                    created_at
-                    description
-                    detail
-                    downloads_count
-                    draft
-                    featured
-                    filesize
-                    id
-                    industry_id
-                    likes_count
-                    title
-                    updated_at
-                    url
+                  cover
+                  category_id
+                  browses_count
+                  created_at
+                  description
+                  detail
+                  downloads_count
+                  draft
+                  featured
+                  filesize
+                  id
+                  industry_id
+                  likes_count
+                  title
+                  updated_at
+                  url
                 }
               }
             }
@@ -367,7 +411,7 @@ export default {
     }
   }
   /deep/ {
-    .el-dialog {
+    .del-dialog {
       border-radius: 14px;
       .el-dialog__header {
         text-align: center;

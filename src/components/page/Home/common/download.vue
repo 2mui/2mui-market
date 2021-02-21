@@ -1,7 +1,12 @@
 <template>
   <div class="download">
     <div class="main_content">
-      <div v-for="(item, index) in dataList" :key="index" class="card">
+      <div
+        v-for="(item, index) in dataList"
+        :key="index"
+        @click="handleDetails(item.item, index)"
+        class="card"
+      >
         <div class="img">
           <img :src="item.item.cover ? item.item.cover : images" alt="" />
         </div>
@@ -31,20 +36,54 @@
         </div>
       </div>
     </div>
+    <!-- 详情 -->
+    <Exhibition :detailsData="detailsData" v-if="isDetails" />
   </div>
 </template>
 
 <script>
+import Exhibition from "../../../common/Exhibition";
 import gql from "graphql-tag";
 export default {
+  components: {
+    Exhibition,
+  },
   data() {
     return {
+      isDetails: false,
+      detailsData: {},
+      listIndex: null,
       dataList: [],
       categoriesId: window.$store.state.categoriesId,
       images: require("@/assets/img/default.jpg"),
     };
   },
   methods: {
+    // 上一个
+    upper() {
+      this.listIndex--;
+      if (this.listIndex < 0) {
+        this.$message("没有更多了");
+        this.listIndex = 0;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex].item, this.listIndex);
+      }
+    },
+    // 下一个
+    lower() {
+      this.listIndex++;
+      if (this.listIndex >= this.dataList.length) {
+        this.$message("没有更多了");
+        this.listIndex = this.dataList.length - 1;
+      } else {
+        this.handleDetails(this.dataList[this.listIndex].item, this.listIndex);
+      }
+    },
+    // 详情
+    handleDetails(item, index) {
+      (this.listIndex = index), (this.detailsData = item);
+      this.isDetails = true;
+    },
     handleNav(id) {
       this.className = id;
     },
