@@ -5,7 +5,6 @@
       :visible.sync="dialogCollection"
       :close-on-click-modal="false"
       :before-close="handleClose"
-      top="5%"
       width="1040px"
     >
       <div class="warp">
@@ -212,6 +211,15 @@ export default {
 <style lang="scss" scoped>
 .box {
   /deep/ {
+    .indexMould {
+      >.el-dialog {
+        margin: 0 !important;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
     .el-dialog {
       border-radius: 14px;
       .el-dialog__header {

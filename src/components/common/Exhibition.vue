@@ -237,6 +237,12 @@ export default {
         return true;
       },
     },
+    isItem: {
+      type: Boolean,
+      default() {
+        return false;
+      },
+    },
   },
   data() {
     return {
@@ -250,7 +256,7 @@ export default {
   computed: {
     folder() {
       return window.$store.state.folder;
-    }
+    },
   },
   methods: {
     // 下一个
@@ -390,7 +396,19 @@ export default {
           },
         })
         .then((response) => {
-          this.$set(this.$parent.dataList[index], "likes_count", response.data.update_items_by_pk.likes_count);
+          if (this.isItem) {
+            this.$set(
+              this.$parent.dataList[index].item,
+              "likes_count",
+              response.data.update_items_by_pk.likes_count
+            );
+          } else {
+            this.$set(
+              this.$parent.dataList[index],
+              "likes_count",
+              response.data.update_items_by_pk.likes_count
+            );
+          }
         })
         .catch((err) => {});
     },

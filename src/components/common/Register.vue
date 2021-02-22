@@ -253,6 +253,15 @@ export default {
 <style lang="scss" scoped>
 .box {
   /deep/ {
+    .indexMould {
+      >.el-dialog {
+        margin: 0 !important;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
     .el-dialog {
       border-radius: 14px;
       .el-dialog__header {

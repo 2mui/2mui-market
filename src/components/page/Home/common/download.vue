@@ -37,7 +37,7 @@
       </div>
     </div>
     <!-- 详情 -->
-    <Exhibition :detailsData="detailsData" v-if="isDetails" />
+    <Exhibition :detailsData="detailsData" :isItem="isItem" v-if="isDetails" />
   </div>
 </template>
 
@@ -51,6 +51,7 @@ export default {
   data() {
     return {
       isDetails: false,
+      isItem: true,
       detailsData: {},
       listIndex: null,
       dataList: [],

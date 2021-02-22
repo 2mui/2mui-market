@@ -80,7 +80,7 @@
       </div>
     </div>
     <Footer :colorConfirm="colorConfirm" />
-    <Exhibition :detailsData="detailsData" v-if="isDetails" />
+    <Exhibition :detailsData="detailsData" :isItem="isItem" v-if="isDetails" />
     <el-dialog
       class="collection-dialog"
       :visible.sync="dialogEdit"
@@ -167,6 +167,7 @@ export default {
       dialogEdit: false,
       dialogVisible: false,
       isDetails: false,
+      isItem: true,
       detailsData: {},
       listIndex: null,
       colorConfirm: "#F5F5F5",
@@ -407,6 +408,9 @@ export default {
           this.total = data.data.likes_aggregate.aggregate.count;
           this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.likes;
+          for (let i in this.dataList) {
+            this.$set(this.dataList[i].item, "collection", true);
+          }
         });
     },
     // 文件夹文件数量
