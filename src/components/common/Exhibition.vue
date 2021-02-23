@@ -251,9 +251,6 @@ export default {
     };
   },
   watch: {
-    detailsData(val) {
-      console.log(val);
-    },
     dialogVisible(val) {
       this.$parent.isDetails = val;
     },
@@ -502,7 +499,12 @@ export default {
           for (let i in this.dataList) {
             this.$set(this.dataList[i], "likes", []);
           }
-          this.handleQueryLike(this.detailsData.category_id, this.userInfo.id);
+          if (Object.keys(this.userInfo).length) {
+            this.handleQueryLike(
+              this.detailsData.category_id,
+              this.userInfo.id
+            );
+          }
         });
     },
     // 收藏查询

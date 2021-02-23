@@ -465,7 +465,6 @@ export default {
       } else {
         this.formatWhere = val;
       }
-      console.log(this.formatWhere);
       this.getDataList(
         this.limit,
         this.offset,
@@ -489,7 +488,6 @@ export default {
       } else if (this.radio3 == "下载量") {
         this.sortOrder = "downloads_count: desc";
       }
-      console.log(val);
       this.getDataList(
         this.limit,
         this.offset,
