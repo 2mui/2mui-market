@@ -50,9 +50,7 @@
             <div class="mould_warp">
               <div class="edit">
                 <i
-                  @click.stop="
-                    handleCollection(item.id, item.collection, index)
-                  "
+                  @click.stop="handleCollection(item.id, item.likes, index)"
                   class="iconfont iconhuaban1fuben9"
                 ></i>
                 <i
@@ -86,7 +84,7 @@
               </li>
               <li>
                 <i
-                  v-if="item.collection"
+                  v-if="item.likes.length"
                   class="iconfont iconhuaban1fuben10"
                 ></i>
                 <i v-else class="iconfont iconhuaban1fuben9"></i>
@@ -297,12 +295,12 @@ export default {
     // 收藏到默认第一个
     handleCollection(id, collection, index) {
       if (Object.keys(this.userInfo).length) {
-        if (!collection) {
+        if (!collection.length) {
           // 收藏判断是否存在文件夹
           if (this.folder.length) {
             this.handleFristFolder(id, index);
           }
-          this.handleAddfolder(id,index);
+          this.handleAddfolder(id, index);
         } else {
           this.$apollo
             .mutate({
@@ -321,7 +319,7 @@ export default {
                 type: "success",
               });
               this.handleUpdateLike(-1, id, index);
-              this.$set(this.dataList[index], "collection", false);
+              this.$set(this.dataList[index], "likes", []);
             })
             .catch((err) => {});
         }
@@ -351,7 +349,7 @@ export default {
             type: "success",
           });
           this.handleUpdateLike(1, id, index);
-          this.$set(this.dataList[index], "collection", true);
+          this.$set(this.dataList[index], "likes", [0]);
         })
         .catch((err) => {
           // this.$message({
@@ -413,7 +411,11 @@ export default {
           },
         })
         .then((response) => {
-          this.$set(this.dataList[index], "likes_count", response.data.update_items_by_pk.likes_count);
+          this.$set(
+            this.dataList[index],
+            "likes_count",
+            response.data.update_items_by_pk.likes_count
+          );
         })
         .catch((err) => {});
     },
@@ -642,38 +644,97 @@ export default {
           this.total = data.data.items_aggregate.aggregate.count;
           this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.items;
-
+          for (let i in this.dataList) {
+            this.$set(this.dataList[i], "likes", []);
+          }
           // 判断是否登录执行收藏查询
           if (Object.keys(this.userInfo).length) {
-            for (let i in this.dataList) {
-              this.handleJudgeLike(this.dataList[i].id, this.userInfo.id, i);
-            }
+            this.handleQueryLike(
+              this.limit,
+              this.offset,
+              this.id,
+              this.formatWhere,
+              this.sortWhere,
+              this.industryWhere,
+              this.sortOrder,
+              this.userInfo.id
+            );
           }
         });
     },
     // 收藏查询
-    handleJudgeLike(item_id, user_id, index) {
+    handleQueryLike(
+      limit,
+      offset,
+      id,
+      formatWhere,
+      sortWhere,
+      industryWhere,
+      sortOrder,
+      user_id
+    ) {
       this.$apollo
         .query({
           query: gql`
             {
-              likes(
-                where: {item_id: {_eq: "${item_id}"},user_id: {_eq: "${user_id}"}}
-              ) {
+              items_aggregate(where: {category_id: {_eq: ${id}}})  {
+                aggregate {
+                  count
+                }
+              }
+              items( limit: ${limit}, offset: ${offset}, where: { draft: {_eq: false},filetype: {_contains: "${formatWhere}"}, category_id: { _eq: ${id} },${sortWhere},${industryWhere} }, order_by: {${sortOrder}}) {
+                cover
+                category_id
+                browses_count
+                created_at
+                description
+                detail
+                downloads_count
+                draft
+                featured
+                filesize
                 id
+                industry_id
+                likes_count
+                title
+                updated_at
+                url
+                likes(where: {user_id: {_eq: "${user_id}"}}) {
+                  id
+                }
               }
             }
           `,
           fetchPolicy: "no-cache",
         })
         .then((data) => {
-          this.$set(
-            this.dataList[index],
-            "collection",
-            data.data.likes.length ? true : false
-          );
+          this.total = data.data.items_aggregate.aggregate.count;
+          this.totalPage = Math.ceil(this.total / this.limit);
+          this.dataList = data.data.items;
         });
     },
+    // handleJudgeLike(item_id, user_id, index) {
+    //   this.$apollo
+    //     .query({
+    //       query: gql`
+    //         {
+    //           likes(
+    //             where: {item_id: {_eq: "${item_id}"},user_id: {_eq: "${user_id}"}}
+    //           ) {
+    //             id
+    //           }
+    //         }
+    //       `,
+    //       fetchPolicy: "no-cache",
+    //     })
+    //     .then((data) => {
+    //       this.$set(
+    //         this.dataList[index],
+    //         "collection",
+    //         data.data.likes.length ? true : false
+    //       );
+    //     });
+    // },
     // 行业接口
     getIndustries() {
       this.$apollo

@@ -26,7 +26,7 @@
             </li>
             <li>
               <i
-                v-if="item.item.collection"
+                v-if="item.item.likes.length"
                 class="iconfont iconhuaban1fuben10"
               ></i>
               <i v-else class="iconfont iconhuaban1fuben9"></i>
@@ -129,33 +129,55 @@ export default {
           //   this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.download_histories;
           for (let i in this.dataList) {
-            this.handleJudgeLike(this.dataList[i].item.id, this.userInfo.id, i);
+            this.$set(this.dataList[i].item, "likes", []);
           }
+          this.handleQueryLike(this.userInfo.id)
         });
     },
     // 收藏查询
-    handleJudgeLike(item_id, user_id, index) {
+    handleQueryLike(id) {
       this.$apollo
         .query({
           query: gql`
             {
-              likes(
-                where: {item_id: {_eq: "${item_id}"},user_id: {_eq: "${user_id}"}}
+              download_histories_aggregate {
+                aggregate {
+                  count
+                }
+              }
+              download_histories(
+                where: {user_id: {_eq: "${id}"}}
               ) {
-                id
+                item{
+                    cover
+                    category_id
+                    browses_count
+                    created_at
+                    description
+                    detail
+                    downloads_count
+                    draft
+                    featured
+                    filesize
+                    id
+                    industry_id
+                    likes_count
+                    title
+                    updated_at
+                    url
+                    likes(where: {user_id: {_eq: "${id}"}}) {
+                      id
+                    }
+                }
               }
             }
           `,
           fetchPolicy: "no-cache",
         })
         .then((data) => {
-          this.$set(
-            this.dataList[index].item,
-            "collection",
-            data.data.likes.length ? true : false
-          );
+          this.dataList = data.data.download_histories;
         });
-    },
+    }
   },
   created() {
     this.userInfo = window.$store.state.userInfo;

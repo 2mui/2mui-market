@@ -409,7 +409,7 @@ export default {
           this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.likes;
           for (let i in this.dataList) {
-            this.$set(this.dataList[i].item, "collection", true);
+            this.$set(this.dataList[i].item, "likes", [0]);
           }
         });
     },

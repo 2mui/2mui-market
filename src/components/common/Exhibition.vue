@@ -42,7 +42,7 @@
                   </li>
                   <li>
                     <i
-                      v-if="item.collection"
+                      v-if="item.likes.length"
                       class="iconfont iconhuaban1fuben10"
                     ></i>
                     <i v-else class="iconfont iconhuaban1fuben9"></i>
@@ -63,12 +63,10 @@
           </div>
           <div class="list">
             <div
-              @click.stop="
-                handleCollection(detailsData.id, detailsData.collection)
-              "
+              @click.stop="handleCollection(detailsData.id, detailsData.likes)"
             >
               <i
-                v-if="detailsData.collection"
+                v-if="detailsData.likes.length"
                 class="iconfont iconhuaban1fuben10"
               ></i>
               <i v-else class="iconfont iconhuaban1fuben9"></i>
@@ -253,6 +251,11 @@ export default {
       categoriesId: window.$store.state.categoriesId,
     };
   },
+  watch: {
+    dialogVisible(val) {
+      this.$parent.isDetails = val;
+    },
+  },
   computed: {
     folder() {
       return window.$store.state.folder;
@@ -278,7 +281,7 @@ export default {
     handleCollection(id, collection) {
       var index = this.$parent.listIndex;
       if (Object.keys(this.userInfo).length) {
-        if (!collection) {
+        if (!collection.length) {
           // 收藏判断是否存在文件夹
           if (this.folder.length) {
             this.handleFristFolder(id, index);
@@ -302,8 +305,8 @@ export default {
                 type: "success",
               });
               this.handleUpdateLike(-1, id, index);
-              this.$set(this.$parent.dataList[index], "collection", false);
-              this.$set(this.detailsData, "collection", false);
+              this.$set(this.$parent.dataList[index], "likes", []);
+              this.$set(this.detailsData, "likes", []);
             })
             .catch((err) => {});
         }
@@ -333,8 +336,8 @@ export default {
             type: "success",
           });
           this.handleUpdateLike(1, id, index);
-          this.$set(this.$parent.dataList[index], "collection", true);
-          this.$set(this.detailsData, "collection", true);
+          this.$set(this.$parent.dataList[index], "likes", [0]);
+          this.$set(this.detailsData, "likes", [0]);
         })
         .catch((err) => {
           // this.$message({
@@ -489,31 +492,48 @@ export default {
         .then((data) => {
           this.dataList = data.data.items.slice(0, 6);
           for (let i in this.dataList) {
-            this.handleJudgeLike(this.dataList[i].id, this.userInfo.id, i);
+            this.$set(this.dataList[i], "likes", []);
           }
+          this.handleQueryLike(this.detailsData.category_id, this.userInfo.id);
         });
     },
     // 收藏查询
-    handleJudgeLike(item_id, user_id, index) {
+    handleQueryLike(id, user_id) {
       this.$apollo
         .query({
           query: gql`
             {
-              likes(
-                where: {item_id: {_eq: "${item_id}"},user_id: {_eq: "${user_id}"}}
+              items(
+                where: {
+                  draft: { _eq: false }, category_id: {_eq: "${id}"}
+                }
               ) {
+                cover
+                category_id
+                browses_count
+                created_at
+                description
+                detail
+                downloads_count
+                draft
+                featured
+                filesize
                 id
+                industry_id
+                likes_count
+                title
+                updated_at
+                url
+                likes(where: {user_id: {_eq: "${user_id}"}}) {
+                  id
+                }
               }
             }
           `,
           fetchPolicy: "no-cache",
         })
         .then((data) => {
-          this.$set(
-            this.dataList[index],
-            "collection",
-            data.data.likes.length ? true : false
-          );
+          this.dataList = data.data.items.slice(0, 6);
         });
     },
     // 登录用户默认添加浏览记录
