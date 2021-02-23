@@ -30,9 +30,7 @@
             <div class="mould_warp">
               <div class="edit">
                 <i
-                  @click.stop="
-                    handleCollection(item.id, item.likes, index)
-                  "
+                  @click.stop="handleCollection(item.id, item.likes, index)"
                   class="iconfont iconhuaban1fuben9"
                 ></i>
                 <i
@@ -246,6 +244,11 @@ export default {
       categoriesId: window.$store.state.categoriesId,
       partnerList: [],
     };
+  },
+  watch: {
+    userInfo(val) {
+      this.handleGetData(this.limit, this.offset, this.order);
+    },
   },
   computed: {
     userInfo() {

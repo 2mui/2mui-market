@@ -246,17 +246,25 @@ export default {
     return {
       dialogVisible: true,
       dataList: [],
-      userInfo: {},
       images: require("@/assets/img/default.jpg"),
       categoriesId: window.$store.state.categoriesId,
     };
   },
   watch: {
+    detailsData(val) {
+      console.log(val);
+    },
     dialogVisible(val) {
       this.$parent.isDetails = val;
     },
+    userInfo(val) {
+      this.handleCurrentLikes(this.detailsData.id, val.id);
+    },
   },
   computed: {
+    userInfo() {
+      return window.$store.state.userInfo;
+    },
     folder() {
       return window.$store.state.folder;
     },
@@ -536,6 +544,27 @@ export default {
           this.dataList = data.data.items.slice(0, 6);
         });
     },
+    //当前是否收藏判断
+    handleCurrentLikes(id, user_id) {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              likes(where: {item_id: {_eq: ${id}}, user_id: {_eq: ${user_id}}}) {
+                id
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          if (data.data.likes.length) {
+            this.$set(this.detailsData, "likes", [0]);
+          } else {
+            this.$set(this.detailsData, "likes", []);
+          }
+        });
+    },
     // 登录用户默认添加浏览记录
     getInsertBrowseHistories() {
       this.$apollo
@@ -558,7 +587,7 @@ export default {
   },
   created() {
     // this.folder = window.$store.state.folder;
-    this.userInfo = window.$store.state.userInfo;
+    // this.userInfo = window.$store.state.userInfo;
     // 登录之后添加浏览记录
     if (Object.keys(this.userInfo).length) {
       this.getInsertBrowseHistories();
