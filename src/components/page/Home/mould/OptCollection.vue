@@ -58,6 +58,17 @@ var getLikeGql = gql`
     }
   }
 `;
+// 收藏次数添加
+var updateLikeGql = gql`
+  mutation update_likes($likes_count: Int!, $id: bigint!) {
+    update_items_by_pk(
+      _inc: { likes_count: $likes_count }
+      pk_columns: { id: $id }
+    ) {
+      likes_count
+    }
+  }
+`;
 export default {
   data() {
     return {
@@ -112,7 +123,8 @@ export default {
             message: "收藏成功！",
             type: "success",
           });
-          Bus.$emit('collectionSuccess', this.likeIndex);
+          this.handleUpdateLike(1, this.itemId, this.likeIndex);
+          this.$set(this.$parent.dataList[this.likeIndex], "likes", [0]);
           this.$parent.dialogOptCollection = false;
         })
         .catch((err) => {
@@ -121,6 +133,27 @@ export default {
             type: "error",
           });
         });
+    },
+    //收藏次数添加
+    handleUpdateLike(count, id, index) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: updateLikeGql,
+          // 实参列表
+          variables: {
+            likes_count: count,
+            id: id,
+          },
+        })
+        .then((response) => {
+          this.$set(
+            this.$parent.dataList[index],
+            "likes_count",
+            response.data.update_items_by_pk.likes_count
+          );
+        })
+        .catch((err) => {});
     },
     handleGetData(id) {
       this.$apollo

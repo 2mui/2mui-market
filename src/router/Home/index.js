@@ -28,6 +28,16 @@ const router = [
         path: '/search',
         component: () => import('../../components/page/Home/search.vue'),
         meta: { title: '搜索结果页' }
+    },
+    {
+        path: '/copyright',
+        component: () => import('../../components/page/Home/copyright.vue'),
+        meta: { title: '版权声明' }
+    },
+    {
+        path: '/privacy',
+        component: () => import('../../components/page/Home/privacy.vue'),
+        meta: { title: '隐私政策' }
     }
 ]
 export default router;

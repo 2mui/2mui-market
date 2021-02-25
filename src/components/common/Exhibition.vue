@@ -2,15 +2,24 @@
   <div class="exhibition">
     <el-dialog
       class="detalis"
+      id="exhibition"
       :visible.sync="dialogVisible"
       :show-close="false"
       :close-on-click-modal="false"
       top="0"
       width="1180px"
     >
-      <span class="warp">
+      <span class="warp" ref="warp">
         <div class="warp_top">
           <span>{{ detailsData.title }}</span>
+          <div>
+            <span
+              class="tag"
+              v-for="(item, index) in detailsData.filetype"
+              :key="index"
+              >{{ item }}</span
+            >
+          </div>
         </div>
         <img :src="detailsData.detail" alt="" srcset="" />
         <!-- <img :src="require('@/assets/img/details.png')" alt="" srcset=""> -->
@@ -34,6 +43,7 @@
                       return e.id == item.category_id;
                     })[0].name
                   }}</span>
+                  <p>{{ item.title }}</p>
                 </li>
                 <div class="card_footer_right">
                   <li>
@@ -57,8 +67,8 @@
       <span class="sidebar">
         <div class="sidebar_buttom">
           <div class="close">
-            <div>
-              <i class="el-icon-close" @click="handleClose"></i>
+            <div tabindex="1" @click="handleClose">
+              <i class="el-icon-close"></i>
             </div>
           </div>
           <div class="list">
@@ -80,13 +90,13 @@
             <p>{{ detailsData.downloads_count }}人下载</p>
           </div>
           <div class="list">
-            <div @click="lower">
+            <div @click="lower" tabindex="1">
               <i class="iconfont iconhuaban1fuben41"></i>
             </div>
             <p>下一个</p>
           </div>
           <div class="list">
-            <div @click="upper">
+            <div @click="upper" tabindex="1">
               <i class="iconfont iconhuaban1fuben51"></i>
             </div>
             <p>上一个</p>
@@ -269,10 +279,16 @@ export default {
   methods: {
     // 下一个
     lower() {
+      this.$nextTick(() => {
+        document.getElementById("exhibition").scrollTop = 0;
+      });
       this.$parent.lower();
     },
     // 上一个
     upper() {
+      this.$nextTick(() => {
+        document.getElementById("exhibition").scrollTop = 0;
+      });
       this.$parent.upper();
     },
     handleClose() {
@@ -489,6 +505,7 @@ export default {
                 title
                 updated_at
                 url
+                filetype
               }
             }
           `,
@@ -627,9 +644,25 @@ export default {
               font-size: 24px;
               font-weight: bold;
               color: #ffffff;
+              display: flex;
+              align-items: center;
+              .tag {
+                font-size: 14px;
+                color: #ffffff;
+                padding: 2px 8px;
+                border: 1px solid #ffffff;
+                border-radius: 20px;
+                margin-right: 10px;
+              }
+              .tag:nth-child(1){
+                display: none;
+              }
+              .tag:nth-child(2){
+                margin-left: 28px;
+              }
             }
             .warp_footer {
-              p {
+              > p {
                 padding: 30px 0 20px 0;
                 font-size: 20px;
                 font-weight: 400;
@@ -637,6 +670,7 @@ export default {
               }
               .main_content {
                 width: 100%;
+                padding: 0;
                 box-sizing: border-box;
                 .card {
                   cursor: pointer;
@@ -718,6 +752,7 @@ export default {
           }
           .sidebar {
             width: 200px;
+            height: 100vh;
             .sidebar_close {
               cursor: pointer;
               width: 100%;
@@ -738,6 +773,7 @@ export default {
                   cursor: pointer;
                   width: 76px;
                   height: 76px;
+                  border-radius: 50%;
                   display: flex;
                   justify-content: center;
                   align-items: center;
@@ -745,6 +781,16 @@ export default {
                     font-size: 24px;
                     color: #ffffff;
                     font-weight: bold;
+                  }
+                }
+                div:hover {
+                  background: rgba(255, 249, 75, 0.4);
+                }
+                div:focus {
+                  background: #e9e327;
+                  outline: none;
+                  i {
+                    color: black;
                   }
                 }
               }
@@ -770,6 +816,13 @@ export default {
                   .iconhuaban1fuben10 {
                     color: red;
                   }
+                }
+                div:hover {
+                  background: #fff94b;
+                }
+                div:focus {
+                  background: #e9e327;
+                  outline: none;
                 }
                 p {
                   text-align: center;

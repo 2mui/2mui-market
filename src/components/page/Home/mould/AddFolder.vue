@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import Bus from '../../../common/bus';
+import Bus from "../../../common/bus";
 import gql from "graphql-tag";
 var insertFoldersGql = gql`
   mutation insertFolders(
@@ -33,7 +33,12 @@ var insertFoldersGql = gql`
     $created_at: timestamp!
   ) {
     insert_folders(
-      objects: { name: $name, user_id: $user_id, updated_at: $updated_at, created_at: $created_at, }
+      objects: {
+        name: $name
+        user_id: $user_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
     ) {
       affected_rows
       returning {
@@ -79,7 +84,8 @@ export default {
             type: "success",
           });
           this.handleCancel();
-          Bus.$emit('setFolder', true);
+          Bus.$emit("setFolder", true);
+          this.$parent.handleGetData(this.userInfo.id);
         })
         .catch((err) => {
           // 捕获错误
@@ -88,7 +94,7 @@ export default {
             type: "error",
           });
         });
-    }
+    },
   },
   created() {
     this.userInfo = window.$store.state.userInfo;

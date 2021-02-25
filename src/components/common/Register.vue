@@ -300,7 +300,6 @@ export default {
             .register_right {
               font-family: Source Han Sans CN;
               width: 400px;
-              height: 600px;
               position: absolute;
               left: 560px;
               top: 50%;

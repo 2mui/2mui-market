@@ -57,14 +57,25 @@
                   return e.id == item.item.category_id;
                 })[0].name
               }}</span>
+              <p>{{ item.item.title }}</p>
             </li>
           </div>
         </div>
       </div>
       <div class="main_footer">
         <div class="main_footer_warp">
-          <el-button @click="homePage">首页</el-button>
-          <el-button @click="previousPage">上一页</el-button>
+          <el-button
+            :class="isStart == page ? 'active' : ''"
+            :disabled="isStart == page ? true : false"
+            @click="homePage"
+            >首页</el-button
+          >
+          <el-button
+            :class="isStart == page ? 'active' : ''"
+            :disabled="isStart == page ? true : false"
+            @click="previousPage"
+            >上一页</el-button
+          >
           <el-pagination
             background
             layout="pager"
@@ -74,8 +85,18 @@
             :total="total"
           >
           </el-pagination>
-          <el-button @click="nextPage">下一页</el-button>
-          <el-button @click="lastPage">尾页</el-button>
+          <el-button
+            :class="page == totalPage ? 'active' : ''"
+            :disabled="page == totalPage ? true : false"
+            @click="nextPage"
+            >下一页</el-button
+          >
+          <el-button
+            :class="page == totalPage ? 'active' : ''"
+            :disabled="page == totalPage ? true : false"
+            @click="lastPage"
+            >尾页</el-button
+          >
         </div>
       </div>
     </div>
@@ -161,6 +182,7 @@ export default {
   },
   data() {
     return {
+      isStart: 1,
       userInfo: {},
       images: require("@/assets/img/default.jpg"),
       categoriesId: window.$store.state.categoriesId,
@@ -398,6 +420,7 @@ export default {
                     title
                     updated_at
                     url
+                    filetype
                   }
               }
             }
@@ -497,7 +520,7 @@ export default {
   }
   .main {
     margin: 0 auto;
-    max-width: 1740px;
+    max-width: 1760px;
     min-width: 1200px;
     .main_title {
       text-align: center;
@@ -556,14 +579,14 @@ export default {
       .card {
         cursor: pointer;
         width: 25%;
-        padding: 0 10px;
+        padding: 0 7.5px;
         margin-bottom: 50px;
         box-sizing: border-box;
         float: left;
         position: relative;
         > img {
           width: 100%;
-          height: 303px;
+          height: 315px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
@@ -572,7 +595,7 @@ export default {
           display: none;
           width: 100%;
           height: 97px;
-          padding: 0 10px;
+          padding: 0 7.5px;
           box-sizing: border-box;
           position: absolute;
           left: 0;
@@ -649,6 +672,15 @@ export default {
             background: #fff94b;
             border-color: #fff94b;
             color: #333333;
+          }
+          .active {
+            color: #999999;
+          }
+          .active:focus,
+          .active:hover {
+            background: white;
+            border-color: #ebeef5;
+            color: #999999;
           }
           .el-button--small,
           .el-button--small.is-round {

@@ -1,13 +1,8 @@
 <template>
   <div class="download">
     <div class="main_content">
-      <div
-        v-for="(item, index) in dataList"
-        :key="index"
-        @click="handleDetails(item.item, index)"
-        class="card"
-      >
-        <div class="img">
+      <div v-for="(item, index) in dataList" :key="index" class="card">
+        <div class="img" @click="handleDetails(item.item, index)">
           <img :src="item.item.cover ? item.item.cover : images" alt="" />
         </div>
         <div class="card_footer">
@@ -18,6 +13,7 @@
                 return e.id == item.item.category_id;
               })[0].name
             }}</span>
+            <p>{{ item.item.title }}</p>
           </li>
           <div class="card_footer_right">
             <li>
@@ -102,22 +98,23 @@ export default {
                 where: {user_id: {_eq: "${id}"}}
               ) {
                 item{
-                    cover
-                    category_id
-                    browses_count
-                    created_at
-                    description
-                    detail
-                    downloads_count
-                    draft
-                    featured
-                    filesize
-                    id
-                    industry_id
-                    likes_count
-                    title
-                    updated_at
-                    url
+                  cover
+                  category_id
+                  browses_count
+                  created_at
+                  description
+                  detail
+                  downloads_count
+                  draft
+                  featured
+                  filesize
+                  id
+                  industry_id
+                  likes_count
+                  title
+                  updated_at
+                  url
+                  filetype
                 }
               }
             }
@@ -131,7 +128,7 @@ export default {
           for (let i in this.dataList) {
             this.$set(this.dataList[i].item, "likes", []);
           }
-          this.handleQueryLike(this.userInfo.id)
+          this.handleQueryLike(this.userInfo.id);
         });
     },
     // 收藏查询
@@ -165,6 +162,7 @@ export default {
                     title
                     updated_at
                     url
+                    filetype
                     likes(where: {user_id: {_eq: "${id}"}}) {
                       id
                     }
@@ -177,7 +175,7 @@ export default {
         .then((data) => {
           this.dataList = data.data.download_histories;
         });
-    }
+    },
   },
   created() {
     this.userInfo = window.$store.state.userInfo;
@@ -195,13 +193,13 @@ export default {
     .card {
       cursor: pointer;
       width: 25%;
-      padding: 0 10px;
+      padding: 0 7.5px;
       margin-bottom: 50px;
       box-sizing: border-box;
       float: left;
       .img {
         width: 100%;
-        height: 303px;
+        height: 315px;
         border-radius: 14px;
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
         transition: all 0.2s;
@@ -246,7 +244,7 @@ export default {
       }
     }
     .card:hover {
-      img {
+      > img {
         transition: all 1s;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
       }

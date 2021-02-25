@@ -35,7 +35,7 @@
               :before-upload="beforeAvatarUpload"
             >
               <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-              <i v-else class="el-icon-camera"></i>
+              <i v-else class="iconfont iconhuaban1fuben16"></i>
             </el-upload>
           </el-form-item>
           <el-form-item label="昵称">
@@ -439,9 +439,14 @@ export default {
           padding-left: 114px;
           box-sizing: border-box;
         }
+        .el-input__inner {
+          font-size: 18px;
+          color: #999999;
+        }
         .el-input.is-active .el-input__inner,
         .el-input__inner:focus {
-          border-color: #dbdbdb;
+          border-color: #000000;
+          color: #333333;
         }
         .el-form-item--small .el-form-item__content,
         .el-form-item--small .el-form-item__label {
@@ -455,8 +460,13 @@ export default {
           line-height: 50px;
         }
         .el-radio__inner {
+          width: 18px;
+          height: 18px;
           border-radius: 2px;
           border: 1px solid #000000;
+        }
+        .el-radio__label{
+          font-size: 18px;
         }
         .el-radio__input.is-checked .el-radio__inner {
           background: #fff94b;

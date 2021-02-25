@@ -1,19 +1,14 @@
 <template>
   <div class="record">
     <div class="main_content">
-      <div
-        v-for="(item, index) in dataList"
-        :key="index"
-        @click="handleDetails(item.item, index)"
-        class="card"
-      >
-        <div class="img">
+      <div v-for="(item, index) in dataList" :key="index" class="card">
+        <div class="img" @click="handleDetails(item.item, index)">
           <img :src="item.item.cover ? item.item.cover : images" alt="" />
         </div>
         <div class="mould">
           <div class="mould_warp">
             <div class="dle" @click.stop="handleDel(item.item.id)">
-              <i class="el-icon-delete"></i>
+              <i class="iconfont iconhuaban1fuben14"></i>
             </div>
           </div>
         </div>
@@ -25,6 +20,7 @@
                 return e.id == item.item.category_id;
               })[0].name
             }}</span>
+            <p>{{ item.item.title }}</p>
           </li>
           <div class="card_footer_right">
             <li>
@@ -194,6 +190,7 @@ export default {
                   title
                   updated_at
                   url
+                  filetype
                 }
               }
             }
@@ -207,7 +204,7 @@ export default {
           for (let i in this.dataList) {
             this.$set(this.dataList[i].item, "likes", []);
           }
-          this.handleQueryLike(this.userInfo.id)
+          this.handleQueryLike(this.userInfo.id);
         });
     },
     // 收藏查询
@@ -241,6 +238,7 @@ export default {
                   title
                   updated_at
                   url
+                  filetype
                   likes(where: {user_id: {_eq: "${id}"}}) {
                     id
                   }
@@ -307,14 +305,14 @@ export default {
     .card {
       cursor: pointer;
       width: 25%;
-      padding: 0 10px;
+      padding: 0 7.5px;
       margin-bottom: 50px;
       box-sizing: border-box;
       float: left;
       position: relative;
       > .img {
         width: 100%;
-        height: 303px;
+        height: 315px;
         border-radius: 14px;
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
         transition: all 0.2s;
@@ -329,7 +327,7 @@ export default {
         display: none;
         width: 100%;
         height: 97px;
-        padding: 0 10px;
+        padding: 0 7.5px;
         box-sizing: border-box;
         position: absolute;
         left: 0;
@@ -349,6 +347,9 @@ export default {
           .dle {
             width: 40px;
             height: 40px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
             background: white;
             border-radius: 50%;
             text-align: center;

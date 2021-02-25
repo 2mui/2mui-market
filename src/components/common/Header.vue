@@ -253,6 +253,9 @@ export default {
       font-weight: 400;
       color: #333333;
     }
+    li:hover {
+      background: #fcf89f;
+    }
     .active {
       background: #fff94b;
       position: relative;
@@ -325,7 +328,7 @@ export default {
         color: #333333;
       }
       > input::-webkit-input-placeholder {
-        font-size: 16px;
+        font-size: 18px;
         font-weight: 400;
         color: #999999;
         opacity: 1;
@@ -335,7 +338,6 @@ export default {
         width: 49px;
         height: 49px;
         border-radius: 50%;
-        background: #fff94b;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -343,6 +345,9 @@ export default {
           font-size: 20px;
           font-weight: bold;
         }
+      }
+      .search_buttom:hover {
+        background: #fff94b;
       }
     }
     .header_avatar {
@@ -377,6 +382,10 @@ export default {
             font-family: Source Han Sans CN;
             font-weight: 400;
             color: #333333;
+            i{
+              font-size: 18px;
+              margin-right: 9px;
+            }
             img {
               width: 18px;
               height: 16px;

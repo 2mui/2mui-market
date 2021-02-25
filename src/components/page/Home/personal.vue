@@ -172,7 +172,7 @@ export default {
   }
   .main {
     margin: 0 auto;
-    max-width: 1740px;
+    max-width: 1760px;
     min-width: 1200px;
     .main_title {
       height: 174px;

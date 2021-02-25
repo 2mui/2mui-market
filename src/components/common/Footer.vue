@@ -8,40 +8,38 @@
         </div>
       </div>
       <div class="footer_list footer_link">
-        <p>关于我们</p>
-        <li><span>版权声明</span><span>版权声明</span></li>
-        <li><span>隐私政策</span><span>隐私政策</span></li>
+        <li>
+          <span>关于我们</span
+          ><router-link tag="span" to="/copyright">版权声明</router-link
+          ><router-link tag="span" to="/privacy">隐私政策</router-link>
+        </li>
       </div>
       <div class="footer_list footer_link">
-        <p>友情链接</p>
         <li>
+          <span>友情链接</span>
           <span v-for="(item, index) in dataList" :key="index">
             <a :href="item.url" target="_blank" rel="noopener noreferrer">{{
               item.title
             }}</a>
           </span>
         </li>
-        <!-- <li><span>二木设计</span><span>二木设计</span></li> -->
       </div>
       <div class="footer_list footer_contact">
         <div>
-          <p>联系我们</p>
           <li>
-            <img :src="require('@/assets/img/footer_phone.png')" alt="" />
-            <span>1346687899</span>
+            <span>联系我们</span>
+            <img :src="require('@/assets/img/footer_qq.png')" alt="" />
+            <span>2050708081</span>
           </li>
-          <li>
-            <img :src="require('@/assets/img/we_chat.png')" alt="" />
-            <span>1346687899</span>
-          </li>
-        </div>
-        <div>
-          <img :src="require('@/assets/img/footer_qr.png')" alt="" />
-          <p>扫描二维码关注公众号</p>
         </div>
       </div>
     </div>
-    <div class="footer_bottom">©2021版权所有</div>
+    <div class="footer_bottom">
+      <p>
+        本站素材图片均来源于网络用户分享，本站所有资源仅供学习研究与交流，不得用于任何商业用途的范围
+      </p>
+      <p>©2021 本站若侵犯了您的合法权益，请联系站长删除！</p>
+    </div>
   </div>
 </template>
 
@@ -94,18 +92,20 @@ export default {
 .footer {
   width: 100%;
   .footer_top {
-    padding: 57px 0 63px 0;
+    padding: 44px 0 90px 0;
     display: flex;
     align-items: center;
     .footer_list {
-      height: 123px;
+      height: 50px;
       flex: 1;
+      display: flex;
+      align-items: center;
       .footer_logo {
         display: flex;
         align-items: center;
         img {
-          width: 94px;
-          height: 94px;
+          width: 42px;
+          height: 42px;
           margin-right: 27px;
         }
         span {
@@ -125,20 +125,17 @@ export default {
       border-left: 1px solid #cfcfcf;
       padding: 0 40px;
       box-sizing: border-box;
-      p {
-        font-size: 20px;
-        font-weight: bold;
-        color: #333333;
-        opacity: 1;
-        margin-bottom: 32px;
-      }
       li {
-        width: 220px;
         font-size: 18px;
         font-weight: 400;
         color: #333333;
         opacity: 1;
         a {
+          color: #333333;
+        }
+        span:first-child {
+          font-size: 18px;
+          font-weight: bold;
           color: #333333;
         }
         span {
@@ -155,13 +152,6 @@ export default {
       display: flex;
       div {
         flex: 1;
-        p {
-          font-size: 20px;
-          font-weight: bold;
-          color: #333333;
-          opacity: 1;
-          margin-bottom: 32px;
-        }
         li {
           font-size: 18px;
           font-weight: 400;
@@ -170,6 +160,15 @@ export default {
           margin-bottom: 18px;
           display: flex;
           align-items: center;
+          img {
+            width: 18px;
+            height: 24px;
+          }
+          span:first-child {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+          }
           span {
             cursor: pointer;
             margin-right: 30px;
@@ -177,24 +176,18 @@ export default {
           }
         }
       }
-      div:last-child {
-        p {
-          font-size: 12px;
-          font-weight: 400;
-          color: #999999;
-          opacity: 1;
-        }
-      }
     }
   }
   .footer_bottom {
-    display: flex;
-    justify-content: center;
     font-size: 18px;
     font-weight: 400;
-    color: #999999;
+    text-align: center;
+    color: #333333;
     opacity: 1;
     padding-bottom: 20px;
+    p:nth-child(1) {
+      margin-bottom: 30px;
+    }
   }
 }
 </style>

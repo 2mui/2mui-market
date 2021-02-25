@@ -118,7 +118,6 @@ export default {
               query: gql`
                 {
                   users {
-                    admin
                     avatar
                     cid
                     city
@@ -292,7 +291,7 @@ export default {
                 display: flex;
                 justify-content: space-evenly;
                 text-align: center;
-                margin: 40px 0 92px 0;
+                margin: 30px 0 82px 0;
                 .icon {
                   width: 90px;
                   height: 90px;
@@ -310,7 +309,7 @@ export default {
                 }
               }
               .login_form {
-                margin-top: 41px;
+                margin-top: 30px;
                 position: relative;
                 .submit {
                   width: 100%;

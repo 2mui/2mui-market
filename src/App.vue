@@ -52,7 +52,7 @@ export default {
   padding: 0 !important;
 }
 .el-form-item--small .el-form-item__label {
-  font-size: 16px !important;
+  font-size: 18px !important;
   color: #000000;
 }
 </style>

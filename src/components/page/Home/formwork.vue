@@ -37,13 +37,8 @@
         </div>
       </div>
       <div class="main_content">
-        <div
-          v-for="(item, index) in dataList"
-          :key="index"
-          @click="handleDetails(item, index)"
-          class="card"
-        >
-          <div class="img">
+        <div v-for="(item, index) in dataList" :key="index" class="card">
+          <div class="img" @click="handleDetails(item, index)">
             <img :src="item.cover ? item.cover : images" alt="" />
           </div>
           <div class="mould">
@@ -71,6 +66,7 @@
                   return e.id == item.category_id;
                 })[0].name
               }}</span>
+              <p>{{ item.title }}</p>
             </li>
             <div class="card_footer_right">
               <li>
@@ -84,10 +80,15 @@
               </li>
               <li>
                 <i
+                  @click.stop="handleCollection(item.id, item.likes, index)"
                   v-if="item.likes.length"
                   class="iconfont iconhuaban1fuben10"
                 ></i>
-                <i v-else class="iconfont iconhuaban1fuben9"></i>
+                <i
+                  @click.stop="optCollection(item.id, index)"
+                  v-else
+                  class="iconfont iconhuaban1fuben9"
+                ></i>
                 {{ item.likes_count }}
               </li>
             </div>
@@ -96,8 +97,18 @@
       </div>
       <div class="main_footer">
         <div class="main_footer_warp">
-          <el-button @click="homePage">首页</el-button>
-          <el-button @click="previousPage">上一页</el-button>
+          <el-button
+            :class="isStart == page ? 'active' : ''"
+            :disabled="isStart == page ? true : false"
+            @click="homePage"
+            >首页</el-button
+          >
+          <el-button
+            :class="isStart == page ? 'active' : ''"
+            :disabled="isStart == page ? true : false"
+            @click="previousPage"
+            >上一页</el-button
+          >
           <el-pagination
             background
             layout="pager"
@@ -107,8 +118,18 @@
             :total="total"
           >
           </el-pagination>
-          <el-button @click="nextPage">下一页</el-button>
-          <el-button @click="lastPage">尾页</el-button>
+          <el-button
+            :class="page == totalPage ? 'active' : ''"
+            :disabled="page == totalPage ? true : false"
+            @click="nextPage"
+            >下一页</el-button
+          >
+          <el-button
+            :class="page == totalPage ? 'active' : ''"
+            :disabled="page == totalPage ? true : false"
+            @click="lastPage"
+            >尾页</el-button
+          >
         </div>
       </div>
     </div>
@@ -219,6 +240,7 @@ export default {
   },
   data() {
     return {
+      isStart: 1,
       categoriesId: window.$store.state.categoriesId,
       images: require("@/assets/img/default.jpg"),
       dialogCollection: false,
@@ -633,6 +655,7 @@ export default {
                 title
                 updated_at
                 url
+                filetype
               }
             }
           `,
@@ -784,18 +807,18 @@ export default {
   }
   .main {
     margin: 0 auto;
-    max-width: 1740px;
+    max-width: 1760px;
     min-width: 1200px;
     .main_search {
       padding: 50px 20px;
       box-sizing: border-box;
       .search_list {
         width: 100%;
-        height: 40px;
+        line-height: 44px;
         display: flex;
-        align-items: center;
         margin-bottom: 20px;
         .label {
+          width: 50px;
           font-size: 16px;
           font-weight: 400;
           color: #666666;
@@ -803,6 +826,9 @@ export default {
         }
         /deep/ {
           .el-radio-group {
+            .el-radio-button {
+              margin-right: 5px;
+            }
             .el-radio-button .el-radio-button__inner {
               border-radius: 100px;
             }
@@ -811,6 +837,9 @@ export default {
               color: #333333;
               border-color: #fff94b;
               box-shadow: none;
+            }
+            .el-radio-button--small .el-radio-button__inner:hover {
+              background: #fcf89f;
             }
             .el-radio-button__inner {
               border: none;
@@ -838,14 +867,14 @@ export default {
       .card {
         cursor: pointer;
         width: 25%;
-        padding: 0 10px;
+        padding: 0 7.5px;
         margin-bottom: 50px;
         box-sizing: border-box;
         float: left;
         position: relative;
         > .img {
           width: 100%;
-          height: 303px;
+          height: 315px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
           transition: all 0.2s;
@@ -956,7 +985,7 @@ export default {
           box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
         }
         .mould {
-          display: block;
+          display: none;
         }
       }
     }
@@ -979,6 +1008,15 @@ export default {
             background: #fff94b;
             border-color: #fff94b;
             color: #333333;
+          }
+          .active {
+            color: #999999;
+          }
+          .active:focus,
+          .active:hover {
+            background: white;
+            border-color: #ebeef5;
+            color: #999999;
           }
           .el-button--small,
           .el-button--small.is-round {
