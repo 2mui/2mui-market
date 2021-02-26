@@ -577,6 +577,7 @@ export default {
                 title
                 updated_at
                 url
+                filetype
                 likes(where: {user_id: {_eq: "${user_id}"}}) {
                   id
                 }

@@ -21,7 +21,30 @@
             >
           </div>
         </div>
-        <img :src="detailsData.detail" alt="" srcset="" />
+        <video-player
+          v-if="
+            categoriesId.filter((e) => {
+              return e.id == detailsData.category_id;
+            })[0].name == 'AE动效'
+          "
+          class="video-player vjs-custom-skin"
+          ref="videoPlayer"
+          :playsinline="true"
+          :options="playerOptions"
+        >
+        </video-player>
+        <!-- <video
+          style="width: 100%"
+          v-if="
+            categoriesId.filter((e) => {
+              return e.id == detailsData.category_id;
+            })[0].name == 'AE动效'
+          "
+          @click="handleVideo"
+          ref="dialogVideo"
+          :src="detailsData.detail"
+        ></video> -->
+        <img v-else :src="detailsData.detail" alt="" srcset="" />
         <!-- <img :src="require('@/assets/img/details.png')" alt="" srcset=""> -->
         <div class="warp_footer" v-if="isShow">
           <p>相关推荐</p>
@@ -108,6 +131,8 @@
 </template>
 
 <script>
+import { videoPlayer } from "vue-video-player";
+import "video.js/dist/video-js.css";
 import gql from "graphql-tag";
 // 新增浏览记录
 var insertBrowseHistoriesGql = gql`
@@ -252,12 +277,40 @@ export default {
       },
     },
   },
+  components: {
+    videoPlayer,
+  },
   data() {
     return {
       dialogVisible: true,
       dataList: [],
       images: require("@/assets/img/default.jpg"),
       categoriesId: window.$store.state.categoriesId,
+      isVideo: true,
+      playerOptions: {
+        playbackRates: [0.5, 1.0, 1.5, 2.0], // 可选的播放速度
+        autoplay: false, // 如果为true,浏览器准备好时开始回放。
+        muted: false, // 默认情况下将会消除任何音频。
+        loop: false, // 是否视频一结束就重新开始。
+        preload: "auto", // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        language: "zh-CN",
+        aspectRatio: "16:9", // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources: [
+          {
+            type: "video/mp4", // 类型
+            src: "", // url地址
+          },
+        ],
+        poster: "", // 封面地址
+        notSupportedMessage: "此视频暂无法播放，请稍后再试", // 允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        controlBar: {
+          timeDivider: true, // 当前时间和持续时间的分隔符
+          durationDisplay: true, // 显示持续时间
+          remainingTimeDisplay: false, // 是否显示剩余时间功能
+          fullscreenToggle: true, // 是否显示全屏按钮
+        },
+      },
     };
   },
   watch: {
@@ -277,6 +330,15 @@ export default {
     },
   },
   methods: {
+    handleVideo() {
+      if (this.isVideo) {
+        this.$refs.dialogVideo.play();
+        this.isVideo = false;
+      } else {
+        this.$refs.dialogVideo.pause();
+        this.isVideo = true;
+      }
+    },
     // 下一个
     lower() {
       this.$nextTick(() => {
@@ -297,6 +359,9 @@ export default {
     // 推荐详情
     handleDetails(item, index) {
       this.$parent.detailsData = item;
+      this.$nextTick(() => {
+        document.getElementById("exhibition").scrollTop = 0;
+      });
     },
     // 收藏
     handleCollection(id, collection) {
@@ -551,6 +616,7 @@ export default {
                 title
                 updated_at
                 url
+                filetype
                 likes(where: {user_id: {_eq: "${user_id}"}}) {
                   id
                 }
@@ -605,6 +671,8 @@ export default {
     },
   },
   created() {
+    this.playerOptions.sources[0].src = this.detailsData.detail;
+    this.playerOptions.poster = this.detailsData.cover;
     // this.folder = window.$store.state.folder;
     // this.userInfo = window.$store.state.userInfo;
     // 登录之后添加浏览记录
@@ -654,10 +722,10 @@ export default {
                 border-radius: 20px;
                 margin-right: 10px;
               }
-              .tag:nth-child(1){
+              .tag:nth-child(1) {
                 display: none;
               }
-              .tag:nth-child(2){
+              .tag:nth-child(2) {
                 margin-left: 28px;
               }
             }
@@ -796,7 +864,7 @@ export default {
               }
               .list {
                 color: white;
-                margin-bottom: 50px;
+                margin-bottom: 25px;
                 div {
                   cursor: pointer;
                   width: 76px;
@@ -831,10 +899,10 @@ export default {
                 }
               }
               .list:nth-child(2) {
-                margin-top: 150px;
+                margin-top: 140px;
               }
               .list:nth-child(4) {
-                margin-top: 100px;
+                margin-top: 80px;
               }
             }
           }

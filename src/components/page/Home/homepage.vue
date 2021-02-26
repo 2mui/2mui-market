@@ -34,8 +34,8 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
             >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-              <i v-else class="iconfont iconhuaban1fuben16"></i>
+              <img :src="imageUrl" class="avatar" />
+              <i class="iconfont iconhuaban1fuben16"></i>
             </el-upload>
           </el-form-item>
           <el-form-item label="昵称">
@@ -145,7 +145,6 @@ var EditUserGql = gql`
     ) {
       affected_rows
       returning {
-        admin
         avatar
         cid
         city
@@ -207,7 +206,7 @@ export default {
       userInfo: {},
       allList: [],
       cityList: [],
-      imageUrl: "",
+      imageUrl: require("@/assets/img/girl.jpg"),
     };
   },
   methods: {
@@ -429,6 +428,20 @@ export default {
               position: absolute;
               right: -10px;
               bottom: 10px;
+              img {
+                width: 136px;
+                height: 136px;
+                border-radius: 50%;
+                position: relative;
+                top: -85px;
+                left: -105px;
+                z-index: -1;
+              }
+              i{
+                position: relative;
+                top: -150px;
+                left: -0px;
+              }
             }
           }
         }
@@ -465,7 +478,7 @@ export default {
           border-radius: 2px;
           border: 1px solid #000000;
         }
-        .el-radio__label{
+        .el-radio__label {
           font-size: 18px;
         }
         .el-radio__input.is-checked .el-radio__inner {

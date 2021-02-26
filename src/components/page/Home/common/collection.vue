@@ -8,12 +8,9 @@
         class="card"
       >
         <div class="img imgWarp">
-          <div class="imgList" v-for="(item, index) in item.likes" :key="index">
+          <div class="imgList" v-for="(item, index) in item.likes.slice(0,4)" :key="index">
             <img :src="item.item.cover" alt="" />
           </div>
-          <div class="imgList"></div>
-          <div class="imgList"></div>
-          <div class="imgList"></div>
           <!-- <img class="img" :src="images" alt="" /> -->
         </div>
         <div class="mould">

@@ -1,8 +1,13 @@
 <template>
   <div class="home">
-    <div class="banner">
+    <el-carousel trigger="click" height="600px">
+      <el-carousel-item>
+        <img :src="require('@/assets/img/banner.jpg')" alt="" />
+      </el-carousel-item>
+    </el-carousel>
+    <!-- <div class="banner">
       <img :src="require('@/assets/img/banner.jpg')" alt="" />
-    </div>
+    </div> -->
     <div class="main">
       <div class="main_title">
         <ul>
@@ -594,6 +599,7 @@ export default {
                 title
                 updated_at
                 url
+                filetype
                 likes(where: {user_id: {_eq: "${user_id}"}}) {
                   id
                 }
