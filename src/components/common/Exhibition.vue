@@ -33,19 +33,7 @@
           :options="playerOptions"
         >
         </video-player>
-        <!-- <video
-          style="width: 100%"
-          v-if="
-            categoriesId.filter((e) => {
-              return e.id == detailsData.category_id;
-            })[0].name == 'AE动效'
-          "
-          @click="handleVideo"
-          ref="dialogVideo"
-          :src="detailsData.detail"
-        ></video> -->
         <img v-else :src="detailsData.detail" alt="" srcset="" />
-        <!-- <img :src="require('@/assets/img/details.png')" alt="" srcset=""> -->
         <div class="warp_footer" v-if="isShow">
           <p>相关推荐</p>
           <div class="main_content">
@@ -771,8 +759,8 @@ export default {
                     justify-content: space-between;
                     .card_footer_left {
                       width: 70%;
-                      span:last-child {
-                        background: #707070;
+                      span:nth-child(2) {
+                        background: #707070 !important;
                         font-size: 12px;
                         color: white;
                         padding: 4px 14px;
