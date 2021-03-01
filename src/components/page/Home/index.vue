@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <el-carousel trigger="click" height="600px">
-      <el-carousel-item>
-        <img :src="require('@/assets/img/banner.jpg')" alt="" />
+      <el-carousel-item v-for="(item,index) in bannerList" :key="index">
+        <img :src="item.image" :alt="item.alt" />
       </el-carousel-item>
     </el-carousel>
     <!-- <div class="banner">
@@ -271,6 +271,7 @@ export default {
       images: require("@/assets/img/default.jpg"),
       categoriesId: window.$store.state.categoriesId,
       partnerList: [],
+      bannerList: []
     };
   },
   watch: {
@@ -698,10 +699,28 @@ export default {
           window.$store.commit("setUserInfo", data.data.users[0]);
         });
     },
+    handleGttBanner() {
+      this.$apollo
+        .query({
+          query: gql`
+            {
+              banners(where: { position: { _gt: 0 } }) {
+                image
+                alt
+              }
+            }
+          `,
+          fetchPolicy: "no-cache",
+        })
+        .then((data) => {
+          this.bannerList = data.data.banners;
+        });
+    },
   },
   created() {
     this.handleGetData(this.limit, this.offset, this.order);
     this.handlePartners();
+    this.handleGttBanner();
 
     // 判断用户是否扫码登陆
     if (this.cookieUser != null) {

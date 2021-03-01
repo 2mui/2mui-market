@@ -192,11 +192,10 @@ export default {
   },
   metaInfo() {
     return {
-      title: "素材",
-      id: "",
+      title: "网页设计素材模板-素材下载-二木素材网",
       meta: [
-        { name: "keywords", content: "this.description" },
-        { name: "description", content: "this.description" },
+        { name: "keywords", content: "网页设计,app设计,banner,插画,图标,3d,ae,设计" },
+        { name: "description", content: "网页设计素材模板-素材下载-二木素材网" },
       ],
     };
   },
