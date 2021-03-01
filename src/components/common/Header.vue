@@ -1,9 +1,9 @@
 <template>
   <div class="header">
-    <div class="header_logo">
+    <div class="header_logo" @click="handleIndex">
       <div class="logo_warp">
         <img :src="require('@/assets/img/header_logo.png')" alt="" />
-        <span>二木UI</span>
+        <span>二木素材</span>
       </div>
     </div>
     <div class="header_nav">
@@ -145,6 +145,11 @@ export default {
       }
       window.$store.commit("setNavActive", id);
     },
+    handleIndex() {
+      this.$router.push({
+        path: "/index",
+      });
+    },
     handleNav(path, name) {
       if (name == "个人主页") {
         this.$router.push({
@@ -226,7 +231,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-left: 86px;
+    padding-left: 60px;
     box-sizing: border-box;
     .logo_warp {
       display: flex;
@@ -247,11 +252,12 @@ export default {
       cursor: pointer;
       border-radius: 44px;
       line-height: 44px;
-      padding: 0 29px;
+      padding: 0 25px;
       box-sizing: border-box;
       font-size: 20px;
       font-weight: 400;
       color: #333333;
+      margin-right: 10px;
     }
     li:hover {
       background: #fcf89f;
@@ -382,7 +388,7 @@ export default {
             font-family: Source Han Sans CN;
             font-weight: 400;
             color: #333333;
-            i{
+            i {
               font-size: 18px;
               margin-right: 9px;
             }

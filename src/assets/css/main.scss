@@ -156,6 +156,7 @@ a {
           align-items: center;
           justify-content: space-between;
           li {
+            cursor: pointer;
             display: flex;
             align-items: baseline;
             justify-content: space-between;
@@ -163,7 +164,6 @@ a {
             color: #333333;
             margin-left: 10px;
             i{
-              cursor: pointer;
               margin-right: 8px;
             }
             .iconhuaban1fuben10{

@@ -300,6 +300,8 @@ export default {
             text-align: center;
             line-height: 40px;
             margin-right: 20px;
+            display: flex;
+            justify-content: center;
           }
           div:last-child {
             margin-right: 0;

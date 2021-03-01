@@ -78,17 +78,19 @@
                 /> -->
                 {{ item.downloads_count }}
               </li>
-              <li>
+              <li
+                @click.stop="
+                  item.likes.length
+                    ? handleCollection(item.id, item.likes, index)
+                    : optCollection(item.id, index)
+                "
+              >
+                >
                 <i
-                  @click.stop="handleCollection(item.id, item.likes, index)"
                   v-if="item.likes.length"
                   class="iconfont iconhuaban1fuben10"
                 ></i>
-                <i
-                  @click.stop="optCollection(item.id, index)"
-                  v-else
-                  class="iconfont iconhuaban1fuben9"
-                ></i>
+                <i v-else class="iconfont iconhuaban1fuben9"></i>
                 {{ item.likes_count }}
               </li>
             </div>

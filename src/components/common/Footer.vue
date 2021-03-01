@@ -4,7 +4,7 @@
       <div class="footer_list logo">
         <div class="footer_logo">
           <img :src="require('@/assets/img/footer_logo.png')" alt="" />
-          <span>二木UI</span>
+          <span>二木素材</span>
         </div>
       </div>
       <div class="footer_list footer_link">
@@ -145,6 +145,9 @@ export default {
         }
       }
     }
+    .footer_link:nth-child(3) {
+      flex: 1.4;
+    }
     .footer_contact {
       border-left: 1px solid #cfcfcf;
       padding-left: 40px;
@@ -186,7 +189,7 @@ export default {
     opacity: 1;
     padding-bottom: 20px;
     p:nth-child(1) {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
   }
 }

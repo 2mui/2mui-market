@@ -793,6 +793,8 @@ export default {
                   }
                 }
                 .card:hover {
+                  transition: all .5s;
+                  transform: scale(1.05, 1.05);
                   img {
                     transition: all 1s;
                     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
@@ -866,7 +868,7 @@ export default {
                     width: 30px;
                   }
                   i {
-                    color: #666666;
+                    color: #000000;
                     font-size: 30px;
                   }
                   .iconhuaban1fuben10 {

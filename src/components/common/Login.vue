@@ -155,6 +155,7 @@ export default {
                   window.$store.commit("setUserInfo", userList[i]);
                   this.$root.$children[0].showLogin(false);
                   this.handleGetFolder(userList[i].id);
+                  this.$message.success("登录成功！");
 
                   return;
                 }
@@ -211,7 +212,7 @@ export default {
 .box {
   /deep/ {
     .indexMould {
-      >.el-dialog {
+      > .el-dialog {
         margin: 0 !important;
         position: absolute;
         top: 50%;
