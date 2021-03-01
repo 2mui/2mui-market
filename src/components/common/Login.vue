@@ -60,6 +60,7 @@
                 <el-form-item label="密码" prop="encrypted_password">
                   <el-input
                     v-model="ruleForm.encrypted_password"
+                    @keyup.enter.native="keyupEnter"
                     type="password"
                     placeholder="密码"
                   ></el-input>
@@ -108,6 +109,9 @@ export default {
     };
   },
   methods: {
+    keyupEnter() {
+      this.submitForm("ruleForm");
+    },
     // 登录
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {

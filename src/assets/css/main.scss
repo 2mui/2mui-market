@@ -8,7 +8,7 @@ body,
 #app,
 .wrapper {
     width: 100%;
-    min-width: 1200px;
+    min-width: 1300px;
 }
 
 body {
@@ -191,6 +191,14 @@ a {
       }
     }
   }
+.formwork{
+  .banner{
+    img{
+      height: 600px !important;
+      object-fit: cover;
+    }
+  }
+}
 @media screen and (max-width: 1400px){
     .main_content{
         .card{
@@ -216,9 +224,17 @@ a {
     }
 }
 
-@media screen and (max-width: 1650px){
+@media screen and (max-width: 1670px){
     .el-carousel__container{
       height: 500px !important;
+    }
+    .formwork{
+      .banner{
+        img{
+          height: 500px !important;
+          object-fit: cover;
+        }
+      }
     }
     .header_logo{
         padding-left: 40px !important;
@@ -238,6 +254,7 @@ a {
             font-size: 20px;
             font-weight: 400;
             color: #333333;
+            margin-right: 0;
         }
         .active::after{
             content: '';
@@ -312,9 +329,17 @@ a {
         }
     }
 }
-@media screen and (max-width: 1450px){
+@media screen and (max-width: 1500px){
     .el-carousel__container{
       height: 400px !important;
+    }
+    .formwork{
+      .banner{
+        img{
+          height: 400px !important;
+          object-fit: cover;
+        }
+      }
     }
     .header_logo{
         .logo_warp{
@@ -333,6 +358,7 @@ a {
             font-size: 20px;
             font-weight: 400;
             color: #333333;
+            margin-right: 0;
         }
     }
 }
