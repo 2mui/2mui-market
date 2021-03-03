@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <el-carousel trigger="click" height="600px">
+    <el-carousel trigger="click" height="480px">
       <el-carousel-item v-for="(item,index) in bannerList" :key="index">
         <img :src="item.image" :alt="item.alt" />
       </el-carousel-item>
@@ -160,6 +160,7 @@ import Footer from "../../common/Footer";
 import Exhibition from "../../common/Exhibition";
 import AddFolder from "./mould/AddFolder";
 import OptCollection from "./mould/OptCollection";
+import { VclFacebook, VclInstagram } from 'vue-content-loading';
 import gql from "graphql-tag";
 var getLikeGql = gql`
   mutation insert_like(
@@ -236,6 +237,8 @@ export default {
     Exhibition,
     AddFolder,
     OptCollection,
+    VclFacebook,
+    VclInstagram,
   },
   data() {
     return {
@@ -638,29 +641,28 @@ export default {
     //       );
     //     });
     // },
-    // 合作伙伴
-    handlePartners() {
-      this.$apollo
-        .query({
-          query: gql`
-            {
-              partners {
-                url
-                updated_at
-                position
-                name
-                image
-                id
-                created_at
-              }
-            }
-          `,
-          fetchPolicy: "no-cache",
-        })
-        .then((data) => {
-          this.partnerList = data.data.partners;
-        });
-    },
+    // handlePartners() {
+    //   this.$apollo
+    //     .query({
+    //       query: gql`
+    //         {
+    //           partners {
+    //             url
+    //             updated_at
+    //             position
+    //             name
+    //             image
+    //             id
+    //             created_at
+    //           }
+    //         }
+    //       `,
+    //       fetchPolicy: "no-cache",
+    //     })
+    //     .then((data) => {
+    //       this.partnerList = data.data.partners;
+    //     });
+    // },
     // 用户id获取用户信息
     handleUserInfo(id) {
       this.$apollo
@@ -699,6 +701,7 @@ export default {
           window.$store.commit("setUserInfo", data.data.users[0]);
         });
     },
+    // 合作伙伴和banenr
     handleGttBanner() {
       this.$apollo
         .query({
@@ -708,18 +711,28 @@ export default {
                 image
                 alt
               }
+              partners {
+                url
+                updated_at
+                position
+                name
+                image
+                id
+                created_at
+              }
             }
           `,
           fetchPolicy: "no-cache",
         })
         .then((data) => {
           this.bannerList = data.data.banners;
+          this.partnerList = data.data.partners;
         });
     },
   },
   created() {
     this.handleGetData(this.limit, this.offset, this.order);
-    this.handlePartners();
+    // this.handlePartners();
     this.handleGttBanner();
 
     // 判断用户是否扫码登陆

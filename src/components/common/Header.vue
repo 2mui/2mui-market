@@ -32,6 +32,7 @@
         <input
           type="text"
           v-model="searchVal"
+          @keyup.enter="handleSearch"
           placeholder="输入想要搜索的内容"
         />
         <div class="search_buttom" @click="handleSearch()">

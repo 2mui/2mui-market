@@ -8,15 +8,15 @@
         </div>
       </div>
       <div class="footer_list footer_link">
+        <li>关于我们</li>
         <li>
-          <span>关于我们</span
-          ><router-link tag="span" to="/copyright">版权声明</router-link
+          <router-link tag="span" to="/copyright">版权声明</router-link
           ><router-link tag="span" to="/privacy">隐私政策</router-link>
         </li>
       </div>
       <div class="footer_list footer_link">
+        <li>友情链接</li>
         <li>
-          <span>友情链接</span>
           <span v-for="(item, index) in dataList" :key="index">
             <a :href="item.url" target="_blank" rel="noopener noreferrer">{{
               item.title
@@ -123,9 +123,15 @@ export default {
     }
     .footer_link {
       border-left: 1px solid #cfcfcf;
-      padding: 0 40px;
+      padding: 10px 20px;
       box-sizing: border-box;
+      display: flex;
+      align-items: flex-start;
+      li:nth-child(1){
+        width: 100px;
+      }
       li {
+        width: 100%;
         font-size: 18px;
         font-weight: 400;
         color: #333333;
@@ -133,11 +139,11 @@ export default {
         a {
           color: #333333;
         }
-        span:first-child {
-          font-size: 18px;
-          font-weight: bold;
-          color: #333333;
-        }
+        // span:first-child {
+        //   font-size: 18px;
+        //   font-weight: bold;
+        //   color: #333333;
+        // }
         span {
           cursor: pointer;
           margin-right: 30px;
