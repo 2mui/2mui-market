@@ -85,7 +85,6 @@
                     : optCollection(item.id, index)
                 "
               >
-                >
                 <i
                   v-if="item.likes.length"
                   class="iconfont iconhuaban1fuben10"
