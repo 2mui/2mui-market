@@ -793,11 +793,11 @@ export default {
                   }
                 }
                 .card:hover {
-                  transition: all .5s;
-                  transform: scale(1.05, 1.05);
+                  transition: all 0.5s;
                   img {
                     transition: all 1s;
                     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+                    transform: scale(1.05, 1.05);
                   }
                 }
               }

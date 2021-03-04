@@ -233,8 +233,14 @@ export default {
     return {
       title: "网页设计素材模板-素材下载-二木素材网",
       meta: [
-        { name: "keywords", content: "网页设计,app设计,banner,插画,图标,3d,ae,设计" },
-        { name: "description", content: "网页设计素材模板-素材下载-二木素材网" },
+        {
+          name: "keywords",
+          content: "网页设计,app设计,banner,插画,图标,3d,ae,设计",
+        },
+        {
+          name: "description",
+          content: "网页设计素材模板-素材下载-二木素材网",
+        },
       ],
     };
   },
@@ -878,7 +884,7 @@ export default {
           height: 315px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-          transition: all 0.2s;
+          transition: all 1s;
           img {
             width: 100%;
             height: 100%;
@@ -981,6 +987,10 @@ export default {
         }
       }
       .card:hover {
+        .img {
+          transition: all 1s;
+          transform: scale(1.05, 1.05);
+        }
         > img {
           transition: all 1s;
           box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);

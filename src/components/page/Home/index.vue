@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <el-carousel trigger="click" height="480px">
-      <el-carousel-item v-for="(item,index) in bannerList" :key="index">
+      <el-carousel-item v-for="(item, index) in bannerList" :key="index">
         <img :src="item.image" :alt="item.alt" />
       </el-carousel-item>
     </el-carousel>
@@ -160,7 +160,7 @@ import Footer from "../../common/Footer";
 import Exhibition from "../../common/Exhibition";
 import AddFolder from "./mould/AddFolder";
 import OptCollection from "./mould/OptCollection";
-import { VclFacebook, VclInstagram } from 'vue-content-loading';
+import { VclFacebook, VclInstagram } from "vue-content-loading";
 import gql from "graphql-tag";
 var getLikeGql = gql`
   mutation insert_like(
@@ -274,7 +274,7 @@ export default {
       images: require("@/assets/img/default.jpg"),
       categoriesId: window.$store.state.categoriesId,
       partnerList: [],
-      bannerList: []
+      bannerList: [],
     };
   },
   watch: {
@@ -792,6 +792,14 @@ export default {
           top: 70px;
           left: 50%;
           transform: translateX(-50%);
+        }
+      }
+    }
+    .main_content {
+      .card:hover {
+        .img {
+          transition: all 1s;
+          transform: scale(1.05, 1.05);
         }
       }
     }
