@@ -22,12 +22,12 @@
         </ul>
       </div>
       <div class="main_content">
-        <div v-for="(item, index) in dataList" :key="index" class="card">
-          <div class="img" @click="handleDetails(item, index)">
+        <div v-for="(item, index) in dataList" :key="index" class="card" @click="handleDetails(item, index)">
+          <div class="img">
             <img :src="item.cover ? item.cover : images" alt="" />
           </div>
           <div class="mould">
-            <div class="mould_warp">
+            <!-- <div class="mould_warp">
               <div class="edit">
                 <i
                   @click.stop="handleCollection(item.id, item.likes, index)"
@@ -37,35 +37,52 @@
                   @click.stop="optCollection(item.id, index)"
                   class="iconfont iconhuaban1fuben15"
                 ></i>
-                <!-- <img
-                  @click.stop="optCollection(item.id, index)"
-                  :src="require('@/assets/img/dropdown_bottom.png')"
-                  alt=""
-                /> -->
               </div>
               <div class="folder" @click.stop="addCollection">
                 <i class="iconfont iconhuaban1fuben61"></i>
               </div>
+            </div> -->
+            <div class="mould_warp">
+              <div class="mould_btn">
+                <div class="mould_btn_list" @click="handleDowload(item.url,item.id)">
+                  <div>
+                    <i class="iconfont iconhuaban1fuben11"></i>
+                  </div>
+                  <p>{{ item.downloads_count }}次下载</p>
+                </div>
+                <div
+                  class="mould_btn_list"
+                  @click.stop="
+                    item.likes.length
+                      ? handleCollection(item.id, item.likes, index)
+                      : optCollection(item.id, index)
+                  "
+                >
+                  <div>
+                    <i
+                      v-if="item.likes.length"
+                      class="iconfont iconhuaban1fuben10"
+                    ></i>
+                    <i v-else class="iconfont iconhuaban1fuben9"></i>
+                  </div>
+                  <p>{{ item.likes_count }}次收藏</p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="card_footer">
-            <li class="card_footer_left">
-              <span>{{ item.title }}</span
-              ><span>{{
+            <li class="card_footer_left"><span>{{
                 categoriesId.filter((e) => {
                   return e.id == item.category_id;
                 })[0].name
               }}</span>
+              <span>{{ item.title }}</span
+              >
               <p>{{ item.title }}</p>
             </li>
-            <div class="card_footer_right">
+            <!-- <div class="card_footer_right">
               <li>
                 <i class="iconfont iconhuaban1fuben11"></i>
-                <!-- <img
-                  :src="require('@/assets/img/download.png')"
-                  alt=""
-                  srcset=""
-                /> -->
                 {{ item.downloads_count }}
               </li>
               <li
@@ -82,7 +99,7 @@
                 <i v-else class="iconfont iconhuaban1fuben9"></i>
                 {{ item.likes_count }}
               </li>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -110,14 +127,14 @@
           >
           </el-pagination>
           <el-button
-            :class="totalPage ? page == totalPage ? 'active' : '' : 'active' "
-            :disabled="totalPage ? page == totalPage ? true : false : true"
+            :class="totalPage ? (page == totalPage ? 'active' : '') : 'active'"
+            :disabled="totalPage ? (page == totalPage ? true : false) : true"
             @click="nextPage"
             >下一页</el-button
           >
           <el-button
-            :class="totalPage ? page == totalPage ? 'active' : '' : 'active' "
-            :disabled="totalPage ? page == totalPage ? true : false : true"
+            :class="totalPage ? (page == totalPage ? 'active' : '') : 'active'"
+            :disabled="totalPage ? (page == totalPage ? true : false) : true"
             @click="lastPage"
             >尾页</el-button
           >
@@ -229,6 +246,37 @@ var updateLikeGql = gql`
     }
   }
 `;
+// 新增下载记录
+var insertDownloadHistoriesGql = gql`
+  mutation insert_download_histories(
+    $item_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_download_histories(
+      objects: {
+        user_id: $user_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
+// 下载次数
+var AddCoundGql = gql`
+  mutation increase_downloads_count($id: bigint!) {
+    update_items_by_pk(_inc: { downloads_count: 1 }, pk_columns: { id: $id }) {
+      downloads_count
+    }
+  }
+`;
 
 export default {
   name: "home",
@@ -297,6 +345,48 @@ export default {
     },
   },
   methods: {
+    // 下载
+    handleDowload(url,id) {
+      // 判断是否登录的操作
+      if (Object.keys(this.userInfo).length) {
+        window.open(url);
+        this.handleAddCound(id);
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: insertDownloadHistoriesGql,
+            // 实参列表
+            variables: {
+              item_id: id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            // 输出获取的数据集
+          })
+          .catch((err) => {});
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
+    // 下载次数加一
+    handleAddCound(id) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: AddCoundGql,
+          // 实参列表
+          variables: {
+            id: id,
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+        })
+        .catch((err) => {});
+    },
     // 收藏到默认第一个
     handleCollection(id, collection, index) {
       if (Object.keys(this.userInfo).length) {

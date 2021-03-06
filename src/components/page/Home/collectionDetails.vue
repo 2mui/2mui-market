@@ -38,25 +38,44 @@
           </div>
           <div class="mould">
             <div class="mould_warp">
-              <div
-                class="collection"
-                @click.stop="handleCollection(item.item.id)"
-              >
-                <img
-                  :src="require('@/assets/img/collection_active2.png')"
-                  alt=""
-                />
+              <div class="mould_btn">
+                <div
+                  class="mould_btn_list"
+                  @click="handleDowload(item.item.url,item.item.id)"
+                >
+                  <div>
+                    <i class="iconfont iconhuaban1fuben11"></i>
+                  </div>
+                  <p>{{ item.item.downloads_count }}次下载</p>
+                </div>
+                <div
+                  class="mould_btn_list"
+                  @click.stop="
+                    item.item.likes.length
+                      ? handleCollection(item.item.id, item.item.likes, index)
+                      : optCollection(item.item.id, index)
+                  "
+                >
+                  <div>
+                    <i
+                      v-if="item.item.likes.length"
+                      class="iconfont iconhuaban1fuben10"
+                    ></i>
+                    <i v-else class="iconfont iconhuaban1fuben9"></i>
+                  </div>
+                  <p>{{ item.item.likes_count }}次收藏</p>
+                </div>
               </div>
             </div>
           </div>
           <div class="card_footer">
             <li class="card_footer_left">
-              <span>{{ item.item.title }}</span
-              ><span>{{
+              <span>{{
                 categoriesId.filter((e) => {
                   return e.id == item.item.category_id;
                 })[0].name
               }}</span>
+              <span>{{ item.item.title }}</span>
               <p>{{ item.item.title }}</p>
             </li>
           </div>
@@ -174,6 +193,37 @@ var deleteLikesGql = gql`
     }
   }
 `;
+// 新增下载记录
+var insertDownloadHistoriesGql = gql`
+  mutation insert_download_histories(
+    $item_id: bigint!
+    $user_id: bigint!
+    $updated_at: timestamp!
+    $created_at: timestamp!
+  ) {
+    insert_download_histories(
+      objects: {
+        user_id: $user_id
+        item_id: $item_id
+        updated_at: $updated_at
+        created_at: $created_at
+      }
+    ) {
+      affected_rows
+      returning {
+        id
+      }
+    }
+  }
+`;
+// 下载次数
+var AddCoundGql = gql`
+  mutation increase_downloads_count($id: bigint!) {
+    update_items_by_pk(_inc: { downloads_count: 1 }, pk_columns: { id: $id }) {
+      downloads_count
+    }
+  }
+`;
 
 export default {
   components: {
@@ -208,6 +258,48 @@ export default {
     };
   },
   methods: {
+    // 下载
+    handleDowload(url,id) {
+      // 判断是否登录的操作
+      if (Object.keys(this.userInfo).length) {
+        window.open(url);
+        this.handleAddCound(id);
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: insertDownloadHistoriesGql,
+            // 实参列表
+            variables: {
+              item_id: id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            // 输出获取的数据集
+          })
+          .catch((err) => {});
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
+    // 下载次数加一
+    handleAddCound(id) {
+      this.$apollo
+        .mutate({
+          // 更新的语句
+          mutation: AddCoundGql,
+          // 实参列表
+          variables: {
+            id: id,
+          },
+        })
+        .then((response) => {
+          // 输出获取的数据集
+        })
+        .catch((err) => {});
+    },
     // 取消收藏
     handleCollection(id) {
       this.$apollo
@@ -584,17 +676,23 @@ export default {
         box-sizing: border-box;
         float: left;
         position: relative;
-        > img {
+        > .img {
           width: 100%;
           height: 315px;
           border-radius: 14px;
           box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
-          transition: all 0.2s;
+          transition: all 1s;
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+          }
         }
         .mould {
           display: none;
           width: 100%;
-          height: 97px;
+          height: 315px;
           padding: 0 7.5px;
           box-sizing: border-box;
           position: absolute;
@@ -602,25 +700,42 @@ export default {
           top: 0;
           .mould_warp {
             width: 100%;
-            height: 97px;
-            background: linear-gradient(
-              180deg,
-              rgba(0, 0, 0, 0.7) 0%,
-              rgba(128, 128, 128, 0) 100%
-            );
-            opacity: 1;
-            border-radius: 14px;
-            padding: 20px 0 0 20px;
-            box-sizing: border-box;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 14px 14px 0 0;
             display: flex;
-            div {
-              width: 40px;
-              height: 40px;
-              background: white;
-              border-radius: 50%;
+            justify-content: center;
+            position: relative;
+            .mould_btn {
+              width: 200px;
+              height: 112px;
               display: flex;
-              justify-content: center;
-              align-items: center;
+              justify-content: space-between;
+              position: absolute;
+              bottom: 0;
+              .mould_btn_list {
+                div {
+                  cursor: pointer;
+                  width: 70px;
+                  height: 70px;
+                  background: white;
+                  border-radius: 50%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  i {
+                    font-size: 26px;
+                  }
+                }
+                p {
+                  margin-top: 11px;
+                  text-align: center;
+                  font-size: 12px;
+                  font-weight: 400;
+                  line-height: 20px;
+                  color: #ffffff;
+                }
+              }
             }
           }
         }

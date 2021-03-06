@@ -7,28 +7,14 @@
         </div>
         <div class="card_footer">
           <li class="card_footer_left">
-            <span>{{ item.item.title }}</span
-            ><span>{{
+            <span>{{
               categoriesId.filter((e) => {
                 return e.id == item.item.category_id;
               })[0].name
             }}</span>
+            <span>{{ item.item.title }}</span>
             <p>{{ item.item.title }}</p>
           </li>
-          <div class="card_footer_right">
-            <li>
-              <i class="iconfont iconhuaban1fuben11"></i>
-              {{ item.item.downloads_count }}
-            </li>
-            <li>
-              <i
-                v-if="item.item.likes.length"
-                class="iconfont iconhuaban1fuben10"
-              ></i>
-              <i v-else class="iconfont iconhuaban1fuben9"></i>
-              {{ item.item.likes_count }}
-            </li>
-          </div>
         </div>
       </div>
     </div>
@@ -197,12 +183,18 @@ export default {
       margin-bottom: 50px;
       box-sizing: border-box;
       float: left;
-      .img {
+      > .img {
         width: 100%;
         height: 315px;
         border-radius: 14px;
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
         transition: all 0.2s;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 14px;
+        }
       }
       .card_footer {
         height: 50px;
@@ -212,13 +204,43 @@ export default {
         align-items: center;
         justify-content: space-between;
         .card_footer_left {
-          span:last-child {
-            background: #d3d3d3;
+          cursor: default;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          position: relative;
+          span:first-child {
+            // background: #d3d3d3;
+            border: 1px solid #707070;
             font-size: 16px;
-            color: white;
+            color: #333333;
             padding: 4px 14px;
             box-sizing: border-box;
             border-radius: 20px;
+            margin-right: 10px;
+          }
+          span:nth-child(2) {
+            display: inline-block;
+            width: 50%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          p {
+            background: white;
+            display: none;
+            padding: 2px 5px;
+            position: absolute;
+            top: 35px;
+            font-size: 12px;
+            color: #666666;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),
+              0 0 6px rgba(0, 0, 0, 0.04);
+          }
+        }
+        .card_footer_left:hover {
+          p {
+            display: block;
           }
         }
         .card_footer_right {

@@ -353,6 +353,12 @@ export default {
       float: left;
       position: relative;
       .img {
+        width: 100%;
+        height: 315px;
+        border-radius: 14px;
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
+        transition: all 0.2s;
+        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;

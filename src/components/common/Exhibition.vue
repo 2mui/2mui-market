@@ -46,17 +46,49 @@
               <div class="img">
                 <img :src="item.cover ? item.cover : images" alt="" />
               </div>
+              <!-- <div class="mould">
+                <div class="mould_warp">
+                  <div class="mould_btn">
+                    <div
+                      class="mould_btn_list"
+                      @click="handleItemDowload(item.url, item.id)"
+                    >
+                      <div>
+                        <i class="iconfont iconhuaban1fuben11"></i>
+                      </div>
+                      <p>{{ item.downloads_count }}次下载</p>
+                    </div>
+                    <div
+                      class="mould_btn_list"
+                      @click.stop="
+                        item.likes.length
+                          ? handleCollection(item.id, item.likes, index)
+                          : optCollection(item.id, index)
+                      "
+                    >
+                      <div>
+                        <i
+                          v-if="item.likes.length"
+                          class="iconfont iconhuaban1fuben10"
+                        ></i>
+                        <i v-else class="iconfont iconhuaban1fuben9"></i>
+                      </div>
+                      <p>{{ item.likes_count }}次收藏</p>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
               <div class="card_footer">
                 <li class="card_footer_left">
-                  <span>{{ item.title }}</span
-                  ><span>{{
+                  <span>{{
                     categoriesId.filter((e) => {
                       return e.id == item.category_id;
                     })[0].name
                   }}</span>
+                  <span>{{ item.title }}</span>
                   <p>{{ item.title }}</p>
                 </li>
-                <div class="card_footer_right">
+                <!-- <div class="card_footer_right">
                   <li>
                     <i class="iconfont iconhuaban1fuben11"></i>
                     {{ item.downloads_count }}
@@ -69,7 +101,7 @@
                     <i v-else class="iconfont iconhuaban1fuben9"></i>
                     {{ item.likes_count }}
                   </li>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -352,7 +384,8 @@ export default {
       });
     },
     // 收藏
-    handleCollection(id, collection) {
+    handleCollection(id, collection, index) {
+      console.log(index)
       var index = this.$parent.listIndex;
       if (Object.keys(this.userInfo).length) {
         if (!collection.length) {
@@ -494,7 +527,7 @@ export default {
       // 判断是否登录的操作
       if (Object.keys(this.userInfo).length) {
         window.open(url);
-        this.handleAddCound();
+        this.handleAddCound(this.detailsData.id);
         this.$apollo
           .mutate({
             // 更新的语句
@@ -515,15 +548,40 @@ export default {
         this.$root.$children[0].showLogin(true);
       }
     },
+    handleItemDowload(url, id) {
+      // 判断是否登录的操作
+      if (Object.keys(this.userInfo).length) {
+        window.open(url);
+        this.handleAddCound(id);
+        this.$apollo
+          .mutate({
+            // 更新的语句
+            mutation: insertDownloadHistoriesGql,
+            // 实参列表
+            variables: {
+              item_id: id,
+              user_id: this.userInfo.id,
+              created_at: "now",
+              updated_at: "now",
+            },
+          })
+          .then((response) => {
+            // 输出获取的数据集
+          })
+          .catch((err) => {});
+      } else {
+        this.$root.$children[0].showLogin(true);
+      }
+    },
     // 下载次数加一
-    handleAddCound() {
+    handleAddCound(id) {
       this.$apollo
         .mutate({
           // 更新的语句
           mutation: AddCoundGql,
           // 实参列表
           variables: {
-            id: this.detailsData.id,
+            id: id,
           },
         })
         .then((response) => {
@@ -750,6 +808,18 @@ export default {
                       transition: all 0.2s;
                     }
                   }
+                  .mould {
+                    width: 100%;
+                    height: 195px;
+                    padding: 0 17.5px;
+                    box-sizing: border-box;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    .mould_btn {
+                      width: 200px;
+                    }
+                  }
                   .card_footer {
                     height: 50px;
                     font-size: 14px;
@@ -758,14 +828,23 @@ export default {
                     align-items: center;
                     justify-content: space-between;
                     .card_footer_left {
-                      width: 70%;
-                      span:nth-child(2) {
-                        background: #707070 !important;
-                        font-size: 12px;
+                      width: 100%;
+                      span:first-child {
+                        // background: #d3d3d3;
+                        border: 1px solid #707070;
+                        font-size: 16px;
                         color: white;
                         padding: 4px 14px;
                         box-sizing: border-box;
                         border-radius: 20px;
+                        margin-right: 10px;
+                      }
+                      span:nth-child(2) {
+                        display: inline-block;
+                        width: 50%;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                       }
                     }
                     .card_footer_right {
@@ -794,10 +873,21 @@ export default {
                 }
                 .card:hover {
                   transition: all 0.5s;
+                  transform: scale(1.05, 1.05);
                   img {
                     transition: all 1s;
+                    border-radius: 14px 14px 0 0;
                     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
-                    transform: scale(1.05, 1.05);
+                  }
+                  .card_footer {
+                    border-radius: 0 0 14px 14px;
+                    background: white;
+                    .card_footer_left {
+                      color: #333333;
+                      span:first-child {
+                        color: #333333;
+                      }
+                    }
                   }
                 }
               }
