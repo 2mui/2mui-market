@@ -120,14 +120,14 @@
           >
           </el-pagination>
           <el-button
-            :class="page == totalPage ? 'active' : ''"
-            :disabled="page == totalPage ? true : false"
+            :class="totalPage ? page == totalPage ? 'active' : '' : 'active' "
+            :disabled="totalPage ? page == totalPage ? true : false : true"
             @click="nextPage"
             >下一页</el-button
           >
           <el-button
-            :class="page == totalPage ? 'active' : ''"
-            :disabled="page == totalPage ? true : false"
+            :class="totalPage ? page == totalPage ? 'active' : '' : 'active' "
+            :disabled="totalPage ? page == totalPage ? true : false : true"
             @click="lastPage"
             >尾页</el-button
           >
@@ -267,7 +267,8 @@ export default {
       },
       radioList2: {
         label: "格式",
-        arr: ["不限", "PSD", "AI", "XD", "Sketch"],
+        arr: ["不限"],
+        // arr: ["不限", "PSD", "AI", "XD", "Sketch"],
       },
       radioList3: {
         label: "排序",
@@ -773,6 +774,9 @@ export default {
                 id
                 name
               }
+              filetypes {
+                ext
+              }
             }
           `,
           fetchPolicy: "no-cache",
@@ -784,6 +788,10 @@ export default {
               name: data.data.industries[i].name,
             });
           }
+          for (let i in data.data.filetypes) {
+            this.radioList2.arr.push(data.data.filetypes[i].ext);
+          }
+          this.radioList2.arr = [... new Set(this.radioList2.arr)]
         });
     },
   },

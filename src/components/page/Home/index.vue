@@ -110,14 +110,14 @@
           >
           </el-pagination>
           <el-button
-            :class="page == totalPage ? 'active' : ''"
-            :disabled="page == totalPage ? true : false"
+            :class="totalPage ? page == totalPage ? 'active' : '' : 'active' "
+            :disabled="totalPage ? page == totalPage ? true : false : true"
             @click="nextPage"
             >下一页</el-button
           >
           <el-button
-            :class="page == totalPage ? 'active' : ''"
-            :disabled="page == totalPage ? true : false"
+            :class="totalPage ? page == totalPage ? 'active' : '' : 'active' "
+            :disabled="totalPage ? page == totalPage ? true : false : true"
             @click="lastPage"
             >尾页</el-button
           >
