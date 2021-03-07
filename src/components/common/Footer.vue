@@ -127,8 +127,11 @@ export default {
       box-sizing: border-box;
       display: flex;
       align-items: flex-start;
-      li:nth-child(1){
+      li:nth-child(1) {
         width: 100px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333333;
       }
       li {
         width: 100%;
@@ -150,9 +153,13 @@ export default {
           margin-bottom: 18px;
         }
       }
+      li:last-child{
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
     }
     .footer_link:nth-child(3) {
-      flex: 1.4;
+      flex: 1.35;
     }
     .footer_contact {
       border-left: 1px solid #cfcfcf;

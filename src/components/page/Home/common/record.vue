@@ -22,7 +22,7 @@
             <span>{{ item.item.title }}</span>
             <p>{{ item.item.title }}</p>
           </li>
-          <div class="card_footer_right">
+          <!-- <div class="card_footer_right">
             <li>
               <i class="iconfont iconhuaban1fuben11"></i>
               {{ item.item.downloads_count }}
@@ -35,7 +35,7 @@
               <i v-else class="iconfont iconhuaban1fuben9"></i>
               {{ item.item.likes_count }}
             </li>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -307,6 +307,7 @@ export default {
       width: 25%;
       padding: 0 7.5px;
       margin-bottom: 50px;
+      border-radius: 14px;
       box-sizing: border-box;
       float: left;
       position: relative;
@@ -358,7 +359,7 @@ export default {
         }
       }
       .card_footer {
-        height: 50px;
+        height: 73px;
         font-size: 18px;
         color: #333333;
         display: flex;
@@ -373,7 +374,7 @@ export default {
           span:first-child {
             // background: #d3d3d3;
             border: 1px solid #707070;
-            font-size: 16px;
+            font-size: 14px;
             color: #333333;
             padding: 4px 14px;
             box-sizing: border-box;
@@ -382,7 +383,8 @@ export default {
           }
           span:nth-child(2) {
             display: inline-block;
-            width: 50%;
+            font-size: 18px;
+            flex: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -427,11 +429,20 @@ export default {
       }
     }
     .card:hover {
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+      .img {
+        transition: all 1s;
+        transform: scale(1.05, 1.05);
+        img {
+          border-radius: 14px 14px 0 0;
+        }
+      }
       > img {
         transition: all 1s;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
       }
       .mould {
+        transform: scale(1.05, 1.05);
         display: block;
       }
     }

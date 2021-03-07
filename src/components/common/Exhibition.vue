@@ -832,14 +832,15 @@ export default {
                       span:first-child {
                         // background: #d3d3d3;
                         border: 1px solid #707070;
-                        font-size: 16px;
+                        font-size: 14px;
                         color: white;
-                        padding: 4px 14px;
+                        padding: 2px 10px;
                         box-sizing: border-box;
                         border-radius: 20px;
                         margin-right: 10px;
                       }
                       span:nth-child(2) {
+                        font-size: 16px;
                         display: inline-block;
                         width: 50%;
                         overflow: hidden;

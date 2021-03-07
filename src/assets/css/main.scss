@@ -38,6 +38,7 @@ a {
         box-sizing: border-box;
         float: left;
         position: relative;
+        overflow: hidden;
         > .img {
           cursor: pointer;
           width: 100%;
@@ -126,6 +127,13 @@ a {
               position: absolute;
               bottom: 0;
               .mould_btn_list{
+                div:hover {
+                  background: #fff94b;
+                }
+                div:focus {
+                  background: #e9e327;
+                  outline: none;
+                }
                 div{
                   cursor: pointer;
                   width: 70px;
@@ -152,7 +160,7 @@ a {
           }
         }
         .card_footer {
-          height: 50px;
+          height: 73px;
           font-size: 18px;
           color: #333333;
           display: flex;
@@ -167,7 +175,7 @@ a {
             span:first-child {
               // background: #d3d3d3;
               border: 1px solid #707070;
-              font-size: 16px;
+              font-size: 14px;
               color: #333333;
               padding: 4px 14px;
               box-sizing: border-box;
@@ -176,7 +184,8 @@ a {
             }
             span:nth-child(2) {
               display: inline-block;
-              width: 50%;
+              font-size: 18px;
+              flex: 1;
               overflow: hidden;
               text-overflow: ellipsis;
               white-space: nowrap;
@@ -186,7 +195,7 @@ a {
               display: none;
               padding: 2px 5px;
               position: absolute;
-              top: 35px;
+              top: 30px;
               font-size: 12px;
               color: #666666;
               box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
@@ -230,9 +239,8 @@ a {
       }
       .card:hover {
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
-        > img {
-          transition: all 1s;
-          box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+        > .img,img {
+          border-radius: 14px 14px 0 0;
         }
         .mould {
           transition: all 1s;

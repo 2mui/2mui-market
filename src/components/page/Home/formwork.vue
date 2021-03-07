@@ -993,6 +993,13 @@ export default {
               position: absolute;
               bottom: 0;
               .mould_btn_list {
+                div:hover {
+                  background: #fff94b;
+                }
+                div:focus {
+                  background: #e9e327;
+                  outline: none;
+                }
                 div {
                   cursor: pointer;
                   width: 70px;
@@ -1019,7 +1026,7 @@ export default {
           }
         }
         .card_footer {
-          height: 50px;
+          height: 73px;
           font-size: 18px;
           color: #333333;
           display: flex;
@@ -1061,6 +1068,9 @@ export default {
         .img {
           transition: all 1s;
           transform: scale(1.05, 1.05);
+          img {
+            border-radius: 14px 14px 0 0;
+          }
         }
         > img {
           transition: all 1s;

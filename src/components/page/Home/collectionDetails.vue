@@ -41,7 +41,7 @@
               <div class="mould_btn">
                 <div
                   class="mould_btn_list"
-                  @click="handleDowload(item.item.url,item.item.id)"
+                  @click="handleDowload(item.item.url, item.item.id)"
                 >
                   <div>
                     <i class="iconfont iconhuaban1fuben11"></i>
@@ -259,7 +259,7 @@ export default {
   },
   methods: {
     // 下载
-    handleDowload(url,id) {
+    handleDowload(url, id) {
       // 判断是否登录的操作
       if (Object.keys(this.userInfo).length) {
         window.open(url);
@@ -740,7 +740,7 @@ export default {
           }
         }
         .card_footer {
-          height: 50px;
+          height: 73px;
           font-size: 18px;
           color: #333333;
           display: flex;
@@ -759,6 +759,13 @@ export default {
         }
       }
       .card:hover {
+        .img {
+          transition: all 1s;
+          transform: scale(1.05, 1.05);
+          img {
+            border-radius: 14px 14px 0 0;
+          }
+        }
         > img {
           transition: all 1s;
           box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);

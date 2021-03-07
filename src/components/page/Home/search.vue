@@ -2,14 +2,22 @@
   <div class="search">
     <div class="main">
       <div class="main_content">
-        <div v-for="(item, index) in dataList" :key="index" class="card" @click="handleDetails(item, index)">
+        <div
+          v-for="(item, index) in dataList"
+          :key="index"
+          class="card"
+          @click="handleDetails(item, index)"
+        >
           <div class="img">
             <img :src="item.cover ? item.cover : images" alt="" />
           </div>
           <div class="mould">
             <div class="mould_warp">
               <div class="mould_btn">
-                <div class="mould_btn_list" @click="handleDowload(item.url,item.id)">
+                <div
+                  class="mould_btn_list"
+                  @click="handleDowload(item.url, item.id)"
+                >
                   <div>
                     <i class="iconfont iconhuaban1fuben11"></i>
                   </div>
@@ -287,7 +295,7 @@ export default {
   },
   methods: {
     // 下载
-    handleDowload(url,id) {
+    handleDowload(url, id) {
       // 判断是否登录的操作
       if (Object.keys(this.userInfo).length) {
         window.open(url);
@@ -789,6 +797,13 @@ export default {
               position: absolute;
               bottom: 0;
               .mould_btn_list {
+                div:hover {
+                  background: #fff94b;
+                }
+                div:focus {
+                  background: #e9e327;
+                  outline: none;
+                }
                 div {
                   cursor: pointer;
                   width: 70px;
@@ -815,7 +830,7 @@ export default {
           }
         }
         .card_footer {
-          height: 50px;
+          height: 73px;
           font-size: 18px;
           color: #333333;
           display: flex;
@@ -857,6 +872,9 @@ export default {
         .img {
           transition: all 1s;
           transform: scale(1.05, 1.05);
+          img {
+            border-radius: 14px 14px 0 0;
+          }
         }
         > img {
           transition: all 1s;
