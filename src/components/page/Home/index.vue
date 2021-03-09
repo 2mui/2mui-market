@@ -22,7 +22,12 @@
         </ul>
       </div>
       <div class="main_content">
-        <div v-for="(item, index) in dataList" :key="index" class="card" @click="handleDetails(item, index)">
+        <div
+          v-for="(item, index) in dataList"
+          :key="index"
+          class="card"
+          @click="handleDetails(item, index)"
+        >
           <div class="img">
             <img :src="item.cover ? item.cover : images" alt="" />
           </div>
@@ -44,7 +49,10 @@
             </div> -->
             <div class="mould_warp">
               <div class="mould_btn">
-                <div class="mould_btn_list" @click="handleDowload(item.url,item.id)">
+                <div
+                  class="mould_btn_list"
+                  @click="handleDowload(item.url, item.id)"
+                >
                   <div>
                     <i class="iconfont iconhuaban1fuben11"></i>
                   </div>
@@ -71,13 +79,15 @@
             </div>
           </div>
           <div class="card_footer">
-            <li class="card_footer_left"><span>{{
-                categoriesId.filter((e) => {
-                  return e.id == item.category_id;
-                })[0].name
+            <li class="card_footer_left">
+              <span>{{
+                categoriesId.length
+                  ? categoriesId.filter((e) => {
+                      return e.id == item.category_id;
+                    })[0].name
+                  : ""
               }}</span>
-              <span>{{ item.title }}</span
-              >
+              <span>{{ item.title }}</span>
               <p>{{ item.title }}</p>
             </li>
             <!-- <div class="card_footer_right">
@@ -346,7 +356,7 @@ export default {
   },
   methods: {
     // 下载
-    handleDowload(url,id) {
+    handleDowload(url, id) {
       // 判断是否登录的操作
       if (Object.keys(this.userInfo).length) {
         window.open(url);

@@ -56,7 +56,13 @@
           </div>
         </div>
       </div>
-      <div class="main_footer">
+      <div class="main_empty" v-if="!dataList.length">
+        <div class="empty_content">
+          <div class="img"></div>
+          <p>没有搜索到相关内容</p>
+        </div>
+      </div>
+      <div v-else class="main_footer">
         <div class="main_footer_warp">
           <el-button
             :class="isStart == page ? 'active' : ''"

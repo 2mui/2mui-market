@@ -191,6 +191,7 @@ export default {
         border-radius: 14px;
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
         transition: all 0.2s;
+        background: #F1F1F1;
         img {
           width: 100%;
           height: 100%;
