@@ -85,7 +85,12 @@
           </div>
         </div>
       </div>
-      <div class="main_footer">
+      <div class="main_empty" v-if="!dataList.length">
+        <div class="empty_content">
+          <div class="img"></div>
+        </div>
+      </div>
+      <div class="main_footer" v-else>
         <div class="main_footer_warp">
           <el-button
             :class="isStart == page ? 'active' : ''"
