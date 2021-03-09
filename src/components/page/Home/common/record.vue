@@ -311,6 +311,7 @@ export default {
       box-sizing: border-box;
       float: left;
       position: relative;
+      overflow: hidden;
       > .img {
         width: 100%;
         height: 315px;
@@ -394,7 +395,7 @@ export default {
             display: none;
             padding: 2px 5px;
             position: absolute;
-            top: 35px;
+            top: 30px;
             font-size: 12px;
             color: #666666;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12),

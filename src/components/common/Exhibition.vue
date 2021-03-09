@@ -385,7 +385,7 @@ export default {
     },
     // 收藏
     handleCollection(id, collection, index) {
-      console.log(index)
+      console.log(index);
       var index = this.$parent.listIndex;
       if (Object.keys(this.userInfo).length) {
         if (!collection.length) {
@@ -788,12 +788,18 @@ export default {
                 box-sizing: border-box;
                 .card {
                   cursor: pointer;
-                  width: 33%;
+                  width: 32%;
                   padding: 0 10px;
+                  padding: 0;
+                  margin: 0 6px;
                   margin-bottom: 50px;
                   box-sizing: border-box;
                   float: left;
+                  overflow: inherit !important;
                   > .img {
+                    padding: 0 7.5px;
+                    padding: 0;
+                    box-sizing: border-box;
                     width: 100%;
                     height: 200px;
                     border-radius: 14px;
@@ -822,6 +828,7 @@ export default {
                   }
                   .card_footer {
                     height: 50px;
+                    padding: 0 7.5px;
                     font-size: 14px;
                     color: #ffffff;
                     display: flex;
@@ -873,6 +880,7 @@ export default {
                   }
                 }
                 .card:hover {
+                  background: white;
                   transition: all 0.5s;
                   transform: scale(1.05, 1.05);
                   img {
@@ -882,7 +890,7 @@ export default {
                   }
                   .card_footer {
                     border-radius: 0 0 14px 14px;
-                    background: white;
+                    // background: white;
                     .card_footer_left {
                       color: #333333;
                       span:first-child {
