@@ -74,8 +74,9 @@ export default {
     return {
       title: "",
       dataList: [],
-      activeName: -1,
+      activeName: 0,
       userInfo: {},
+      folderId: null,
     };
   },
   props: {
@@ -174,6 +175,7 @@ export default {
           //   this.total = data.data.items_aggregate.aggregate.count;
           //   this.totalPage = Math.ceil(this.total / this.limit);
           this.dataList = data.data.folders;
+          this.folderId = this.dataList[0].id;
         });
     },
   },
@@ -208,7 +210,7 @@ export default {
           content: "";
           width: 100%;
           height: 25px;
-          background: #fff94b;
+          // background: #fff94b;
           position: absolute;
           left: 50%;
           bottom: -9px;
@@ -277,7 +279,7 @@ export default {
           height: 40px;
           margin-top: 20px;
           border-radius: 40px;
-          background: #fff94b;
+          border: 1px solid #000000;
           display: flex;
           justify-content: center;
           align-items: center;

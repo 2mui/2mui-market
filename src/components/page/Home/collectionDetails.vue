@@ -2,13 +2,17 @@
   <div class="collectionDetails">
     <div class="banner">
       <div class="banner_mask">
-        <div class="banner_avatar">
+        <div class="banner_back" @click="goBack">
+          <i class="el-icon-arrow-left"></i>
+          <span>返回</span>
+        </div>
+        <!-- <div class="banner_avatar">
           <img :src="require('@/assets/img/girl.jpg')" alt="" />
           <ul>
             <li>{{ userInfo.login }}</li>
             <li>ID {{ userInfo.id }}</li>
           </ul>
-        </div>
+        </div> -->
       </div>
     </div>
     <div class="main">
@@ -41,7 +45,7 @@
               <div class="mould_btn">
                 <div
                   class="mould_btn_list"
-                  @click="handleDowload(item.item.url, item.item.id)"
+                  @click.stop="handleDowload(item.item.url, item.item.id)"
                 >
                   <div>
                     <i class="iconfont iconhuaban1fuben11"></i>
@@ -258,6 +262,10 @@ export default {
     };
   },
   methods: {
+    // 返回
+    goBack() {
+      this.$router.go(-1);
+    },
     // 下载
     handleDowload(url, id) {
       // 判断是否登录的操作
@@ -574,6 +582,22 @@ export default {
       background: url("../../../assets/img/mask.png") no-repeat center;
       background-size: cover;
       position: relative;
+      .banner_back {
+        cursor: pointer;
+        position: absolute;
+        top: 27px;
+        left: 83px;
+        display: flex;
+        align-items: center;
+        i {
+          font-size: 20px;
+          color: #000000;
+        }
+        span {
+          font-size: 18px;
+          color: #333333;
+        }
+      }
       .banner_avatar {
         width: 264px;
         height: 134px;
@@ -852,7 +876,7 @@ export default {
             content: "";
             width: 100%;
             height: 25px;
-            background: #fff94b;
+            // background: #fff94b;
             position: absolute;
             left: 50%;
             bottom: -9px;

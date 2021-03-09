@@ -16,7 +16,7 @@
               <div class="mould_btn">
                 <div
                   class="mould_btn_list"
-                  @click="handleDowload(item.url, item.id)"
+                  @click.stop="handleDowload(item.url, item.id)"
                 >
                   <div>
                     <i class="iconfont iconhuaban1fuben11"></i>

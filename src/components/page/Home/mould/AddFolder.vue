@@ -121,7 +121,7 @@ export default {
           content: "";
           width: 100%;
           height: 25px;
-          background: #fff94b;
+          // background: #fff94b;
           position: absolute;
           left: 50%;
           bottom: -9px;
