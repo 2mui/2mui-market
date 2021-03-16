@@ -25,7 +25,7 @@
           v-if="
             categoriesId.filter((e) => {
               return e.id == detailsData.category_id;
-            })[0].name == 'AE动效'
+            })[0].name == '动效'
           "
           class="video-player vjs-custom-skin"
           ref="videoPlayer"
