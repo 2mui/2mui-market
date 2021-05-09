@@ -321,6 +321,7 @@ export default {
       formatWhere: "",
       // 行业
       industryWhere: "",
+      gotop: false,
     };
   },
   watch: {
@@ -341,6 +342,9 @@ export default {
         );
       },
       deep: true,
+    },
+    page(val) {
+      this.toTop();
     },
   },
   computed: {
@@ -867,6 +871,24 @@ export default {
           this.radioList2.arr = [...new Set(this.radioList2.arr)];
         });
     },
+    handleScroll() {
+      let scrolltop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      scrolltop > 30 ? (this.gotop = true) : (this.gotop = false);
+    },
+    toTop() {
+      let top = document.documentElement.scrollTop || document.body.scrollTop;
+      // 实现滚动效果
+      const timeTop = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50;
+        if (top <= 650) {
+          clearInterval(timeTop);
+        }
+      }, 10);
+    },
+  },
+  mounted() {
+    window.addEventListener("scroll", this.handleScroll, true);
   },
   created() {
     this.id = this.$route.query.id;

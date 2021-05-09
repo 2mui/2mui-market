@@ -266,6 +266,7 @@ export default {
 
       dataList: [],
       images: require("@/assets/img/default.jpg"),
+      gotop: false,
     };
   },
   computed: {
@@ -297,6 +298,9 @@ export default {
         );
       },
       deep: true,
+    },
+    page(val) {
+      this.toTop();
     },
   },
   methods: {
@@ -677,6 +681,24 @@ export default {
           this.dataList = data.data.items;
         });
     },
+    handleScroll() {
+      let scrolltop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      scrolltop > 30 ? (this.gotop = true) : (this.gotop = false);
+    },
+    toTop() {
+      let top = document.documentElement.scrollTop || document.body.scrollTop;
+      // 实现滚动效果
+      const timeTop = setInterval(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = top -= 50;
+        if (top <= 0) {
+          clearInterval(timeTop);
+        }
+      }, 10);
+    },
+  },
+  mounted() {
+    window.addEventListener("scroll", this.handleScroll, true);
   },
   created() {
     if (this.$route.query.id == 0) {

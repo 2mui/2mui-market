@@ -31,7 +31,7 @@ router.afterEach((to, from, next) => {
         //百度统计
         var _hmt = _hmt || [];
         (function () {
-            console.log(document.getElementById('baidu_tj'))
+            // console.log(document.getElementById('baidu_tj'))
             //每次执行前，先移除上次插入的代码
             document.getElementById('baidu_tj') && document.getElementById('baidu_tj').remove();
             var hm = document.createElement("script");

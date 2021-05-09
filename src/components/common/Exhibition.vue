@@ -21,19 +21,26 @@
             >
           </div>
         </div>
-        <video-player
+        <div
+          class="warpVideo"
           v-if="
             categoriesId.filter((e) => {
               return e.id == detailsData.category_id;
             })[0].name == '动效'
           "
-          class="video-player vjs-custom-skin"
-          ref="videoPlayer"
-          :playsinline="true"
-          :options="playerOptions"
         >
-        </video-player>
-        <img v-else :src="detailsData.detail" alt="" srcset="" />
+          <video-player
+            class="video-player vjs-custom-skin"
+            ref="videoPlayer"
+            :playsinline="true"
+            :options="playerOptions"
+          >
+          </video-player>
+        </div>
+        <div class="warpImg" v-else>
+          <img :src="detailsData.detail" alt="" srcset="" />
+          <div class="loading"></div>
+        </div>
         <div class="warp_footer" v-if="isShow">
           <p>相关推荐</p>
           <div class="main_content">
@@ -732,6 +739,56 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@keyframes load-effect {
+  0% {
+    box-shadow: 0 -3em 0 0.2em #fff94b, 2em -2em 0 0 #fff94b,
+      3em 0 0 -0.5em #fff94b, 2em 2em 0 -0.5em #fff94b, 0 3em 0 -0.5em #fff94b,
+      -2em 2em 0 -0.5em #fff94b, -3em 0 0 -0.5em #fff94b, -2em -2em 0 0 #fff94b;
+  }
+  12% {
+    box-shadow: 0 -3em 0 0 #fff94b, 2em -2em 0 0.2em #fff94b, 3em 0 0 0 #fff94b,
+      2em 2em 0 -0.5em #fff94b, 0 3em 0 -0.5em #fff94b,
+      -2em 2em 0 -0.5em #fff94b, -3em 0 0 -0.5em #fff94b,
+      -2em -2em 0 -0.5em #fff94b;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em #fff94b, 2em -2em 0 0 #fff94b,
+      3em 0 0 0.2em #fff94b, 2em 2em 0 0 #fff94b, 0 3em 0 -0.5em #fff94b,
+      -2em 2em 0 -0.5em #fff94b, -3em 0 0 -0.5em #fff94b,
+      -2em -2em 0 -0.5em #fff94b;
+  }
+  37% {
+    box-shadow: 0 -3em 0 -0.5em #fff94b, 2em -2em 0 -0.5em #fff94b,
+      3em 0 0 0 #fff94b, 2em 2em 0 0.2em #fff94b, 0 3em 0 0 #fff94b,
+      -2em 2em 0 -0.5em #fff94b, -3em 0 0 -0.5em #fff94b,
+      -2em -2em 0 -0.5em #fff94b;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -0.5em #fff94b, 2em -2em 0 -0.5em #fff94b,
+      3em 0 0 -0.5em #fff94b, 2em 2em 0 0 #fff94b, 0 3em 0 0.2em #fff94b,
+      -2em 2em 0 0 #fff94b, -3em 0 0 -0.5em #fff94b, -2em -2em 0 -0.5em #fff94b;
+  }
+  62% {
+    box-shadow: 0 -3em 0 -0.5em #fff94b, 2em -2em 0 -0.5em #fff94b,
+      3em 0 0 -0.5em #fff94b, 2em 2em 0 -0.5em #fff94b, 0 3em 0 0 #fff94b,
+      -2em 2em 0 0.2em #fff94b, -3em 0 0 0 #fff94b, -2em -2em 0 -0.5em #fff94b;
+  }
+  75% {
+    box-shadow: 0 -3em 0 -0.5em #fff94b, 2em -2em 0 -0.5em #fff94b,
+      3em 0 0 -0.5em #fff94b, 2em 2em 0 -0.5em #fff94b, 0 3em 0 -0.5em #fff94b,
+      -2em 2em 0 0 #fff94b, -3em 0 0 0.2em #fff94b, -2em -2em 0 0 #fff94b;
+  }
+  87% {
+    box-shadow: 0 -3em 0 0 #fff94b, 2em -2em 0 -0.5em #fff94b,
+      3em 0 0 -0.5em #fff94b, 2em 2em 0 -0.5em #fff94b, 0 3em 0 -0.5em #fff94b,
+      -2em 2em 0 0 #fff94b, -3em 0 0 0 #fff94b, -2em -2em 0 0.2em #fff94b;
+  }
+  100% {
+    box-shadow: 0 -3em 0 0.2em #fff94b, 2em -2em 0 0 #fff94b,
+      3em 0 0 -0.5em #fff94b, 2em 2em 0 -0.5em #fff94b, 0 3em 0 -0.5em #fff94b,
+      -2em 2em 0 -0.5em #fff94b, -3em 0 0 -0.5em #fff94b, -2em -2em 0 0 #fff94b;
+  }
+}
 .exhibition {
   /deep/ {
     .detalis {
@@ -748,8 +805,26 @@ export default {
           display: flex;
           .warp {
             width: 1000px;
-            img {
+            .warpImg {
               width: 100%;
+              min-height: 600px;
+              position: relative;
+              img {
+                width: 100%;
+              }
+              .loading {
+                font-size: 20px;
+                width: 1em;
+                height: 1em;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translateY(-50%);
+                z-index: -1;
+                border-radius: 50%;
+                text-indent: -9999em;
+                animation: load-effect 1s infinite linear;
+              }
             }
             .warp_top {
               width: 100%;
