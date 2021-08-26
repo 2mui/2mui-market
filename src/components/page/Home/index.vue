@@ -330,7 +330,6 @@ export default {
       ],
       dataList: [],
       images: require("@/assets/img/default.jpg"),
-      categoriesId: window.$store.state.categoriesId,
       partnerList: [],
       bannerList: [],
       gotop: false,
@@ -346,6 +345,9 @@ export default {
     },
   },
   computed: {
+    categoriesId() {
+      return window.$store.state.categoriesId;
+    },
     userInfo() {
       return window.$store.state.userInfo;
     },
