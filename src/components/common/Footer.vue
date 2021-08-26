@@ -38,7 +38,13 @@
       <p>
         本站素材图片均来源于网络用户分享，本站所有资源仅供学习研究与交流，不得用于任何商业用途的范围
       </p>
-      <p>©2021 本站若侵犯了您的合法权益，请联系站长删除！</p>
+      <p>
+        ©2021 本站若侵犯了您的合法权益，请联系站长删除！<span
+          ><a href="https://beian.miit.gov.cn" target="_blank"
+            >鄂ICP备2021001850号-1</a
+          ></span
+        >
+      </p>
     </div>
   </div>
 </template>
@@ -153,7 +159,7 @@ export default {
           margin-bottom: 18px;
         }
       }
-      li:last-child{
+      li:last-child {
         padding: 0 20px;
         box-sizing: border-box;
       }
@@ -203,6 +209,11 @@ export default {
     padding-bottom: 20px;
     p:nth-child(1) {
       margin-bottom: 20px;
+    }
+    p:last-child {
+      a {
+        color: #333333;
+      }
     }
   }
 }
