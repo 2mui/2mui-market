@@ -2,7 +2,17 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: master
+    # Sequence of patterns matched against refs/heads
+    branches:
+      # Push events on main branch
+      - main
+      - master
+      # Push events to branches matching refs/heads/releases/10
+      - 'releases/**'
+    # Sequence of patterns matched against refs/tags
+    tags:        
+      - v*
+      - v1.*           # Push events to v1.0, v1.1, and v1.9 tags
 
 jobs:
   docker:
@@ -14,9 +24,9 @@ jobs:
     - uses: mr-smithers-excellent/docker-build-push@v5
       name: Build & push to DockerHub
       with:
-        image: dfang/ui-market-web
+        image: 2mui/ui-market-web
         # tags: ${{ github.sha }}, ${{ steps.docker_meta.outputs.tags }}, latest
-        tags: latest, main, ${{ github.sha }}
+        tags: latest, master, ${{ github.sha }}
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
