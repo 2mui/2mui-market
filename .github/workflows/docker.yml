@@ -10,7 +10,7 @@ on:
       # Push events to branches matching refs/heads/releases/10
       - 'releases/**'
     # Sequence of patterns matched against refs/tags
-    tags:        
+    tags:
       - v*
       - v1.*           # Push events to v1.0, v1.1, and v1.9 tags
 
@@ -18,11 +18,11 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      name: Check out code
+    - name: Check out code
+      uses: actions/checkout@v2
 
-    - uses: mr-smithers-excellent/docker-build-push@v5
-      name: Build & push to DockerHub
+    - name: Build & push to DockerHub
+      uses: mr-smithers-excellent/docker-build-push@v5
       with:
         image: 2mui/ui-market-web
         # tags: ${{ github.sha }}, ${{ steps.docker_meta.outputs.tags }}, latest
@@ -31,3 +31,10 @@ jobs:
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+    - name: Shoutrrr
+      uses: containrrr/shoutrrr-action@v1
+      with:
+        url: ${{ secrets.SHOUTRRR_URL }}
+        title: builded ${{ github.sha }}
+        message: '{"msgtype": "text","text": {"content":"See changes at ${{ github.event.compare }}."}}'
