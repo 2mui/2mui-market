@@ -24,18 +24,23 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
+    - uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+      with:
+        length: 8
+
     - name: Shoutrrr on git push
       uses: containrrr/shoutrrr-action@v1
       with:
         url: ${{ secrets.SHOUTRRR_URL }}
-        message: '{"msgtype": "text","text": {"content":"pushed commit ${{ github.sha }}, See changes at ${{ github.event.compare }}."}}'
+        message: '{"msgtype": "text","text": {"content":"pushed commit ${{ steps.short-sha.outputs.sha }}, See changes at ${{ github.event.compare }}."}}'
 
     - name: Build & push to DockerHub
       uses: mr-smithers-excellent/docker-build-push@v5
       with:
         image: 2mui/ui-market-web
         # tags: ${{ github.sha }}, ${{ steps.docker_meta.outputs.tags }}, latest
-        tags: latest, master, ${{ github.sha }}, ${{ env.GITHUB_SHA::8 }}
+        tags: latest, master, ${{ github.sha }}, ${{ steps.short-sha.outputs.sha }}
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
