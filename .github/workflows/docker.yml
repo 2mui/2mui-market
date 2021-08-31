@@ -21,6 +21,12 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
+    - name: Shoutrrr on git push
+      uses: containrrr/shoutrrr-action@v1
+      with:
+        url: ${{ secrets.SHOUTRRR_URL }}
+        message: '{"msgtype": "text","text": {"content":"pushed commit ${{ github.sha }}, See changes at ${{ github.event.compare }}."}}'
+
     - name: Build & push to DockerHub
       uses: mr-smithers-excellent/docker-build-push@v5
       with:
@@ -32,9 +38,8 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Shoutrrr
+    - name: Shoutrrr on docker push
       uses: containrrr/shoutrrr-action@v1
       with:
         url: ${{ secrets.SHOUTRRR_URL }}
-        title: builded ${{ github.sha }}
-        message: '{"msgtype": "text","text": {"content":"See changes at ${{ github.event.compare }}."}}'
+        message: '{"msgtype": "text","text": {"content":"pushed image to docker hub, See https://hub.docker.com/r/2mui/ui-market-web"}}'
