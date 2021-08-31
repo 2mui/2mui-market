@@ -18,6 +18,29 @@ on:
       - v1.*           # Push events to v1.0, v1.1, and v1.9 tags
 
 jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Get Branch
+      id: branch
+      run: echo "git_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_BRANCH
+
+    - name: Check Branch
+      run: echo "${{ env.branch }}"
+
+    - name: Get Hash
+      id: hash
+      run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
+
+    - name: Check Hash
+      run: echo "${{ env.hash }}"
+
+    - name: Check Hash
+      run: echo "${{ SHORT_SHA }}"
+
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +51,7 @@ jobs:
       run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
     - name: echo $SHORT_SHA
-      run: echo ${{ SHORT_SHA }}
+      run: echo "${{ SHORT_SHA }}"
 
     - uses: benjlevesque/short-sha@v1.2
       id: short-sha
