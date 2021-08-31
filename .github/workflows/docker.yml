@@ -35,7 +35,7 @@ jobs:
       with:
         image: 2mui/ui-market-web
         # tags: ${{ github.sha }}, ${{ steps.docker_meta.outputs.tags }}, latest
-        tags: latest, master, ${{ github.sha }}, ${{GITHUB_SHA::8}}
+        tags: latest, master, ${{ github.sha }}, ${GITHUB_SHA::8}
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
