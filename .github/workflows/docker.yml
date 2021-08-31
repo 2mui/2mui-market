@@ -1,3 +1,6 @@
+# https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context
+# https://docs.github.com/en/actions/reference/environment-variables
+
 name: Build and Push Docker Image
 
 on:
@@ -32,7 +35,7 @@ jobs:
       with:
         image: 2mui/ui-market-web
         # tags: ${{ github.sha }}, ${{ steps.docker_meta.outputs.tags }}, latest
-        tags: latest, master, ${{ github.sha }}
+        tags: latest, master, ${{ github.sha }}, ${{GITHUB_SHA::8}}
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
