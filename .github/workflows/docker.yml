@@ -26,17 +26,14 @@ jobs:
 
     - name: Get Branch
       id: branch
-      run: echo "git_branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_BRANCH
+      run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
     - name: Check Branch
-      run: echo "${{ env.branch }}"
+      run: echo "${{ env.BRANCH }}"
 
     - name: Get Hash
       id: hash
       run: echo "SHORT_SHA=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
-
-    - name: Check Hash
-      run: echo "${{ env.hash }}"
 
     - name: Check Hash
       run: echo "${{ env.SHORT_SHA }}"
